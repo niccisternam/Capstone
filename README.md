@@ -19,8 +19,16 @@ Plataforma web interna orientada a la centralización, digitalización y procesa
 ---
 
 ## 📂 Documentación – Entrega 1 (Fase 1)
-
-
+📁 Evidencia Proyecto: Minuta de reuniones semanales
+Acta constitución proyecto
+Planilla de Requerimientos
+Carta Gantt/RoadMap 
+Documento ERS
+Documento Caso uso extendido
+Mockups  del sistema completo
+Presentación del Proyecto.pptx
+📁 Evidencias Individuales: Contiene archivos solicitados separados por carpetas con nombre de los integrantes
+📁 Evidencias Grupales: Contiene 1.4_APT122_FormativaFase1.docx / 1.5_GuiaEstudiante_Fase 1_Definicion Proyecto APT (Español)
 ---
 
 ## 🛠️ Stack Tecnológico Proyectado
