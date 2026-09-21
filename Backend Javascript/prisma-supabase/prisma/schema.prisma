@@ -1,0 +1,159 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum RolUsuario {
+  USUARIO
+  ADMINISTRADOR
+
+  @@map("rol_usuario")
+}
+
+enum EstadoUsuario {
+  PENDIENTE
+  ACTIVO
+  BLOQUEADO
+  INACTIVO
+
+  @@map("estado_usuario")
+}
+
+enum EstadoSolicitud {
+  PENDIENTE
+  APROBADA
+  RECHAZADA
+
+  @@map("estado_solicitud")
+}
+
+enum TipoTokenSeguridad {
+  CODIGO_INICIO_SESION
+  RECUPERACION_PASSWORD
+  VERIFICACION_CORREO
+
+  @@map("tipo_token_seguridad")
+}
+
+enum TipoEventoSeguridad {
+  LOGIN_EXITOSO
+  LOGIN_FALLIDO
+  CODIGO_INVALIDO
+  CUENTA_BLOQUEADA
+  CAMBIO_PASSWORD
+  RECUPERACION_SOLICITADA
+  SESION_CERRADA
+
+  @@map("tipo_evento_seguridad")
+}
+
+model Empresa {
+  idEmpresa   String    @id @default(dbgenerated("gen_random_uuid()")) @map("id_empresa") @db.Uuid
+  rutEmpresa  String    @unique(map: "uq_empresa_rut") @map("rut_empresa") @db.VarChar(12)
+  razonSocial String    @map("razon_social") @db.VarChar(200)
+  estado      Boolean   @default(true)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  usuario     Usuario?
+
+  @@map("empresa")
+}
+
+model Usuario {
+  idUsuario             String           @id @default(dbgenerated("gen_random_uuid()")) @map("id_usuario") @db.Uuid
+  idEmpresa             String           @unique(map: "uq_usuario_empresa") @map("id_empresa") @db.Uuid
+  rutUsuario            String           @unique(map: "uq_usuario_rut") @map("rut_usuario") @db.VarChar(12)
+  nombre                String           @db.VarChar(100)
+  apellido              String           @db.VarChar(100)
+  correo                String           @db.VarChar(320)
+  passwordHash          String           @map("password_hash") @db.Text
+  rol                   RolUsuario       @default(USUARIO)
+  estado                EstadoUsuario    @default(PENDIENTE)
+  debeCambiarPassword   Boolean          @default(true) @map("debe_cambiar_password")
+  intentosFallidos      Int              @default(0) @map("intentos_fallidos")
+  bloqueadoHasta        DateTime?        @map("bloqueado_hasta") @db.Timestamptz(6)
+  passwordChangedAt     DateTime?        @map("password_changed_at") @db.Timestamptz(6)
+  correoVerificadoAt    DateTime?        @map("correo_verificado_at") @db.Timestamptz(6)
+  createdAt             DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime         @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  empresa               Empresa          @relation(fields: [idEmpresa], references: [idEmpresa], onDelete: Restrict, map: "fk_usuario_empresa")
+  solicitudesRevisadas  SolicitudCuenta[] @relation("SolicitudesRevisadas")
+  sesiones              SesionUsuario[]
+  tokensSeguridad       TokenSeguridad[]
+  eventosSeguridad      EventoSeguridad[]
+
+  @@index([estado], map: "idx_usuario_estado")
+  @@map("usuario")
+}
+
+model SolicitudCuenta {
+  idSolicitud    String          @id @default(dbgenerated("gen_random_uuid()")) @map("id_solicitud") @db.Uuid
+  rutEmpresa     String          @map("rut_empresa") @db.VarChar(12)
+  rutUsuario     String          @map("rut_usuario") @db.VarChar(12)
+  nombre         String          @db.VarChar(100)
+  apellido       String          @db.VarChar(100)
+  correo         String          @db.VarChar(320)
+  descripcion    String?         @db.Text
+  estado         EstadoSolicitud @default(PENDIENTE)
+  revisadaPorId  String?         @map("revisada_por") @db.Uuid
+  fechaRevision  DateTime?       @map("fecha_revision") @db.Timestamptz(6)
+  motivoRechazo  String?         @map("motivo_rechazo") @db.Text
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  revisor        Usuario?        @relation("SolicitudesRevisadas", fields: [revisadaPorId], references: [idUsuario], onDelete: SetNull, map: "fk_solicitud_revisor")
+
+  @@index([estado, createdAt(sort: Desc)], map: "idx_solicitud_estado_fecha")
+  @@map("solicitud_cuenta")
+}
+
+model SesionUsuario {
+  idSesion          String    @id @default(dbgenerated("gen_random_uuid()")) @map("id_sesion") @db.Uuid
+  idUsuario         String    @map("id_usuario") @db.Uuid
+  tokenHash         String    @unique(map: "uq_sesion_token_hash") @map("token_hash") @db.Text
+  recordarSesion    Boolean   @default(false) @map("recordar_sesion")
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  ultimaActividadAt DateTime  @default(now()) @map("ultima_actividad_at") @db.Timestamptz(6)
+  expiresAt         DateTime  @map("expires_at") @db.Timestamptz(6)
+  revokedAt         DateTime? @map("revoked_at") @db.Timestamptz(6)
+  usuario           Usuario   @relation(fields: [idUsuario], references: [idUsuario], onDelete: Cascade, map: "fk_sesion_usuario")
+
+  @@index([idUsuario], map: "idx_sesion_usuario")
+  @@map("sesion_usuario")
+}
+
+model TokenSeguridad {
+  idToken          String             @id @default(dbgenerated("gen_random_uuid()")) @map("id_token") @db.Uuid
+  idUsuario        String             @map("id_usuario") @db.Uuid
+  tipo             TipoTokenSeguridad
+  tokenHash        String             @unique(map: "uq_token_hash") @map("token_hash") @db.Text
+  cantidadIntentos Int                @default(0) @map("cantidad_intentos")
+  createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  expiresAt        DateTime           @map("expires_at") @db.Timestamptz(6)
+  usedAt           DateTime?          @map("used_at") @db.Timestamptz(6)
+  revokedAt        DateTime?          @map("revoked_at") @db.Timestamptz(6)
+  usuario          Usuario            @relation(fields: [idUsuario], references: [idUsuario], onDelete: Cascade, map: "fk_token_usuario")
+
+  @@index([idUsuario, tipo], map: "idx_token_usuario_tipo")
+  @@map("token_seguridad")
+}
+
+model EventoSeguridad {
+  idEvento        String              @id @default(dbgenerated("gen_random_uuid()")) @map("id_evento") @db.Uuid
+  idUsuario       String?             @map("id_usuario") @db.Uuid
+  tipoEvento      TipoEventoSeguridad @map("tipo_evento")
+  identificador   String?             @db.VarChar(320)
+  exitoso         Boolean             @default(false)
+  motivoFallo     String?             @map("motivo_fallo") @db.Text
+  direccionIpHash String?             @map("direccion_ip_hash") @db.Text
+  userAgent       String?             @map("user_agent") @db.Text
+  createdAt       DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  usuario         Usuario?            @relation(fields: [idUsuario], references: [idUsuario], onDelete: SetNull, map: "fk_evento_usuario")
+
+  @@index([idUsuario, createdAt(sort: Desc)], map: "idx_evento_usuario_fecha")
+  @@index([identificador, createdAt(sort: Desc)], map: "idx_evento_identificador_fecha")
+  @@map("evento_seguridad")
+}

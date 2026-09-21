@@ -1,0 +1,322 @@
+openapi: 3.1.0
+info:
+  title: Capstone - Autenticación
+  version: 0.3.0
+  description: Contrato de login 2FA, sesión renovable y recuperación de contraseña.
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/v1/auth/login:
+    post:
+      summary: Validar credenciales e iniciar el segundo paso
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Cambio temporal o código enviado
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/PasswordChangeRequired"
+                  - $ref: "#/components/schemas/CodeRequired"
+        "401":
+          $ref: "#/components/responses/Error"
+        "423":
+          $ref: "#/components/responses/Error"
+        "429":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+  /api/v1/auth/change-temporary-password:
+    post:
+      summary: Cambiar la contraseña temporal y enviar código de login
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/NewPassword"
+      responses:
+        "200":
+          description: Código enviado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CodeRequired"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+  /api/v1/auth/login-code/resend:
+    post:
+      summary: Reenviar un código LOGIN_2FA
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [challengeId]
+              properties:
+                challengeId:
+                  type: string
+                  format: uuid
+      responses:
+        "200":
+          description: Nuevo código enviado; el anterior fue invalidado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CodeRequired"
+        "400":
+          $ref: "#/components/responses/Error"
+        "429":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+  /api/v1/auth/verify-code:
+    post:
+      summary: Verificar LOGIN_2FA y crear la sesión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [challengeId, codigo]
+              properties:
+                challengeId:
+                  type: string
+                  format: uuid
+                codigo:
+                  $ref: "#/components/schemas/SixDigitCode"
+                recordarSesion:
+                  type: boolean
+                  default: false
+      responses:
+        "200":
+          description: Autenticación completada
+          headers:
+            Set-Cookie:
+              description: Refresh token HttpOnly; persistente solo cuando recordarSesion es true.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Authenticated"
+        "400":
+          $ref: "#/components/responses/Error"
+  /api/v1/auth/refresh:
+    post:
+      summary: Renovar el access token y rotar el refresh token
+      security:
+        - refreshCookie: []
+      responses:
+        "200":
+          description: Sesión renovada y cookie reemplazada
+          headers:
+            Set-Cookie:
+              description: Nuevo refresh token HttpOnly.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Authenticated"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "423":
+          $ref: "#/components/responses/Error"
+  /api/v1/auth/logout:
+    post:
+      summary: Revocar la sesión actual y eliminar la cookie
+      security:
+        - refreshCookie: []
+      responses:
+        "204":
+          description: Sesión cerrada, incluso si no existía una cookie activa
+  /api/v1/auth/forgot-password:
+    post:
+      summary: Solicitar o reenviar un enlace de recuperación
+      description: Siempre responde de manera genérica (HTTP 202) para evitar enumeración de cuentas. Genera un token aleatorio y envía un enlace por correo.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailRequest"
+      responses:
+        "202":
+          description: Solicitud procesada de forma genérica
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [estado, mensaje]
+                properties:
+                  estado:
+                    const: RECUPERACION_SOLICITADA
+                  mensaje:
+                    type: string
+        "400":
+          $ref: "#/components/responses/Error"
+  /api/v1/auth/verify-recovery-code:
+    post:
+      deprecated: true
+      summary: (Obsoleto) Validar código de recuperación
+      description: Retirado en favor del enlace directo de recuperación enviado por correo. Devuelve HTTP 410 Gone.
+      responses:
+        "410":
+          $ref: "#/components/responses/Error"
+  /api/v1/auth/reset-password:
+    post:
+      summary: Establecer una nueva contraseña mediante el token del enlace
+      description: Recibe el token temporal extraído del enlace en Authorization Bearer. Valida y consume el token atómicamente, actualiza la contraseña con scrypt y revoca sesiones previas.
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/NewPassword"
+      responses:
+        "200":
+          description: Contraseña actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [estado]
+                properties:
+                  estado:
+                    const: PASSWORD_ACTUALIZADA
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    refreshCookie:
+      type: apiKey
+      in: cookie
+      name: capstone_refresh_token
+  requestBodies:
+    NewPassword:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/NewPasswordRequest"
+  responses:
+    Error:
+      description: Error controlado
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [error]
+            properties:
+              error:
+                type: object
+                required: [code, message]
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                  details: {}
+  schemas:
+    LoginRequest:
+      type: object
+      required: [correo, password]
+      properties:
+        correo:
+          type: string
+          format: email
+        password:
+          type: string
+    EmailRequest:
+      type: object
+      required: [correo]
+      properties:
+        correo:
+          type: string
+          format: email
+    NewPasswordRequest:
+      type: object
+      required: [nuevaPassword, confirmarPassword]
+      properties:
+        nuevaPassword:
+          type: string
+          minLength: 12
+        confirmarPassword:
+          type: string
+    SixDigitCode:
+      type: string
+      pattern: '^\d{6}$'
+      example: "482731"
+    PasswordChangeRequired:
+      type: object
+      required: [estado, passwordChangeToken, expiresInSeconds]
+      properties:
+        estado:
+          const: CAMBIO_PASSWORD_REQUERIDO
+        passwordChangeToken:
+          type: string
+        expiresInSeconds:
+          type: integer
+          example: 600
+    CodeRequired:
+      type: object
+      required: [estado, challengeId, expiresAt]
+      properties:
+        estado:
+          const: CODIGO_REQUERIDO
+        challengeId:
+          type: string
+          format: uuid
+        expiresAt:
+          type: string
+          format: date-time
+    Authenticated:
+      type: object
+      required:
+        [
+          estado,
+          tokenType,
+          accessToken,
+          expiresInSeconds,
+          sessionId,
+          rememberSession,
+          refreshTokenExpiresAt,
+        ]
+      properties:
+        estado:
+          type: string
+          enum: [AUTENTICADO, SESION_RENOVADA]
+        tokenType:
+          const: Bearer
+        accessToken:
+          type: string
+        expiresInSeconds:
+          type: integer
+          example: 900
+        sessionId:
+          type: string
+          format: uuid
+        rememberSession:
+          type: boolean
+        refreshTokenExpiresAt:
+          type: string
+          format: date-time
