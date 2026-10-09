@@ -6,10 +6,10 @@ Este repositorio contiene el backend principal en Express + TypeScript del siste
 
 ## Reglas de trabajo para Codex
 
-1. Trabajar un módulo por vez, siguiendo `docs/IMPLEMENTATION_PLAN.md`.
+1. Trabajar un módulo por vez, siguiendo `../Documentacion/Backend/IMPLEMENTATION_PLAN.md`.
 2. Antes de editar, leer el módulo, sus decisiones y sus criterios de aceptación.
 3. No implementar módulos futuros “por adelantado”. Si una dependencia es imprescindible, crear solo el contrato mínimo.
-4. No cambiar contratos públicos, estados, nombres de tablas o variables de entorno sin actualizar la documentación y registrar una decisión en `docs/adr/`.
+4. No cambiar contratos públicos, estados, nombres de tablas o variables de entorno sin actualizar la documentación y registrar una decisión en `../Documentacion/Backend/adr/`.
 5. Cada cambio debe incluir pruebas, manejo de errores, validación de entrada y actualización del README si cambia la forma de ejecutar el sistema.
 6. No guardar secretos ni datos reales en el repositorio.
 7. Mantener la separación: `routes` recibe solicitudes, `controllers` coordina, `services` aplica casos de uso, `repositories` accede a datos y `schemas` valida.
@@ -29,4 +29,4 @@ npm run typecheck
 
 ## Definition of Done
 
-Ver `docs/DEFINITION_OF_DONE.md`. Ningún módulo se considera terminado solo porque compila.
+Ver `../Documentacion/Backend/DEFINITION_OF_DONE.md`. Ningún módulo se considera terminado solo porque compila.

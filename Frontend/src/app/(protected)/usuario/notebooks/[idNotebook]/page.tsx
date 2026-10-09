@@ -1,0 +1,27 @@
+"use client";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
+import { deleteNotebook, getNotebook } from "@/api/module1.api";
+import { ApiError } from "@/api/api-error";
+import type { NotebookDetalle } from "@/api/module1.schemas";
+import { NotebookDocuments } from "@/features/module1/components/NotebookDocuments";
+import { AppHeader } from "@/features/auth/components/AppHeader";
+import { NotebookForm } from "@/features/module1/components/NotebookForm";
+
+export default function NotebookDetailPage({ params }: { params: Promise<{ idNotebook: string }> }) {
+  const router = useRouter();
+  const [idNotebook, setIdNotebook] = useState<string | null>(null);
+  const [notebook, setNotebook] = useState<NotebookDetalle | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => { void params.then(({ idNotebook: resolvedId }) => { setIdNotebook(resolvedId); return getNotebook(resolvedId).then(setNotebook).catch((e) => setError(e instanceof Error ? e.message : "No fue posible cargar el notebook.")); }); }, [params]);
+  useEffect(() => { function closeMenu(event: MouseEvent) { if (menuRef.current && !menuRef.current.contains(event.target as Node)) setMenuOpen(false); } document.addEventListener("mousedown", closeMenu); return () => document.removeEventListener("mousedown", closeMenu); }, []);
+  async function removeNotebook() { if (!idNotebook) return; const confirmation = await Swal.fire({ title: "¿Eliminar notebook?", text: "Esta acción no se puede deshacer.", icon: "warning", showCancelButton: true, confirmButtonText: "Sí, eliminar", cancelButtonText: "Cancelar", confirmButtonColor: "#dc2626", cancelButtonColor: "#64748b" }); if (!confirmation.isConfirmed) return; setDeleting(true); setActionError(null); try { await deleteNotebook(idNotebook); await Swal.fire({ title: "Notebook eliminado", text: "El notebook se eliminó correctamente.", icon: "success", confirmButtonColor: "#2563eb" }); router.push("/usuario"); } catch (e) { setActionError(e instanceof ApiError ? e.message : "No fue posible eliminar el notebook."); } finally { setDeleting(false); } }
+  return <><AppHeader role="Usuario" />{error ? <main className="mx-auto max-w-3xl px-4 py-10"><Link href="/usuario" className="inline-flex rounded-lg bg-slate-800 px-4 py-2 text-sm font-bold text-white">← Volver a notebooks</Link><section className="mt-6 rounded-2xl border-2 border-red-200 bg-red-50 p-8 text-center text-red-700"><h1 className="font-bold">No pudimos cargar el notebook</h1><p className="mt-2 text-sm">{error}</p></section></main> : !notebook || !idNotebook ? <main className="flex min-h-[60vh] items-center justify-center text-sm text-slate-600">Cargando notebook…</main> : <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6"><Link href="/usuario" className="inline-flex rounded-lg bg-slate-800 px-4 py-2 text-sm font-bold text-white hover:bg-slate-700">← Volver a notebooks</Link><div className="mt-5 rounded-2xl border-2 border-slate-200 bg-white p-6 shadow-sm"><div className="flex items-start justify-between gap-4"><div className="flex items-center gap-4"><span className="flex h-14 w-14 items-center justify-center rounded-xl text-2xl">{notebook.icono === "folder" ? "📁" : (notebook.icono ?? "📁")}</span><div><h1 className="text-2xl font-extrabold text-slate-900">{notebook.nombre}</h1><p className="mt-1 text-sm text-slate-600">{notebook.descripcion || "Sin descripción"}</p></div></div><div ref={menuRef} className="relative"><button type="button" onClick={() => setMenuOpen((open) => !open)} className="rounded-lg px-3 py-2 text-2xl leading-none text-slate-500 hover:bg-slate-100" aria-label="Acciones del notebook" aria-expanded={menuOpen}>⋯</button>{menuOpen && <div className="absolute right-0 z-10 mt-2 w-48 rounded-xl border border-slate-200 bg-white p-2 shadow-lg"><button type="button" onClick={() => { setEditing(true); setMenuOpen(false); }} className="block w-full rounded-lg px-3 py-2 text-left text-sm font-semibold text-slate-700 hover:bg-slate-100">Editar información</button><button type="button" onClick={() => { setMenuOpen(false); void removeNotebook(); }} disabled={deleting} className="block w-full rounded-lg px-3 py-2 text-left text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50">{deleting ? "Eliminando…" : "Eliminar notebook"}</button></div>}</div></div>{actionError && <p role="alert" className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{actionError}</p>}</div>{editing && <NotebookForm idNotebook={notebook.idNotebook} initialValues={{ nombre: notebook.nombre, descripcion: notebook.descripcion ?? "", icono: notebook.icono ?? "folder", paletaColores: notebook.paletaColores ?? { principal: "#2563eb", secundaria: "#dbeafe" } }} onCancel={() => setEditing(false)} onCreated={(updatedId) => { setEditing(false); void getNotebook(updatedId).then(setNotebook); }} />}{<NotebookDocuments idNotebook={notebook.idNotebook} initialDocuments={notebook.documentos} onChanged={() => { void getNotebook(notebook.idNotebook).then(setNotebook).catch(() => undefined); }} />}</main>}</>;
+}

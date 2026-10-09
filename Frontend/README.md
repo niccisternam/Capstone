@@ -6,7 +6,7 @@ Frontend técnico para probar progresivamente los contratos y funcionalidades de
 
 - React 19 con TypeScript.
 - NextJS
-- CSS propio, sin framework visual.
+- Tailwind CSS mediante clases utilitarias.
 - Zod para validación de formularios.
 - Fetch API para integración HTTP.
 - Testing Library preparados para pruebas.
@@ -33,6 +33,8 @@ npm run build      # compilación de producción
 npm run check      # lint + tipos + pruebas
 ```
 
+ Las pruebas de la capa API cargan módulos TypeScript con el type stripping nativo de Node: requieren Node.js 22.18+ o 24+ (ver `../Documentacion/Frontend/TESTING.md`).
+
 ## Páginas y funcionalidades
 
 - `#login`: inicio de sesión con correo, contraseña y “Mantener sesión iniciada”.
@@ -42,6 +44,7 @@ npm run check      # lint + tipos + pruebas
 - `#account`: solicitud pública de cuenta.
 - `#admin`: gestión protegida de solicitudes: filtro, búsqueda, tabla, detalle, aprobación y rechazo.
 - Cierre de sesión mediante `/auth/logout`.
+- Módulo 1: la guía de integración está en `../Documentacion/Frontend/MODULE1_FRONTEND_GUIDE.md`.
 
 El panel administrativo solo se muestra cuando existe un `accessToken` válido.
 
@@ -77,6 +80,8 @@ La capa `src/api/` centraliza las llamadas a Express:
 - `accountRequests.api.ts`: creación pública y operaciones administrativas con Bearer.
 - `client.ts`: headers, cookies, refresh y reintento controlado.
 
+La integración frontend del Módulo 1 debe consumir únicamente los contratos verificados de Express. Consultar `../Documentacion/Frontend/MODULE1_FRONTEND_GUIDE.md`; no llamar directamente a FastAPI o Gemini.
+
 Los filtros administrativos se traducen exactamente a `PENDIENTE`, `APROBADA` y `RECHAZADA`.
 
 ## Estructura principal
@@ -91,7 +96,7 @@ src/
   styles.css    estilos de las pantallas de prueba
 ```
 
-La documentación ampliada está en `docs/`, incluyendo arquitectura, autenticación, estados UI, testing, convenciones y plan de implementación.
+La documentación ampliada está en `../Documentacion/Frontend/`, incluyendo arquitectura, autenticación, estados UI, testing, convenciones y plan de implementación.
 
 ## Aspectos importantes aplicados en el backend Express
 

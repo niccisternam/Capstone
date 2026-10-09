@@ -18,12 +18,16 @@ import { NodemailerVerificationEmailSender } from "./shared/email/nodemailer-ver
 import { UnavailableVerificationEmailSender } from "./shared/email/verification-email.sender.js";
 import { errorHandler } from "./shared/errors/error-handler.js";
 import { env } from "./config/env.js";
+import { GeminiExtractor, UnavailableExtractor } from "./modules/module1/gemini.extractor.js";
+import { createModule1Router } from "./modules/module1/module1.routes.js";
+import { Module1Service } from "./modules/module1/module1.service.js";
 
 export interface AppDependencies {
   accountRequestService?: AccountRequestService;
   authService?: AuthService;
   adminResolver?: AdminResolver;
   databaseProbe?: () => Promise<void>;
+  module1Service?: Module1Service;
 }
 
 export function createApp(dependencies: AppDependencies = {}) {
@@ -68,6 +72,15 @@ export function createApp(dependencies: AppDependencies = {}) {
     new AccountRequestService(repository, accountEmailSender, {
       createId: randomUUID,
     });
+  const module1Service =
+    dependencies.module1Service ??
+    new Module1Service(
+      prisma,
+      env.GEMINI_API_KEY
+        ? new GeminiExtractor(env.GEMINI_API_KEY, env.GEMINI_MODEL)
+        : new UnavailableExtractor(),
+      env.DOCUMENT_STORAGE_PATH,
+    );
 
   app.use(helmet());
   app.use((req, res, next) => {
@@ -94,6 +107,8 @@ export function createApp(dependencies: AppDependencies = {}) {
       redact: ["req.headers.authorization"],
     }),
   );
+
+  app.use("/api/v1/module1", createModule1Router(module1Service, jwtService, prisma));
 
   app.get("/health", (_req, res) => {
     res.status(200).json({ status: "ok", service: "backend-javascript" });

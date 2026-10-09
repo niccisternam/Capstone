@@ -31,6 +31,8 @@ Definir, cuando se implemente la capa, una forma estable como `ApiError` con est
 
 No completar filas por inferencia. Cada fila se agrega al conectar y probar un contrato real.
 
+El contrato backend disponible del Módulo 1 está documentado en `Documentacion/Backend/MODULE1_SPEC.md` y `Documentacion/Frontend/MODULE1_FRONTEND_GUIDE.md`. Las funciones listadas a continuación están implementadas en la capa API frontend y conectadas al backend Express del proyecto; las pruebas automatizadas validan sus contratos con `fetch` mockeado.
+
 | Módulo | Operación | Método y endpoint Express | Request validado | Respuesta validada | Auth | Prueba | Estado |
 |---|---|---|---|---|---|---|---|
 | Autenticación | Inicio de sesión | `POST /api/v1/auth/login` | `{ correo, password }` | `200` (`2FA_REQUERIDO` / `CAMBIO_PASSWORD_REQUERIDO`) | Pública | `login.schema.test.mjs` | Conectado |
@@ -46,3 +48,29 @@ No completar filas por inferencia. Cada fila se agrega al conectar y probar un c
 | Solicitudes | Detalle de solicitud | `GET /api/v1/account-requests/:id` | Path param `idSolicitud` | `200` (`{ solicitud }`) | Bearer Admin | `accountRequests.api.ts` | Conectado |
 | Solicitudes | Aprobar solicitud | `POST /api/v1/account-requests/:id/approve` | `{ razonSocial, confirmacionSii: true }` | `200` / `201` | Bearer Admin | `accountRequests.api.ts` | Conectado |
 | Solicitudes | Rechazar solicitud | `POST /api/v1/account-requests/:id/reject` | `{ motivo }` | `200` | Bearer Admin | `accountRequests.api.ts` | Conectado |
+
+## Módulo 1 — capa API frontend conectada a Express
+
+Implementación en `src/api/module1.api.ts`, con esquemas en `src/api/module1.schemas.ts` y normalización de errores en `src/api/api-error.ts`. Usa `client.ts` con `requestFormData` (multipart sin `Content-Type`) y `requestPdf` (binario). Las pruebas usan `fetch` mockeado (`tests/module1-api.test.mjs`) y cubren los contratos de la capa API.
+
+| Función | Método y endpoint Express | Request validado | Respuesta validada | Auth | Prueba | Estado |
+|---|---|---|---|---|---|---|
+| `listNotebooks` | `GET /api/v1/module1/notebooks` | — | `{ notebooks }` → `totalDocumentos` | Bearer | `module1-api.test.mjs` | Conectado |
+| `createNotebook` | `POST /api/v1/module1/notebooks` | `notebookInputSchema` | `201 { notebook }` | Bearer | `module1-api.test.mjs` | Conectado |
+| `updateNotebook` | `PATCH /api/v1/module1/notebooks/:idNotebook` | `notebookInputSchema` | `{ notebook }` | Bearer | `module1-api.test.mjs` | Conectado |
+| `deleteNotebook` | `DELETE /api/v1/module1/notebooks/:idNotebook` | UUID | `{ idNotebook, eliminado: true }` | Bearer | `module1-api.test.mjs` | Conectado |
+| `getNotebook` | `GET /api/v1/module1/notebooks/:idNotebook` | UUID | `{ notebook }` con `documentos` | Bearer | `module1-api.test.mjs` | Conectado |
+| `uploadDocuments` | `POST /api/v1/module1/notebooks/:idNotebook/documents` | `multipart`, campo `documents`, 1–10 PDF ≤ 15 MB con firma `%PDF` | `201 { lote }` | Bearer | `module1-api.test.mjs` | Conectado |
+| `processBatch` | `POST /api/v1/module1/batches/:idLote/process` | UUID, `AbortSignal` opcional | `{ lote }` con `documentos` | Bearer | `module1-api.test.mjs` | Conectado |
+| `getBatch` | `GET /api/v1/module1/batches/:idLote` | UUID | `{ lote }` | Bearer | `module1-api.test.mjs` | Conectado |
+| `getDocument` | `GET /api/v1/module1/documents/:idDocumento` | UUID | `{ documento }` con `archivo`, `resultados`, `revisiones` | Bearer | `module1-api.test.mjs` | Conectado |
+| `getDocumentPdf` | `GET /api/v1/module1/documents/:idDocumento/pdf` | UUID | `Blob` `application/pdf` | Bearer | `module1-api.test.mjs` | Conectado |
+| `saveReview` | `PATCH /api/v1/module1/documents/:idDocumento/review` | `revisionInputSchema` (`estadoPago`, `observacion`, `datos`) | `{ revision }` | Bearer | `module1-api.test.mjs` | Conectado |
+| `confirmDocument` | `POST /api/v1/module1/documents/:idDocumento/confirm` | sin body | `{ documento }` | Bearer | `module1-api.test.mjs` | Conectado |
+| `reopenDocument` | `POST /api/v1/module1/documents/:idDocumento/reopen` | UUID | `{ documento }` | Bearer | `module1-api.test.mjs` | Conectado |
+| `retryDocument` | `POST /api/v1/module1/documents/:idDocumento/retry` | UUID | `{ documento }` o error de reintento | Bearer | `module1-api.test.mjs` | Conectado |
+| `deleteDocument` | `DELETE /api/v1/module1/documents/:idDocumento` | UUID | `{ idDocumento, eliminado: true }` | Bearer | `module1-api.test.mjs` | Conectado |
+
+Errores del módulo: `normalizeErrorBody` convierte el envelope `{ error: { code } }` en `ApiError` con `status`, `code` y `kind` (`NETWORK`, `UNAUTHENTICATED`, `FORBIDDEN`, `NOT_FOUND`, `CONFLICT`, `VALIDATION`, `UNAVAILABLE`, `INVALID_RESPONSE`, `UNEXPECTED`). El mensaje visible sale de un catálogo del frontend; el texto del servidor no se muestra. Los `details` solo se conservan para `VALIDATION_ERROR`.
+
+Códigos solo del cliente: `INVALID_IDENTIFIER` (UUID mal formado, sin petición), `NETWORK_ERROR` (fallo de red), `UNKNOWN_ERROR` (respuesta de error sin envelope) e `INVALID_RESPONSE` (respuesta 2xx que no cumple el esquema).

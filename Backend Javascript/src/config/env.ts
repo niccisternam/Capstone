@@ -28,6 +28,10 @@ const schema = z.object({
   MAX_FILE_SIZE_MB: z.coerce.number().int().positive().max(15).default(15),
   MAX_BATCH_SIZE: z.coerce.number().int().min(1).max(10).default(10),
   APP_ORIGIN: z.string().url().default("http://localhost:5173"),
+  GEMINI_API_KEY: z.string().min(1).optional(),
+  GEMINI_MODEL: z.string().default("gemini-2.0-flash"),
+  GEMINI_LIVE_TESTS: booleanString.default("false"),
+  DOCUMENT_STORAGE_PATH: z.string().default("./storage/documents"),
 });
 
 export const env = schema.parse(process.env);

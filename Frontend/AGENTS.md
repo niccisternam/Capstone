@@ -4,12 +4,12 @@ Este archivo rige todo el trabajo dentro de este repositorio. Codex debe leerlo 
 
 ## Fuentes de verdad y alcance
 
-1. Antes de modificar código, leer este archivo y los documentos de `docs/` relevantes al módulo activo.
+1. Antes de modificar código, leer este archivo y los documentos de `../Documentacion/Frontend/` relevantes al módulo activo.
 2. Usar como fuentes de verdad, en este orden: contratos reales del backend Express, requisitos aprobados, mockups aprobados y documentación de este repositorio.
 3. No inventar endpoints, campos, estados, roles, permisos, reglas tributarias, reglas de negocio ni contratos. Si falta información, dejar la integración pendiente y documentar el bloqueo.
 4. El frontend consume exclusivamente Express como API pública. Nunca debe llamar, importar, enlazar ni exponer FastAPI directamente. FastAPI permanece detrás de Express.
 5. No modificar el backend ni otros repositorios desde tareas de este frontend.
-6. Trabajar un único módulo de la secuencia de `docs/MODULES.md` a la vez. No adelantarse a módulos futuros ni añadir alcance no solicitado.
+6. Trabajar un único módulo de la secuencia de `../Documentacion/Frontend/MODULES.md` a la vez. No adelantarse a módulos futuros ni añadir alcance no solicitado.
 7. Respetar los mockups y la documentación disponibles. Ante una discrepancia, detener la implementación afectada y registrar la decisión necesaria.
 
 ## Reglas de implementación
@@ -27,13 +27,13 @@ Este archivo rige todo el trabajo dentro de este repositorio. Codex debe leerlo 
 
 ## Flujo obligatorio por tarea o módulo
 
-1. Confirmar el módulo activo, sus dependencias y sus criterios de aceptación en `docs/MODULES.md`.
+1. Confirmar el módulo activo, sus dependencias y sus criterios de aceptación en `../Documentacion/Frontend/MODULES.md`.
 2. Consultar como mínimo `ARCHITECTURE.md`, `API_INTEGRATION.md` y los documentos temáticos que apliquen.
 3. Verificar el contrato Express antes de conectar cada operación. No deducir rutas por nombres de pantallas.
 4. Implementar solo el alcance acordado y agregar/actualizar pruebas.
 5. Ejecutar `lint`, `typecheck` y `tests` antes de cerrar el módulo, usando los scripts reales que existan en `package.json`.
 6. Revisar el diff completo, corregir cambios accidentales y comprobar que no haya secretos ni llamadas a FastAPI.
-7. Actualizar la documentación del módulo y registrar los endpoints Express efectivamente conectados en `docs/API_INTEGRATION.md`.
+7. Actualizar la documentación del módulo y registrar los endpoints Express efectivamente conectados en `../Documentacion/Frontend/API_INTEGRATION.md`.
 8. Cerrar el módulo únicamente cuando esté implementado, probado, revisado y cumpla su Definition of Done. Solo entonces puede comenzar el siguiente.
 
 ## Regla para el scaffold actual

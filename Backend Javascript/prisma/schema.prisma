@@ -51,40 +51,98 @@ enum TipoEventoSeguridad {
   @@map("tipo_evento_seguridad")
 }
 
+enum EstadoDocumento {
+  PENDIENTE
+  PROCESANDO
+  PENDIENTE_REVISION
+  ERROR
+  CONFIRMADO
+
+  @@map("estado_documento")
+}
+
+enum EstadoExtraccion {
+  ENCONTRADO
+  AUSENTE
+  NO_APLICA
+  ILEGIBLE
+  INCIERTO
+
+  @@map("estado_extraccion")
+}
+
+enum TipoAjuste {
+  DESCUENTO
+  RECARGO
+
+  @@map("tipo_ajuste")
+}
+
+enum ModalidadAjuste {
+  PORCENTAJE
+  MONTO
+
+  @@map("modalidad_ajuste")
+}
+
+enum EstadoRevision {
+  PENDIENTE
+  EDITANDO
+  CONFIRMADA
+
+  @@map("estado_revision")
+}
+
+enum CondicionTributaria {
+  AFECTA
+  EXENTA
+  NO_AFECTA
+  MIXTA
+
+  @@map("condicion_tributaria")
+}
+
 model Empresa {
-  idEmpresa   String   @id @default(dbgenerated("gen_random_uuid()")) @map("id_empresa") @db.Uuid
-  rutEmpresa  String   @unique(map: "uq_empresa_rut") @map("rut_empresa") @db.VarChar(12)
-  razonSocial String   @map("razon_social") @db.VarChar(200)
-  estado      Boolean  @default(true)
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  idEmpresa   String              @id @default(dbgenerated("gen_random_uuid()")) @map("id_empresa") @db.Uuid
+  rutEmpresa  String              @unique(map: "uq_empresa_rut") @map("rut_empresa") @db.VarChar(12)
+  razonSocial String              @map("razon_social") @db.VarChar(200)
+  estado      Boolean             @default(true)
+  createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   usuario     Usuario?
+  notebooks   Notebook[]
+  lotes       LoteProcesamiento[]
+  documentos  Documento[]
 
   @@map("empresa")
 }
 
 model Usuario {
-  idUsuario            String            @id @default(dbgenerated("gen_random_uuid()")) @map("id_usuario") @db.Uuid
-  idEmpresa            String            @unique(map: "uq_usuario_empresa") @map("id_empresa") @db.Uuid
-  rutUsuario           String            @unique(map: "uq_usuario_rut") @map("rut_usuario") @db.VarChar(12)
-  nombre               String            @db.VarChar(100)
-  apellido             String            @db.VarChar(100)
-  correo               String            @db.VarChar(320)
-  passwordHash         String            @map("password_hash") @db.Text
-  rol                  RolUsuario        @default(USUARIO)
-  estado               EstadoUsuario     @default(PENDIENTE)
-  debeCambiarPassword  Boolean           @default(true) @map("debe_cambiar_password")
-  intentosFallidos     Int               @default(0) @map("intentos_fallidos")
-  bloqueadoHasta       DateTime?         @map("bloqueado_hasta") @db.Timestamptz(6)
-  passwordChangedAt    DateTime?         @map("password_changed_at") @db.Timestamptz(6)
-  correoVerificadoAt   DateTime?         @map("correo_verificado_at") @db.Timestamptz(6)
-  createdAt            DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt            DateTime          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  empresa              Empresa           @relation(fields: [idEmpresa], references: [idEmpresa], onDelete: Restrict, map: "fk_usuario_empresa")
-  solicitudesRevisadas SolicitudCuenta[] @relation("SolicitudesRevisadas")
+  idUsuario            String              @id @default(dbgenerated("gen_random_uuid()")) @map("id_usuario") @db.Uuid
+  idEmpresa            String              @unique(map: "uq_usuario_empresa") @map("id_empresa") @db.Uuid
+  rutUsuario           String              @unique(map: "uq_usuario_rut") @map("rut_usuario") @db.VarChar(12)
+  nombre               String              @db.VarChar(100)
+  apellido             String              @db.VarChar(100)
+  correo               String              @db.VarChar(320)
+  passwordHash         String              @map("password_hash") @db.Text
+  rol                  RolUsuario          @default(USUARIO)
+  estado               EstadoUsuario       @default(PENDIENTE)
+  debeCambiarPassword  Boolean             @default(true) @map("debe_cambiar_password")
+  intentosFallidos     Int                 @default(0) @map("intentos_fallidos")
+  bloqueadoHasta       DateTime?           @map("bloqueado_hasta") @db.Timestamptz(6)
+  passwordChangedAt    DateTime?           @map("password_changed_at") @db.Timestamptz(6)
+  correoVerificadoAt   DateTime?           @map("correo_verificado_at") @db.Timestamptz(6)
+  createdAt            DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  empresa              Empresa             @relation(fields: [idEmpresa], references: [idEmpresa], onDelete: Restrict, map: "fk_usuario_empresa")
+  solicitudesRevisadas SolicitudCuenta[]   @relation("SolicitudesRevisadas")
   sesiones             SesionUsuario[]
   tokensSeguridad      TokenSeguridad[]
   eventosSeguridad     EventoSeguridad[]
+  notebooksCreados     Notebook[]          @relation("NotebookCreador")
+  lotesCreados         LoteProcesamiento[] @relation("LoteCreador")
+  documentosCargados   Documento[]         @relation("DocumentoCargador")
+  revisionesDocumentos RevisionDocumento[] @relation("RevisionRevisor")
 
   @@index([estado], map: "idx_usuario_estado")
   @@map("usuario")
@@ -157,4 +215,269 @@ model EventoSeguridad {
   @@index([idUsuario, createdAt(sort: Desc)], map: "idx_evento_usuario_fecha")
   @@index([identificador, createdAt(sort: Desc)], map: "idx_evento_identificador_fecha")
   @@map("evento_seguridad")
+}
+
+model Notebook {
+  idNotebook    String              @id @default(dbgenerated("gen_random_uuid()")) @map("id_notebook") @db.Uuid
+  idEmpresa     String              @map("id_empresa") @db.Uuid
+  creadoPorId   String              @map("creado_por") @db.Uuid
+  nombre        String              @db.VarChar(150)
+  descripcion   String?             @db.Text
+  icono         String?             @db.VarChar(80)
+  paletaColores Json?               @map("paleta_colores") @db.JsonB
+  createdAt     DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  empresa       Empresa             @relation(fields: [idEmpresa], references: [idEmpresa], onDelete: Restrict, map: "fk_notebook_empresa")
+  creador       Usuario             @relation("NotebookCreador", fields: [creadoPorId], references: [idUsuario], onDelete: Restrict, map: "fk_notebook_creador")
+  lotes         LoteProcesamiento[]
+  documentos    Documento[]
+
+  @@unique([idEmpresa, idNotebook], map: "uq_notebook_empresa_id")
+  @@index([idEmpresa], map: "idx_notebook_empresa")
+  @@index([creadoPorId], map: "idx_notebook_creador")
+  @@map("notebook")
+}
+
+model LoteProcesamiento {
+  idLote              String      @id @default(dbgenerated("gen_random_uuid()")) @map("id_lote") @db.Uuid
+  idEmpresa           String      @map("id_empresa") @db.Uuid
+  idNotebook          String      @map("id_notebook") @db.Uuid
+  creadoPorId         String      @map("creado_por") @db.Uuid
+  cantidadDocumentos  Int         @default(0) @map("cantidad_documentos")
+  cantidadProcesados  Int         @default(0) @map("cantidad_procesados")
+  cantidadErrores     Int         @default(0) @map("cantidad_errores")
+  createdAt           DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  procesamientoInicio DateTime?   @map("procesamiento_inicio") @db.Timestamptz(6)
+  procesamientoFin    DateTime?   @map("procesamiento_fin") @db.Timestamptz(6)
+  empresa             Empresa     @relation(fields: [idEmpresa], references: [idEmpresa], onDelete: Restrict, map: "fk_lote_empresa")
+  notebook            Notebook    @relation(fields: [idEmpresa, idNotebook], references: [idEmpresa, idNotebook], onDelete: Restrict, map: "fk_lote_empresa_notebook")
+  creador             Usuario     @relation("LoteCreador", fields: [creadoPorId], references: [idUsuario], onDelete: Restrict, map: "fk_lote_creador")
+  documentos          Documento[]
+
+  @@unique([idEmpresa, idLote], map: "uq_lote_empresa_id")
+  @@index([idEmpresa, createdAt(sort: Desc)], map: "idx_lote_empresa_fecha")
+  @@index([idNotebook, createdAt(sort: Desc)], map: "idx_lote_notebook_fecha")
+  @@map("lote_procesamiento")
+}
+
+model Documento {
+  idDocumento  String                 @id @default(dbgenerated("gen_random_uuid()")) @map("id_documento") @db.Uuid
+  idEmpresa    String                 @map("id_empresa") @db.Uuid
+  idNotebook   String                 @map("id_notebook") @db.Uuid
+  idLote       String                 @map("id_lote") @db.Uuid
+  cargadoPorId String                 @map("cargado_por") @db.Uuid
+  posicionLote Int                    @map("posicion_lote")
+  estado       EstadoDocumento        @default(PENDIENTE)
+  createdAt    DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  confirmadoAt DateTime?              @map("confirmado_at") @db.Timestamptz(6)
+  empresa      Empresa                @relation(fields: [idEmpresa], references: [idEmpresa], onDelete: Restrict, map: "fk_documento_empresa")
+  notebook     Notebook               @relation(fields: [idEmpresa, idNotebook], references: [idEmpresa, idNotebook], onDelete: Restrict, map: "fk_documento_empresa_notebook")
+  lote         LoteProcesamiento      @relation(fields: [idEmpresa, idLote], references: [idEmpresa, idLote], onDelete: Restrict, map: "fk_documento_empresa_lote")
+  cargador     Usuario                @relation("DocumentoCargador", fields: [cargadoPorId], references: [idUsuario], onDelete: Restrict, map: "fk_documento_cargador")
+  archivo      ArchivoPDF?
+  intentos     IntentoProcesamiento[]
+  resultados   ResultadoExtraccion[]
+  revisiones   RevisionDocumento[]
+
+  @@unique([idLote, posicionLote], map: "uq_documento_lote_posicion")
+  @@index([idEmpresa, estado], map: "idx_documento_empresa_estado")
+  @@index([idNotebook, estado], map: "idx_documento_notebook_estado")
+  @@index([idLote, estado], map: "idx_documento_lote_estado")
+  @@map("documento")
+}
+
+model ArchivoPDF {
+  idArchivo      String    @id @default(dbgenerated("gen_random_uuid()")) @map("id_archivo") @db.Uuid
+  idDocumento    String    @unique(map: "uq_archivo_documento") @map("id_documento") @db.Uuid
+  nombreOriginal String    @map("nombre_original") @db.Text
+  tipoMime       String    @map("tipo_mime") @db.VarChar(100)
+  tamanoBytes    BigInt    @map("tamano_bytes")
+  hashArchivo    String?   @map("hash_archivo") @db.VarChar(128)
+  storageKey     String    @map("storage_key") @db.Text
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  documento      Documento @relation(fields: [idDocumento], references: [idDocumento], onDelete: Cascade, map: "fk_archivo_documento")
+
+  @@unique([storageKey], map: "uq_archivo_storage_key")
+  @@index([hashArchivo], map: "idx_archivo_hash")
+  @@map("archivo_pdf")
+}
+
+model IntentoProcesamiento {
+  idIntento     String               @id @default(dbgenerated("gen_random_uuid()")) @map("id_intento") @db.Uuid
+  idDocumento   String               @map("id_documento") @db.Uuid
+  numeroIntento Int                  @map("numero_intento")
+  inicioAt      DateTime             @default(now()) @map("inicio_at") @db.Timestamptz(6)
+  finAt         DateTime?            @map("fin_at") @db.Timestamptz(6)
+  validacionPdf Json?                @map("validacion_pdf") @db.JsonB
+  errorCodigo   String?              @map("error_codigo") @db.VarChar(100)
+  errorMensaje  String?              @map("error_mensaje") @db.Text
+  correlacion   String?              @db.VarChar(150)
+  documento     Documento            @relation(fields: [idDocumento], references: [idDocumento], onDelete: Cascade, map: "fk_intento_documento")
+  resultado     ResultadoExtraccion?
+
+  @@unique([idDocumento, numeroIntento], map: "uq_intento_documento_numero")
+  @@index([idDocumento, inicioAt(sort: Desc)], map: "idx_intento_documento_fecha")
+  @@map("intento_procesamiento")
+}
+
+model ResultadoExtraccion {
+  idResultado             String                   @id @default(dbgenerated("gen_random_uuid()")) @map("id_resultado") @db.Uuid
+  idDocumento             String                   @map("id_documento") @db.Uuid
+  idIntento               String                   @unique(map: "uq_resultado_intento") @map("id_intento") @db.Uuid
+  tipoDocumento           String?                  @map("tipo_documento") @db.VarChar(100)
+  tipoDocumentoEstado     EstadoExtraccion         @map("tipo_documento_estado")
+  folio                   String?                  @db.VarChar(30)
+  folioEstado             EstadoExtraccion         @map("folio_estado")
+  fechaEmision            DateTime?                @map("fecha_emision") @db.Date
+  fechaEmisionEstado      EstadoExtraccion         @map("fecha_emision_estado")
+  emisorRut               String?                  @map("emisor_rut") @db.VarChar(12)
+  emisorRutEstado         EstadoExtraccion         @map("emisor_rut_estado")
+  emisorRazonSocial       String?                  @map("emisor_razon_social") @db.VarChar(200)
+  emisorRazonSocialEstado EstadoExtraccion         @map("emisor_razon_social_estado")
+  receptorRut             String?                  @map("receptor_rut") @db.VarChar(12)
+  receptorRutEstado       EstadoExtraccion         @map("receptor_rut_estado")
+  receptorNombre          String?                  @map("receptor_nombre") @db.VarChar(200)
+  receptorNombreEstado    EstadoExtraccion         @map("receptor_nombre_estado")
+  condicionTributaria     CondicionTributaria?     @map("condicion_tributaria")
+  condicionEstado         EstadoExtraccion         @map("condicion_estado")
+  neto                    Decimal?                 @db.Decimal(18, 6)
+  netoEstado              EstadoExtraccion         @map("neto_estado")
+  iva                     Decimal?                 @db.Decimal(18, 6)
+  ivaEstado               EstadoExtraccion         @map("iva_estado")
+  exento                  Decimal?                 @db.Decimal(18, 6)
+  exentoEstado            EstadoExtraccion         @map("exento_estado")
+  total                   Decimal?                 @db.Decimal(18, 6)
+  totalEstado             EstadoExtraccion         @map("total_estado")
+  medioPago               String?                  @map("medio_pago") @db.VarChar(40)
+  medioPagoEstado         EstadoExtraccion         @map("medio_pago_estado")
+  metadata                Json?                    @db.JsonB
+  errores                 Json?                    @db.JsonB
+  advertencias            Json?                    @db.JsonB
+  documento               Documento                @relation(fields: [idDocumento], references: [idDocumento], onDelete: Cascade, map: "fk_resultado_documento")
+  intento                 IntentoProcesamiento     @relation(fields: [idIntento], references: [idIntento], onDelete: Cascade, map: "fk_resultado_intento")
+  detalles                DetalleExtraccion[]
+  ajustesGlobales         AjusteGlobalExtraccion[]
+  revisiones              RevisionDocumento[]
+
+  @@index([idDocumento], map: "idx_resultado_documento")
+  @@map("resultado_extraccion")
+}
+
+model DetalleExtraccion {
+  idDetalle                 String              @id @default(dbgenerated("gen_random_uuid()")) @map("id_detalle") @db.Uuid
+  idResultado               String              @map("id_resultado") @db.Uuid
+  numeroLinea               Int                 @map("numero_linea")
+  descripcion               String?             @db.Text
+  descripcionEstado         EstadoExtraccion    @map("descripcion_estado")
+  cantidad                  Decimal?            @db.Decimal(18, 6)
+  cantidadEstado            EstadoExtraccion    @map("cantidad_estado")
+  unidad                    String?             @db.VarChar(40)
+  unidadEstado              EstadoExtraccion    @map("unidad_estado")
+  precioUnitario            Decimal?            @map("precio_unitario") @db.Decimal(18, 6)
+  precioUnitarioEstado      EstadoExtraccion    @map("precio_unitario_estado")
+  descuentoPorcentaje       Decimal?            @map("descuento_porcentaje") @db.Decimal(7, 4)
+  descuentoPorcentajeEstado EstadoExtraccion    @map("descuento_porcentaje_estado")
+  descuentoMonto            Decimal?            @map("descuento_monto") @db.Decimal(18, 6)
+  descuentoMontoEstado      EstadoExtraccion    @map("descuento_monto_estado")
+  recargoPorcentaje         Decimal?            @map("recargo_porcentaje") @db.Decimal(7, 4)
+  recargoPorcentajeEstado   EstadoExtraccion    @map("recargo_porcentaje_estado")
+  recargoMonto              Decimal?            @map("recargo_monto") @db.Decimal(18, 6)
+  recargoMontoEstado        EstadoExtraccion    @map("recargo_monto_estado")
+  totalLinea                Decimal?            @map("total_linea") @db.Decimal(18, 6)
+  totalLineaEstado          EstadoExtraccion    @map("total_linea_estado")
+  metadata                  Json?               @db.JsonB
+  resultado                 ResultadoExtraccion @relation(fields: [idResultado], references: [idResultado], onDelete: Cascade, map: "fk_detalle_resultado")
+  revisiones                DetalleRevision[]
+
+  @@unique([idResultado, numeroLinea], map: "uq_detalle_resultado_linea")
+  @@index([idResultado], map: "idx_detalle_resultado")
+  @@map("detalle_extraccion")
+}
+
+model AjusteGlobalExtraccion {
+  idAjuste          String              @id @default(dbgenerated("gen_random_uuid()")) @map("id_ajuste") @db.Uuid
+  idResultado       String              @map("id_resultado") @db.Uuid
+  numeroAjuste      Int                 @map("numero_ajuste")
+  tipo              TipoAjuste
+  modalidad         ModalidadAjuste
+  valor             Decimal?            @db.Decimal(18, 6)
+  valorEstado       EstadoExtraccion    @map("valor_estado")
+  descripcion       String?             @db.Text
+  descripcionEstado EstadoExtraccion    @map("descripcion_estado")
+  resultado         ResultadoExtraccion @relation(fields: [idResultado], references: [idResultado], onDelete: Cascade, map: "fk_ajuste_resultado")
+
+  @@unique([idResultado, numeroAjuste], map: "uq_ajuste_resultado_numero")
+  @@index([idResultado], map: "idx_ajuste_resultado")
+  @@map("ajuste_global_extraccion")
+}
+
+model RevisionDocumento {
+  idRevision          String                 @id @default(dbgenerated("gen_random_uuid()")) @map("id_revision") @db.Uuid
+  idDocumento         String                 @map("id_documento") @db.Uuid
+  idResultado         String                 @map("id_resultado") @db.Uuid
+  revisadoPorId       String                 @map("revisado_por") @db.Uuid
+  estado              EstadoRevision         @default(PENDIENTE)
+  estadoPago          String?                @map("estado_pago") @db.VarChar(40)
+  observacion         String?                @db.Text
+  tipoDocumento       String?                @map("tipo_documento") @db.VarChar(100)
+  folio               String?                @db.VarChar(30)
+  fechaEmision        DateTime?              @map("fecha_emision") @db.Date
+  emisorRut           String?                @map("emisor_rut") @db.VarChar(12)
+  emisorRazonSocial   String?                @map("emisor_razon_social") @db.VarChar(200)
+  receptorRut         String?                @map("receptor_rut") @db.VarChar(12)
+  receptorNombre      String?                @map("receptor_nombre") @db.VarChar(200)
+  condicionTributaria CondicionTributaria?   @map("condicion_tributaria")
+  neto                Decimal?               @db.Decimal(18, 6)
+  iva                 Decimal?               @db.Decimal(18, 6)
+  exento              Decimal?               @db.Decimal(18, 6)
+  total               Decimal?               @db.Decimal(18, 6)
+  medioPago           String?                @map("medio_pago") @db.VarChar(40)
+  createdAt           DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  confirmedAt         DateTime?              @map("confirmed_at") @db.Timestamptz(6)
+  documento           Documento              @relation(fields: [idDocumento], references: [idDocumento], onDelete: Cascade, map: "fk_revision_documento")
+  resultado           ResultadoExtraccion    @relation(fields: [idResultado], references: [idResultado], onDelete: Restrict, map: "fk_revision_resultado")
+  revisor             Usuario                @relation("RevisionRevisor", fields: [revisadoPorId], references: [idUsuario], onDelete: Restrict, map: "fk_revision_revisor")
+  detalles            DetalleRevision[]
+  ajustesGlobales     AjusteGlobalRevision[]
+
+  @@index([idDocumento, createdAt(sort: Desc)], map: "idx_revision_documento_fecha")
+  @@index([revisadoPorId], map: "idx_revision_revisor")
+  @@map("revision_documento")
+}
+
+model DetalleRevision {
+  idDetalle           String             @id @default(dbgenerated("gen_random_uuid()")) @map("id_detalle_revision") @db.Uuid
+  idRevision          String             @map("id_revision") @db.Uuid
+  idDetalleExtraccion String?            @map("id_detalle_extraccion") @db.Uuid
+  numeroLinea         Int                @map("numero_linea")
+  descripcion         String?            @db.Text
+  cantidad            Decimal?           @db.Decimal(18, 6)
+  unidad              String?            @db.VarChar(40)
+  precioUnitario      Decimal?           @map("precio_unitario") @db.Decimal(18, 6)
+  descuentoPorcentaje Decimal?           @map("descuento_porcentaje") @db.Decimal(7, 4)
+  descuentoMonto      Decimal?           @map("descuento_monto") @db.Decimal(18, 6)
+  recargoPorcentaje   Decimal?           @map("recargo_porcentaje") @db.Decimal(7, 4)
+  recargoMonto        Decimal?           @map("recargo_monto") @db.Decimal(18, 6)
+  totalLinea          Decimal?           @map("total_linea") @db.Decimal(18, 6)
+  revision            RevisionDocumento  @relation(fields: [idRevision], references: [idRevision], onDelete: Cascade, map: "fk_detalle_revision")
+  detalleExtraccion   DetalleExtraccion? @relation(fields: [idDetalleExtraccion], references: [idDetalle], onDelete: SetNull, map: "fk_detalle_revision_extraccion")
+
+  @@unique([idRevision, numeroLinea], map: "uq_detalle_revision_linea")
+  @@index([idRevision], map: "idx_detalle_revision")
+  @@map("detalle_revision")
+}
+
+model AjusteGlobalRevision {
+  idAjuste     String            @id @default(dbgenerated("gen_random_uuid()")) @map("id_ajuste_revision") @db.Uuid
+  idRevision   String            @map("id_revision") @db.Uuid
+  numeroAjuste Int               @map("numero_ajuste")
+  tipo         TipoAjuste
+  modalidad    ModalidadAjuste
+  valor        Decimal?          @db.Decimal(18, 6)
+  descripcion  String?           @db.Text
+  revision     RevisionDocumento @relation(fields: [idRevision], references: [idRevision], onDelete: Cascade, map: "fk_ajuste_revision")
+
+  @@unique([idRevision, numeroAjuste], map: "uq_ajuste_revision_numero")
+  @@index([idRevision], map: "idx_ajuste_revision")
+  @@map("ajuste_global_revision")
 }

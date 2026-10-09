@@ -4,16 +4,16 @@ Backend principal del proyecto Capstone, construido con Express y TypeScript.
 
 ## Alcance actual
 
-Además del scaffold, está implementado el contrato backend para solicitar una cuenta y para que un administrador la apruebe o rechace. El detalle del módulo y sus límites está en `docs/modules/REGISTRO_CUENTA.md`.
+Además del scaffold, está implementado el contrato backend para solicitar una cuenta y para que un administrador la apruebe o rechace. El detalle del módulo y sus límites está en `../Documentacion/Backend/modules/REGISTRO_CUENTA.md`.
 
-La revisión completa del primer módulo, incluyendo registro, administración, login, pruebas, hallazgos y pendientes, está en `README_AUTENTICACION.md`. Los códigos por correo y la recuperación están documentados en `docs/modules/AUTENTICACION_LOGIN.md`.
+La revisión completa del primer módulo, incluyendo registro, administración, login, pruebas, hallazgos y pendientes, está en `README_AUTENTICACION.md`. Los códigos por correo y la recuperación están documentados en `../Documentacion/Backend/modules/AUTENTICACION_LOGIN.md`.
 
 ## Requisitos
 
 - Node.js LTS
 - npm
 - PostgreSQL para los módulos que requieran persistencia
-- FastAPI disponible cuando se active la integración de IA/procesamiento
+- API key de Gemini cuando se active la extracción IA; las pruebas usan mocks y no realizan llamadas reales
 
 ## Inicio
 
@@ -50,7 +50,7 @@ npm run prisma:migrate:deploy
 
 ## Arquitectura
 
-La arquitectura y los límites de responsabilidad están en `docs/ARCHITECTURE.md`. El orden de implementación está en `docs/IMPLEMENTATION_PLAN.md`.
+La arquitectura y los límites de responsabilidad están en `../Documentacion/Backend/ARCHITECTURE.md`. El orden de implementación está en `../Documentacion/Backend/IMPLEMENTATION_PLAN.md`.
 
 ## Estado
 
@@ -62,7 +62,7 @@ La arquitectura y los límites de responsabilidad están en `docs/ARCHITECTURE.m
 | Prisma/Supabase             | Conectado; migración inicial aplicada                         |
 | Correo de aprobación        | Contrato implementado; proveedor pendiente                    |
 | Login y autenticación       | Códigos SMTP y recuperación listos; refresh/logout pendientes |
-| Módulos de negocio          | Pendiente, secuencial                                         |
+| Módulo 1: notebooks y documentos | En implementación: persistencia y flujo backend inicial |
 
 ## Reglas funcionales principales
 
@@ -72,6 +72,21 @@ La arquitectura y los límites de responsabilidad están en `docs/ARCHITECTURE.m
 - Los datos extraídos por IA son preliminares hasta la revisión y confirmación humana.
 - Las consultas del chatbot son únicamente de lectura y se validan antes de ejecutarse.
 - Los montos se manejan en pesos chilenos (CLP).
+
+## Módulo 1
+
+La especificación funcional y técnica está en `../Documentacion/Backend/MODULE1_SPEC.md`. El backend expone el flujo bajo `/api/v1/module1` para notebooks, carga, lotes, procesamiento, revisión y confirmación.
+
+Variables adicionales:
+
+```dotenv
+GEMINI_API_KEY=<credencial-no-registrada>
+GEMINI_MODEL=gemini-2.0-flash
+GEMINI_LIVE_TESTS=false
+DOCUMENT_STORAGE_PATH=./storage/documents
+```
+
+La API de Gemini no se invoca durante pruebas automatizadas ni verificaciones rutinarias. La integración real solo se utiliza cuando está configurada explícitamente.
 
 ## Estado del scaffold
 

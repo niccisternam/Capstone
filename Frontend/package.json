@@ -17,6 +17,7 @@
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "sweetalert2": "^11.26.25",
     "zod": "latest"
   },
   "devDependencies": {

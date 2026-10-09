@@ -6,7 +6,7 @@ Usar una solicitud autocontenida:
 
 ```text
 Trabaja únicamente en el módulo <nombre>.
-Lee AGENTS.md, docs/ARCHITECTURE.md, docs/IMPLEMENTATION_PLAN.md y docs/DEFINITION_OF_DONE.md.
+Lee `AGENTS.md`, `../Documentacion/Backend/ARCHITECTURE.md`, `../Documentacion/Backend/IMPLEMENTATION_PLAN.md` y `../Documentacion/Backend/DEFINITION_OF_DONE.md`.
 Objetivo: <objetivo concreto>.
 No implementes módulos posteriores.
 Entrega: cambios, pruebas, documentación actualizada y resumen de archivos modificados.
