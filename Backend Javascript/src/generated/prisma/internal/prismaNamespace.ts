@@ -413,7 +413,8 @@ export const ModelName = {
   AjusteGlobalExtraccion: 'AjusteGlobalExtraccion',
   RevisionDocumento: 'RevisionDocumento',
   DetalleRevision: 'DetalleRevision',
-  AjusteGlobalRevision: 'AjusteGlobalRevision'
+  AjusteGlobalRevision: 'AjusteGlobalRevision',
+  MensajeChat: 'MensajeChat'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -429,7 +430,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "empresa" | "usuario" | "solicitudCuenta" | "sesionUsuario" | "tokenSeguridad" | "eventoSeguridad" | "notebook" | "loteProcesamiento" | "documento" | "archivoPDF" | "intentoProcesamiento" | "resultadoExtraccion" | "detalleExtraccion" | "ajusteGlobalExtraccion" | "revisionDocumento" | "detalleRevision" | "ajusteGlobalRevision"
+    modelProps: "empresa" | "usuario" | "solicitudCuenta" | "sesionUsuario" | "tokenSeguridad" | "eventoSeguridad" | "notebook" | "loteProcesamiento" | "documento" | "archivoPDF" | "intentoProcesamiento" | "resultadoExtraccion" | "detalleExtraccion" | "ajusteGlobalExtraccion" | "revisionDocumento" | "detalleRevision" | "ajusteGlobalRevision" | "mensajeChat"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1691,6 +1692,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    MensajeChat: {
+      payload: Prisma.$MensajeChatPayload<ExtArgs>
+      fields: Prisma.MensajeChatFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MensajeChatFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MensajeChatPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MensajeChatFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MensajeChatPayload>
+        }
+        findFirst: {
+          args: Prisma.MensajeChatFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MensajeChatPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MensajeChatFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MensajeChatPayload>
+        }
+        findMany: {
+          args: Prisma.MensajeChatFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MensajeChatPayload>[]
+        }
+        create: {
+          args: Prisma.MensajeChatCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MensajeChatPayload>
+        }
+        createMany: {
+          args: Prisma.MensajeChatCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MensajeChatCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MensajeChatPayload>[]
+        }
+        delete: {
+          args: Prisma.MensajeChatDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MensajeChatPayload>
+        }
+        update: {
+          args: Prisma.MensajeChatUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MensajeChatPayload>
+        }
+        deleteMany: {
+          args: Prisma.MensajeChatDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MensajeChatUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MensajeChatUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MensajeChatPayload>[]
+        }
+        upsert: {
+          args: Prisma.MensajeChatUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MensajeChatPayload>
+        }
+        aggregate: {
+          args: Prisma.MensajeChatAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMensajeChat>
+        }
+        groupBy: {
+          args: Prisma.MensajeChatGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MensajeChatGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MensajeChatCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MensajeChatCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1867,6 +1942,7 @@ export const DocumentoScalarFieldEnum = {
   cargadoPorId: 'cargadoPorId',
   posicionLote: 'posicionLote',
   estado: 'estado',
+  direccion: 'direccion',
   createdAt: 'createdAt',
   confirmadoAt: 'confirmadoAt'
 } as const
@@ -2042,6 +2118,20 @@ export const AjusteGlobalRevisionScalarFieldEnum = {
 } as const
 
 export type AjusteGlobalRevisionScalarFieldEnum = (typeof AjusteGlobalRevisionScalarFieldEnum)[keyof typeof AjusteGlobalRevisionScalarFieldEnum]
+
+
+export const MensajeChatScalarFieldEnum = {
+  idMensaje: 'idMensaje',
+  idEmpresa: 'idEmpresa',
+  idNotebook: 'idNotebook',
+  idUsuario: 'idUsuario',
+  rol: 'rol',
+  contenido: 'contenido',
+  sqlGenerado: 'sqlGenerado',
+  createdAt: 'createdAt'
+} as const
+
+export type MensajeChatScalarFieldEnum = (typeof MensajeChatScalarFieldEnum)[keyof typeof MensajeChatScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2239,6 +2329,20 @@ export type ListEnumEstadoDocumentoFieldRefInput<$PrismaModel> = FieldRefInputTy
 
 
 /**
+ * Reference to a field of type 'DireccionDocumento'
+ */
+export type EnumDireccionDocumentoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DireccionDocumento'>
+    
+
+
+/**
+ * Reference to a field of type 'DireccionDocumento[]'
+ */
+export type ListEnumDireccionDocumentoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DireccionDocumento[]'>
+    
+
+
+/**
  * Reference to a field of type 'BigInt'
  */
 export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
@@ -2333,6 +2437,20 @@ export type EnumEstadoRevisionFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'EstadoRevision[]'
  */
 export type ListEnumEstadoRevisionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstadoRevision[]'>
+    
+
+
+/**
+ * Reference to a field of type 'RolMensajeChat'
+ */
+export type EnumRolMensajeChatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RolMensajeChat'>
+    
+
+
+/**
+ * Reference to a field of type 'RolMensajeChat[]'
+ */
+export type ListEnumRolMensajeChatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RolMensajeChat[]'>
     
 
 
@@ -2517,6 +2635,7 @@ export type GlobalOmitConfig = {
   revisionDocumento?: Prisma.RevisionDocumentoOmit
   detalleRevision?: Prisma.DetalleRevisionOmit
   ajusteGlobalRevision?: Prisma.AjusteGlobalRevisionOmit
+  mensajeChat?: Prisma.MensajeChatOmit
 }
 
 /* Types for Logging */

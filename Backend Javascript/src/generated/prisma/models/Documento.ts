@@ -42,6 +42,7 @@ export type DocumentoMinAggregateOutputType = {
   cargadoPorId: string | null
   posicionLote: number | null
   estado: $Enums.EstadoDocumento | null
+  direccion: $Enums.DireccionDocumento | null
   createdAt: Date | null
   confirmadoAt: Date | null
 }
@@ -54,6 +55,7 @@ export type DocumentoMaxAggregateOutputType = {
   cargadoPorId: string | null
   posicionLote: number | null
   estado: $Enums.EstadoDocumento | null
+  direccion: $Enums.DireccionDocumento | null
   createdAt: Date | null
   confirmadoAt: Date | null
 }
@@ -66,6 +68,7 @@ export type DocumentoCountAggregateOutputType = {
   cargadoPorId: number
   posicionLote: number
   estado: number
+  direccion: number
   createdAt: number
   confirmadoAt: number
   _all: number
@@ -88,6 +91,7 @@ export type DocumentoMinAggregateInputType = {
   cargadoPorId?: true
   posicionLote?: true
   estado?: true
+  direccion?: true
   createdAt?: true
   confirmadoAt?: true
 }
@@ -100,6 +104,7 @@ export type DocumentoMaxAggregateInputType = {
   cargadoPorId?: true
   posicionLote?: true
   estado?: true
+  direccion?: true
   createdAt?: true
   confirmadoAt?: true
 }
@@ -112,6 +117,7 @@ export type DocumentoCountAggregateInputType = {
   cargadoPorId?: true
   posicionLote?: true
   estado?: true
+  direccion?: true
   createdAt?: true
   confirmadoAt?: true
   _all?: true
@@ -211,6 +217,7 @@ export type DocumentoGroupByOutputType = {
   cargadoPorId: string
   posicionLote: number
   estado: $Enums.EstadoDocumento
+  direccion: $Enums.DireccionDocumento
   createdAt: Date
   confirmadoAt: Date | null
   _count: DocumentoCountAggregateOutputType | null
@@ -246,6 +253,7 @@ export type DocumentoWhereInput = {
   cargadoPorId?: Prisma.UuidFilter<"Documento"> | string
   posicionLote?: Prisma.IntFilter<"Documento"> | number
   estado?: Prisma.EnumEstadoDocumentoFilter<"Documento"> | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFilter<"Documento"> | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFilter<"Documento"> | Date | string
   confirmadoAt?: Prisma.DateTimeNullableFilter<"Documento"> | Date | string | null
   empresa?: Prisma.XOR<Prisma.EmpresaScalarRelationFilter, Prisma.EmpresaWhereInput>
@@ -266,6 +274,7 @@ export type DocumentoOrderByWithRelationInput = {
   cargadoPorId?: Prisma.SortOrder
   posicionLote?: Prisma.SortOrder
   estado?: Prisma.SortOrder
+  direccion?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   confirmadoAt?: Prisma.SortOrderInput | Prisma.SortOrder
   empresa?: Prisma.EmpresaOrderByWithRelationInput
@@ -290,6 +299,7 @@ export type DocumentoWhereUniqueInput = Prisma.AtLeast<{
   cargadoPorId?: Prisma.UuidFilter<"Documento"> | string
   posicionLote?: Prisma.IntFilter<"Documento"> | number
   estado?: Prisma.EnumEstadoDocumentoFilter<"Documento"> | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFilter<"Documento"> | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFilter<"Documento"> | Date | string
   confirmadoAt?: Prisma.DateTimeNullableFilter<"Documento"> | Date | string | null
   empresa?: Prisma.XOR<Prisma.EmpresaScalarRelationFilter, Prisma.EmpresaWhereInput>
@@ -310,6 +320,7 @@ export type DocumentoOrderByWithAggregationInput = {
   cargadoPorId?: Prisma.SortOrder
   posicionLote?: Prisma.SortOrder
   estado?: Prisma.SortOrder
+  direccion?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   confirmadoAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.DocumentoCountOrderByAggregateInput
@@ -330,6 +341,7 @@ export type DocumentoScalarWhereWithAggregatesInput = {
   cargadoPorId?: Prisma.UuidWithAggregatesFilter<"Documento"> | string
   posicionLote?: Prisma.IntWithAggregatesFilter<"Documento"> | number
   estado?: Prisma.EnumEstadoDocumentoWithAggregatesFilter<"Documento"> | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoWithAggregatesFilter<"Documento"> | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Documento"> | Date | string
   confirmadoAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Documento"> | Date | string | null
 }
@@ -338,6 +350,7 @@ export type DocumentoCreateInput = {
   idDocumento?: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   empresa: Prisma.EmpresaCreateNestedOneWithoutDocumentosInput
@@ -358,6 +371,7 @@ export type DocumentoUncheckedCreateInput = {
   cargadoPorId: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   archivo?: Prisma.ArchivoPDFUncheckedCreateNestedOneWithoutDocumentoInput
@@ -370,6 +384,7 @@ export type DocumentoUpdateInput = {
   idDocumento?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   empresa?: Prisma.EmpresaUpdateOneRequiredWithoutDocumentosNestedInput
@@ -390,6 +405,7 @@ export type DocumentoUncheckedUpdateInput = {
   cargadoPorId?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivo?: Prisma.ArchivoPDFUncheckedUpdateOneWithoutDocumentoNestedInput
@@ -406,6 +422,7 @@ export type DocumentoCreateManyInput = {
   cargadoPorId: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
 }
@@ -414,6 +431,7 @@ export type DocumentoUpdateManyMutationInput = {
   idDocumento?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -426,6 +444,7 @@ export type DocumentoUncheckedUpdateManyInput = {
   cargadoPorId?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -453,6 +472,7 @@ export type DocumentoCountOrderByAggregateInput = {
   cargadoPorId?: Prisma.SortOrder
   posicionLote?: Prisma.SortOrder
   estado?: Prisma.SortOrder
+  direccion?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   confirmadoAt?: Prisma.SortOrder
 }
@@ -469,6 +489,7 @@ export type DocumentoMaxOrderByAggregateInput = {
   cargadoPorId?: Prisma.SortOrder
   posicionLote?: Prisma.SortOrder
   estado?: Prisma.SortOrder
+  direccion?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   confirmadoAt?: Prisma.SortOrder
 }
@@ -481,6 +502,7 @@ export type DocumentoMinOrderByAggregateInput = {
   cargadoPorId?: Prisma.SortOrder
   posicionLote?: Prisma.SortOrder
   estado?: Prisma.SortOrder
+  direccion?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   confirmadoAt?: Prisma.SortOrder
 }
@@ -666,6 +688,10 @@ export type EnumEstadoDocumentoFieldUpdateOperationsInput = {
   set?: $Enums.EstadoDocumento
 }
 
+export type EnumDireccionDocumentoFieldUpdateOperationsInput = {
+  set?: $Enums.DireccionDocumento
+}
+
 export type DocumentoCreateNestedOneWithoutArchivoInput = {
   create?: Prisma.XOR<Prisma.DocumentoCreateWithoutArchivoInput, Prisma.DocumentoUncheckedCreateWithoutArchivoInput>
   connectOrCreate?: Prisma.DocumentoCreateOrConnectWithoutArchivoInput
@@ -726,6 +752,7 @@ export type DocumentoCreateWithoutEmpresaInput = {
   idDocumento?: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   notebook: Prisma.NotebookCreateNestedOneWithoutDocumentosInput
@@ -744,6 +771,7 @@ export type DocumentoUncheckedCreateWithoutEmpresaInput = {
   cargadoPorId: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   archivo?: Prisma.ArchivoPDFUncheckedCreateNestedOneWithoutDocumentoInput
@@ -789,6 +817,7 @@ export type DocumentoScalarWhereInput = {
   cargadoPorId?: Prisma.UuidFilter<"Documento"> | string
   posicionLote?: Prisma.IntFilter<"Documento"> | number
   estado?: Prisma.EnumEstadoDocumentoFilter<"Documento"> | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFilter<"Documento"> | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFilter<"Documento"> | Date | string
   confirmadoAt?: Prisma.DateTimeNullableFilter<"Documento"> | Date | string | null
 }
@@ -797,6 +826,7 @@ export type DocumentoCreateWithoutCargadorInput = {
   idDocumento?: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   empresa: Prisma.EmpresaCreateNestedOneWithoutDocumentosInput
@@ -815,6 +845,7 @@ export type DocumentoUncheckedCreateWithoutCargadorInput = {
   idLote: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   archivo?: Prisma.ArchivoPDFUncheckedCreateNestedOneWithoutDocumentoInput
@@ -853,6 +884,7 @@ export type DocumentoCreateWithoutNotebookInput = {
   idDocumento?: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   empresa: Prisma.EmpresaCreateNestedOneWithoutDocumentosInput
@@ -870,6 +902,7 @@ export type DocumentoUncheckedCreateWithoutNotebookInput = {
   cargadoPorId: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   archivo?: Prisma.ArchivoPDFUncheckedCreateNestedOneWithoutDocumentoInput
@@ -908,6 +941,7 @@ export type DocumentoCreateWithoutLoteInput = {
   idDocumento?: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   empresa: Prisma.EmpresaCreateNestedOneWithoutDocumentosInput
@@ -925,6 +959,7 @@ export type DocumentoUncheckedCreateWithoutLoteInput = {
   cargadoPorId: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   archivo?: Prisma.ArchivoPDFUncheckedCreateNestedOneWithoutDocumentoInput
@@ -963,6 +998,7 @@ export type DocumentoCreateWithoutArchivoInput = {
   idDocumento?: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   empresa: Prisma.EmpresaCreateNestedOneWithoutDocumentosInput
@@ -982,6 +1018,7 @@ export type DocumentoUncheckedCreateWithoutArchivoInput = {
   cargadoPorId: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   intentos?: Prisma.IntentoProcesamientoUncheckedCreateNestedManyWithoutDocumentoInput
@@ -1009,6 +1046,7 @@ export type DocumentoUpdateWithoutArchivoInput = {
   idDocumento?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   empresa?: Prisma.EmpresaUpdateOneRequiredWithoutDocumentosNestedInput
@@ -1028,6 +1066,7 @@ export type DocumentoUncheckedUpdateWithoutArchivoInput = {
   cargadoPorId?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   intentos?: Prisma.IntentoProcesamientoUncheckedUpdateManyWithoutDocumentoNestedInput
@@ -1039,6 +1078,7 @@ export type DocumentoCreateWithoutIntentosInput = {
   idDocumento?: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   empresa: Prisma.EmpresaCreateNestedOneWithoutDocumentosInput
@@ -1058,6 +1098,7 @@ export type DocumentoUncheckedCreateWithoutIntentosInput = {
   cargadoPorId: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   archivo?: Prisma.ArchivoPDFUncheckedCreateNestedOneWithoutDocumentoInput
@@ -1085,6 +1126,7 @@ export type DocumentoUpdateWithoutIntentosInput = {
   idDocumento?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   empresa?: Prisma.EmpresaUpdateOneRequiredWithoutDocumentosNestedInput
@@ -1104,6 +1146,7 @@ export type DocumentoUncheckedUpdateWithoutIntentosInput = {
   cargadoPorId?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivo?: Prisma.ArchivoPDFUncheckedUpdateOneWithoutDocumentoNestedInput
@@ -1115,6 +1158,7 @@ export type DocumentoCreateWithoutResultadosInput = {
   idDocumento?: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   empresa: Prisma.EmpresaCreateNestedOneWithoutDocumentosInput
@@ -1134,6 +1178,7 @@ export type DocumentoUncheckedCreateWithoutResultadosInput = {
   cargadoPorId: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   archivo?: Prisma.ArchivoPDFUncheckedCreateNestedOneWithoutDocumentoInput
@@ -1161,6 +1206,7 @@ export type DocumentoUpdateWithoutResultadosInput = {
   idDocumento?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   empresa?: Prisma.EmpresaUpdateOneRequiredWithoutDocumentosNestedInput
@@ -1180,6 +1226,7 @@ export type DocumentoUncheckedUpdateWithoutResultadosInput = {
   cargadoPorId?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivo?: Prisma.ArchivoPDFUncheckedUpdateOneWithoutDocumentoNestedInput
@@ -1191,6 +1238,7 @@ export type DocumentoCreateWithoutRevisionesInput = {
   idDocumento?: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   empresa: Prisma.EmpresaCreateNestedOneWithoutDocumentosInput
@@ -1210,6 +1258,7 @@ export type DocumentoUncheckedCreateWithoutRevisionesInput = {
   cargadoPorId: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
   archivo?: Prisma.ArchivoPDFUncheckedCreateNestedOneWithoutDocumentoInput
@@ -1237,6 +1286,7 @@ export type DocumentoUpdateWithoutRevisionesInput = {
   idDocumento?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   empresa?: Prisma.EmpresaUpdateOneRequiredWithoutDocumentosNestedInput
@@ -1256,6 +1306,7 @@ export type DocumentoUncheckedUpdateWithoutRevisionesInput = {
   cargadoPorId?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivo?: Prisma.ArchivoPDFUncheckedUpdateOneWithoutDocumentoNestedInput
@@ -1270,6 +1321,7 @@ export type DocumentoCreateManyEmpresaInput = {
   cargadoPorId: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
 }
@@ -1278,6 +1330,7 @@ export type DocumentoUpdateWithoutEmpresaInput = {
   idDocumento?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notebook?: Prisma.NotebookUpdateOneRequiredWithoutDocumentosNestedInput
@@ -1296,6 +1349,7 @@ export type DocumentoUncheckedUpdateWithoutEmpresaInput = {
   cargadoPorId?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivo?: Prisma.ArchivoPDFUncheckedUpdateOneWithoutDocumentoNestedInput
@@ -1311,6 +1365,7 @@ export type DocumentoUncheckedUpdateManyWithoutEmpresaInput = {
   cargadoPorId?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -1322,6 +1377,7 @@ export type DocumentoCreateManyCargadorInput = {
   idLote: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
 }
@@ -1330,6 +1386,7 @@ export type DocumentoUpdateWithoutCargadorInput = {
   idDocumento?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   empresa?: Prisma.EmpresaUpdateOneRequiredWithoutDocumentosNestedInput
@@ -1348,6 +1405,7 @@ export type DocumentoUncheckedUpdateWithoutCargadorInput = {
   idLote?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivo?: Prisma.ArchivoPDFUncheckedUpdateOneWithoutDocumentoNestedInput
@@ -1363,6 +1421,7 @@ export type DocumentoUncheckedUpdateManyWithoutCargadorInput = {
   idLote?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -1373,6 +1432,7 @@ export type DocumentoCreateManyNotebookInput = {
   cargadoPorId: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
 }
@@ -1381,6 +1441,7 @@ export type DocumentoUpdateWithoutNotebookInput = {
   idDocumento?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   empresa?: Prisma.EmpresaUpdateOneRequiredWithoutDocumentosNestedInput
@@ -1398,6 +1459,7 @@ export type DocumentoUncheckedUpdateWithoutNotebookInput = {
   cargadoPorId?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivo?: Prisma.ArchivoPDFUncheckedUpdateOneWithoutDocumentoNestedInput
@@ -1412,6 +1474,7 @@ export type DocumentoUncheckedUpdateManyWithoutNotebookInput = {
   cargadoPorId?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -1422,6 +1485,7 @@ export type DocumentoCreateManyLoteInput = {
   cargadoPorId: string
   posicionLote: number
   estado?: $Enums.EstadoDocumento
+  direccion?: $Enums.DireccionDocumento
   createdAt?: Date | string
   confirmadoAt?: Date | string | null
 }
@@ -1430,6 +1494,7 @@ export type DocumentoUpdateWithoutLoteInput = {
   idDocumento?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   empresa?: Prisma.EmpresaUpdateOneRequiredWithoutDocumentosNestedInput
@@ -1447,6 +1512,7 @@ export type DocumentoUncheckedUpdateWithoutLoteInput = {
   cargadoPorId?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivo?: Prisma.ArchivoPDFUncheckedUpdateOneWithoutDocumentoNestedInput
@@ -1461,6 +1527,7 @@ export type DocumentoUncheckedUpdateManyWithoutLoteInput = {
   cargadoPorId?: Prisma.StringFieldUpdateOperationsInput | string
   posicionLote?: Prisma.IntFieldUpdateOperationsInput | number
   estado?: Prisma.EnumEstadoDocumentoFieldUpdateOperationsInput | $Enums.EstadoDocumento
+  direccion?: Prisma.EnumDireccionDocumentoFieldUpdateOperationsInput | $Enums.DireccionDocumento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -1522,6 +1589,7 @@ export type DocumentoSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   cargadoPorId?: boolean
   posicionLote?: boolean
   estado?: boolean
+  direccion?: boolean
   createdAt?: boolean
   confirmadoAt?: boolean
   empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
@@ -1543,6 +1611,7 @@ export type DocumentoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   cargadoPorId?: boolean
   posicionLote?: boolean
   estado?: boolean
+  direccion?: boolean
   createdAt?: boolean
   confirmadoAt?: boolean
   empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
@@ -1559,6 +1628,7 @@ export type DocumentoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   cargadoPorId?: boolean
   posicionLote?: boolean
   estado?: boolean
+  direccion?: boolean
   createdAt?: boolean
   confirmadoAt?: boolean
   empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
@@ -1575,11 +1645,12 @@ export type DocumentoSelectScalar = {
   cargadoPorId?: boolean
   posicionLote?: boolean
   estado?: boolean
+  direccion?: boolean
   createdAt?: boolean
   confirmadoAt?: boolean
 }
 
-export type DocumentoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"idDocumento" | "idEmpresa" | "idNotebook" | "idLote" | "cargadoPorId" | "posicionLote" | "estado" | "createdAt" | "confirmadoAt", ExtArgs["result"]["documento"]>
+export type DocumentoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"idDocumento" | "idEmpresa" | "idNotebook" | "idLote" | "cargadoPorId" | "posicionLote" | "estado" | "direccion" | "createdAt" | "confirmadoAt", ExtArgs["result"]["documento"]>
 export type DocumentoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
   notebook?: boolean | Prisma.NotebookDefaultArgs<ExtArgs>
@@ -1624,6 +1695,7 @@ export type $DocumentoPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     cargadoPorId: string
     posicionLote: number
     estado: $Enums.EstadoDocumento
+    direccion: $Enums.DireccionDocumento
     createdAt: Date
     confirmadoAt: Date | null
   }, ExtArgs["result"]["documento"]>
@@ -2064,6 +2136,7 @@ export interface DocumentoFieldRefs {
   readonly cargadoPorId: Prisma.FieldRef<"Documento", 'String'>
   readonly posicionLote: Prisma.FieldRef<"Documento", 'Int'>
   readonly estado: Prisma.FieldRef<"Documento", 'EstadoDocumento'>
+  readonly direccion: Prisma.FieldRef<"Documento", 'DireccionDocumento'>
   readonly createdAt: Prisma.FieldRef<"Documento", 'DateTime'>
   readonly confirmadoAt: Prisma.FieldRef<"Documento", 'DateTime'>
 }
