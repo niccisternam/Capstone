@@ -15,3 +15,23 @@ body {
   min-height: 100vh;
   margin: 0;
 }
+
+.chat-typing-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 9999px;
+  background-color: currentColor;
+  animation: chat-typing 1.2s ease-in-out infinite;
+}
+
+@keyframes chat-typing {
+  0%, 60%, 100% {
+    transform: scale(0.65);
+    opacity: 0.45;
+  }
+
+  30% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}

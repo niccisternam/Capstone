@@ -83,7 +83,7 @@ export class GeminiChatAssistant implements ChatAssistant {
 
   async redactar(pregunta: string, filas: Record<string, unknown>[], tipo: "SQL" | "CONSEJO"): Promise<string> {
     try {
-      const model = this.client.getGenerativeModel({ model: this.modelName, generationConfig: { temperature: tipo === "CONSEJO" ? 0.5 : 0.2 } });
+      const model = this.client.getGenerativeModel({ model: this.modelName, generationConfig: { temperature: tipo === "CONSEJO" ? 0.1 : 0 } });
       const response = await model.generateContent(tipo === "CONSEJO" ? consejoPrompt(pregunta, filas) : respuestaPrompt(pregunta, filas));
       return response.response.text().trim();
     } catch (error) {
