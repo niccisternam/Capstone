@@ -4,6 +4,7 @@ import path from "node:path";
 import type { Express } from "express";
 import type { PrismaClient } from "../../generated/prisma/client.js";
 import { AppError } from "../../shared/errors/app-error.js";
+import { normalizeRut } from "../account-requests/rut.js";
 import { validatePdfTextLayer } from "./pdf-text.service.js";
 import { createNotebookSchema, extractionResponseSchema, reviewSchema } from "./module1.schemas.js";
 import type { DocumentExtractor, ExtractionDocument, Module1Identity } from "./module1.types.js";
@@ -246,7 +247,9 @@ export class Module1Service {
     return this.prisma.$transaction(async (tx) => {
       await tx.revisionDocumento.updateMany({ where: { idDocumento, estado: "CONFIRMADA", NOT: { idRevision: review.idRevision } }, data: { estado: "PENDIENTE", confirmedAt: null } });
       await tx.revisionDocumento.update({ where: { idRevision: review.idRevision }, data: { estado: "CONFIRMADA", confirmedAt } });
-      return tx.documento.update({ where: { idDocumento }, data: { estado: "CONFIRMADO", confirmadoAt: confirmedAt } });
+      const empresa = await tx.empresa.findUniqueOrThrow({ where: { idEmpresa: identity.idEmpresa }, select: { rutEmpresa: true } });
+      const direccion = review.emisorRut && normalizeRut(review.emisorRut) === normalizeRut(empresa.rutEmpresa) ? "VENTA" : "COMPRA";
+      return tx.documento.update({ where: { idDocumento }, data: { estado: "CONFIRMADO", confirmadoAt: confirmedAt, direccion } });
     });
   }
 

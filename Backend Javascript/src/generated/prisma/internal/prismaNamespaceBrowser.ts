@@ -67,7 +67,8 @@ export const ModelName = {
   AjusteGlobalExtraccion: 'AjusteGlobalExtraccion',
   RevisionDocumento: 'RevisionDocumento',
   DetalleRevision: 'DetalleRevision',
-  AjusteGlobalRevision: 'AjusteGlobalRevision'
+  AjusteGlobalRevision: 'AjusteGlobalRevision',
+  MensajeChat: 'MensajeChat'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -223,6 +224,7 @@ export const DocumentoScalarFieldEnum = {
   cargadoPorId: 'cargadoPorId',
   posicionLote: 'posicionLote',
   estado: 'estado',
+  direccion: 'direccion',
   createdAt: 'createdAt',
   confirmadoAt: 'confirmadoAt'
 } as const
@@ -398,6 +400,20 @@ export const AjusteGlobalRevisionScalarFieldEnum = {
 } as const
 
 export type AjusteGlobalRevisionScalarFieldEnum = (typeof AjusteGlobalRevisionScalarFieldEnum)[keyof typeof AjusteGlobalRevisionScalarFieldEnum]
+
+
+export const MensajeChatScalarFieldEnum = {
+  idMensaje: 'idMensaje',
+  idEmpresa: 'idEmpresa',
+  idNotebook: 'idNotebook',
+  idUsuario: 'idUsuario',
+  rol: 'rol',
+  contenido: 'contenido',
+  sqlGenerado: 'sqlGenerado',
+  createdAt: 'createdAt'
+} as const
+
+export type MensajeChatScalarFieldEnum = (typeof MensajeChatScalarFieldEnum)[keyof typeof MensajeChatScalarFieldEnum]
 
 
 export const SortOrder = {

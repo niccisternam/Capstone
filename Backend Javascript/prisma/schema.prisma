@@ -93,6 +93,20 @@ enum EstadoRevision {
   @@map("estado_revision")
 }
 
+enum DireccionDocumento {
+  COMPRA
+  VENTA
+
+  @@map("direccion_documento")
+}
+
+enum RolMensajeChat {
+  USUARIO
+  ASISTENTE
+
+  @@map("rol_mensaje_chat")
+}
+
 enum CondicionTributaria {
   AFECTA
   EXENTA
@@ -143,6 +157,7 @@ model Usuario {
   lotesCreados         LoteProcesamiento[] @relation("LoteCreador")
   documentosCargados   Documento[]         @relation("DocumentoCargador")
   revisionesDocumentos RevisionDocumento[] @relation("RevisionRevisor")
+  mensajesChat         MensajeChat[]
 
   @@index([estado], map: "idx_usuario_estado")
   @@map("usuario")
@@ -231,6 +246,7 @@ model Notebook {
   creador       Usuario             @relation("NotebookCreador", fields: [creadoPorId], references: [idUsuario], onDelete: Restrict, map: "fk_notebook_creador")
   lotes         LoteProcesamiento[]
   documentos    Documento[]
+  mensajesChat  MensajeChat[]
 
   @@unique([idEmpresa, idNotebook], map: "uq_notebook_empresa_id")
   @@index([idEmpresa], map: "idx_notebook_empresa")
@@ -268,6 +284,7 @@ model Documento {
   cargadoPorId String                 @map("cargado_por") @db.Uuid
   posicionLote Int                    @map("posicion_lote")
   estado       EstadoDocumento        @default(PENDIENTE)
+  direccion    DireccionDocumento     @default(COMPRA)
   createdAt    DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
   confirmadoAt DateTime?              @map("confirmado_at") @db.Timestamptz(6)
   empresa      Empresa                @relation(fields: [idEmpresa], references: [idEmpresa], onDelete: Restrict, map: "fk_documento_empresa")
@@ -480,4 +497,20 @@ model AjusteGlobalRevision {
   @@unique([idRevision, numeroAjuste], map: "uq_ajuste_revision_numero")
   @@index([idRevision], map: "idx_ajuste_revision")
   @@map("ajuste_global_revision")
+}
+
+model MensajeChat {
+  idMensaje   String         @id @default(dbgenerated("gen_random_uuid()")) @map("id_mensaje") @db.Uuid
+  idEmpresa   String         @map("id_empresa") @db.Uuid
+  idNotebook  String         @map("id_notebook") @db.Uuid
+  idUsuario   String         @map("id_usuario") @db.Uuid
+  rol         RolMensajeChat
+  contenido   String         @db.Text
+  sqlGenerado String?        @map("sql_generado") @db.Text
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  notebook    Notebook       @relation(fields: [idEmpresa, idNotebook], references: [idEmpresa, idNotebook], onDelete: Cascade, map: "fk_mensaje_chat_empresa_notebook")
+  usuario     Usuario        @relation(fields: [idUsuario], references: [idUsuario], onDelete: Cascade, map: "fk_mensaje_chat_usuario")
+
+  @@index([idNotebook, idUsuario, createdAt], map: "idx_mensaje_chat_notebook_usuario_fecha")
+  @@map("mensaje_chat")
 }

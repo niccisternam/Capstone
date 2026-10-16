@@ -105,6 +105,22 @@ export const EstadoRevision = {
 export type EstadoRevision = (typeof EstadoRevision)[keyof typeof EstadoRevision]
 
 
+export const DireccionDocumento = {
+  COMPRA: 'COMPRA',
+  VENTA: 'VENTA'
+} as const
+
+export type DireccionDocumento = (typeof DireccionDocumento)[keyof typeof DireccionDocumento]
+
+
+export const RolMensajeChat = {
+  USUARIO: 'USUARIO',
+  ASISTENTE: 'ASISTENTE'
+} as const
+
+export type RolMensajeChat = (typeof RolMensajeChat)[keyof typeof RolMensajeChat]
+
+
 export const CondicionTributaria = {
   AFECTA: 'AFECTA',
   EXENTA: 'EXENTA',

@@ -102,3 +102,8 @@ export type DetalleRevision = Prisma.DetalleRevisionModel
  * 
  */
 export type AjusteGlobalRevision = Prisma.AjusteGlobalRevisionModel
+/**
+ * Model MensajeChat
+ * 
+ */
+export type MensajeChat = Prisma.MensajeChatModel
