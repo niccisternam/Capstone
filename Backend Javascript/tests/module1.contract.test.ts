@@ -100,3 +100,12 @@ describe("Módulo 1 - contrato de extracción", () => {
     expect(result.success).toBe(true);
   });
 });
+
+describe("Módulo 1 - errores de Gemini", () => {
+  it("distingue una API key inválida (400) de una solicitud mal formada", async () => {
+    const { normalizeGeminiError } = await import("../src/modules/module1/gemini.extractor.js");
+    const invalidKey = Object.assign(new Error("[400 Bad Request] API key not valid. Please pass a valid API key. [{\"reason\":\"API_KEY_INVALID\"}]"), { status: 400 });
+    expect(normalizeGeminiError(invalidKey).code).toBe("AI_AUTHENTICATION");
+    expect(normalizeGeminiError(Object.assign(new Error("[400 Bad Request] Invalid schema"), { status: 400 })).code).toBe("AI_BAD_REQUEST");
+  });
+});
