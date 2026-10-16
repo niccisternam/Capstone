@@ -1,0 +1,448 @@
+imagen.html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Modelo de Vistas 4+1 - Procesamiento Inteligente de DTEs</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --secondary: #3b82f6;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: #cbd5e1;
+      --text: #1e293b;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      margin: 0;
+      padding: 30px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: var(--card);
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    h1 {
+      color: var(--primary);
+      border-bottom: 3px solid var(--secondary);
+      padding-bottom: 10px;
+      margin-top: 0;
+    }
+    h2 {
+      color: var(--primary);
+      margin-top: 35px;
+      background: #eff6ff;
+      padding: 10px 15px;
+      border-left: 5px solid var(--secondary);
+      border-radius: 4px;
+    }
+    .diagram-box {
+      border: 2px dashed var(--border);
+      background: #fcfdff;
+      padding: 25px;
+      margin: 20px 0;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    .diagram-title {
+      font-weight: bold;
+      text-align: center;
+      color: #475569;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+    }
+    /* Estilos para nodos de diagramas */
+    .flex-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .flex-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .node {
+      background: white;
+      border: 2px solid var(--primary);
+      border-radius: 6px;
+      padding: 12px 16px;
+      text-align: center;
+      min-width: 160px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .node-actor {
+      background: #fef3c7;
+      border-color: #d97706;
+      font-weight: bold;
+    }
+    .node-ext {
+      background: #f3e8ff;
+      border-color: #7e22ce;
+    }
+    .node-db {
+      background: #dcfce7;
+      border-color: #15803d;
+      border-radius: 15px 15px 4px 4px;
+    }
+    .use-case {
+      background: #e0f2fe;
+      border: 2px solid #0284c7;
+      border-radius: 50px;
+      padding: 8px 18px;
+      font-size: 0.9rem;
+      width: 260px;
+      text-align: center;
+    }
+    .system-boundary {
+      border: 2px solid #64748b;
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .arrow {
+      font-weight: bold;
+      color: #64748b;
+      font-size: 1.2rem;
+    }
+    .entity-card {
+      border: 1px solid #94a3b8;
+      border-radius: 4px;
+      width: 200px;
+      background: white;
+      font-size: 0.85rem;
+    }
+    .entity-header {
+      background: var(--primary);
+      color: white;
+      padding: 6px 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .entity-body {
+      padding: 8px 12px;
+      margin: 0;
+      list-style: none;
+    }
+    .entity-body li {
+      border-bottom: 1px solid #f1f5f9;
+      padding: 3px 0;
+    }
+    .step-list {
+      background: #f1f5f9;
+      padding: 15px 25px;
+      border-radius: 6px;
+    }
+    .badge {
+      display: inline-block;
+      background: var(--secondary);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      margin-bottom: 4px;
+    }
+    .physical-diagram {
+      display: grid;
+      grid-template-columns: 220px 80px 420px 80px 300px;
+      align-items: center;
+      gap: 0;
+      min-width: 1150px;
+      padding: 10px;
+    }
+    .uml-node {
+      background: #ffffff;
+      border: 2px solid #334155;
+      border-top: 6px solid #334155;
+      border-radius: 6px;
+      padding: 16px;
+      box-shadow: 4px 4px 0 rgba(15, 23, 42, 0.08);
+      position: relative;
+    }
+    .uml-node.cloud-app { border-color: #1e40af; border-top-color: #1e40af; background: #eff6ff; }
+    .uml-node.cloud-db { border-color: #047857; border-top-color: #047857; background: #ecfdf5; }
+    .uml-node.cloud-ext { border-color: #6d28d9; border-top-color: #6d28d9; background: #f5f3ff; }
+    .stereotype { font-family: 'Courier New', monospace; font-size: .75rem; color: #64748b; text-align: center; display: block; font-weight: bold; }
+    .uml-title { font-weight: 700; text-align: center; margin: 4px 0 12px; padding-bottom: 8px; border-bottom: 1px solid #cbd5e1; }
+    .artifact { background: #fff; border: 1.5px solid #64748b; border-radius: 4px; padding: 10px 12px; margin-bottom: 10px; font-size: .82rem; }
+    .artifact:last-child { margin-bottom: 0; }
+    .artifact-title { font-weight: 700; margin-bottom: 4px; }
+    .artifact-desc { color: #334155; font-size: .76rem; line-height: 1.35; margin: 0; padding-left: 14px; }
+    .physical-connector { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .physical-line { width: 100%; height: 2px; background: #334155; margin: 6px 0; position: relative; }
+    .physical-line::after { content: ''; position: absolute; right: 0; top: -4px; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 7px solid #334155; }
+    .protocol { font-family: 'Courier New', monospace; font-size: .72rem; font-weight: bold; background: #fff; border: 1px solid #cbd5e1; padding: 2px 6px; border-radius: 4px; color: #1e40af; }
+    .physical-right { display: flex; flex-direction: column; gap: 20px; }
+    .env-note { margin-top: 12px; background: #fffbeb; border: 1px dashed #d97706; padding: 8px 12px; border-radius: 4px; font-size: .75rem; color: #92400e; text-align: center; }
+    .sequence-diagram { min-width: 900px; overflow-x: auto; }
+    .sequence-head, .sequence-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; align-items: center; }
+    .sequence-head { margin-bottom: 8px; }
+    .sequence-participant { background: #dbeafe; border: 2px solid #2563eb; border-radius: 6px; padding: 8px; text-align: center; font-weight: bold; font-size: .82rem; }
+    .sequence-lifeline { min-height: 42px; border-left: 2px dashed #94a3b8; border-right: 2px dashed #94a3b8; padding: 8px; font-size: .76rem; color: #334155; }
+    .sequence-message { grid-column: span 2; border-bottom: 2px solid #64748b; padding: 8px; text-align: center; font-size: .78rem; position: relative; }
+    .sequence-message::after { content: '▶'; position: absolute; right: -2px; bottom: -10px; color: #64748b; }
+    .sequence-return { border-bottom: 2px dashed #64748b; }
+    .sequence-note { background: #fef3c7; border: 1px solid #d97706; border-radius: 4px; padding: 8px; font-size: .76rem; text-align: center; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Arquitectura de Software: Modelo de Vistas 4+1</h1>
+  <p><strong>Proyecto:</strong> Sistema web para el procesamiento inteligente y centralización de documentos tributarios para emprendimientos.<br>
+  <strong>Enfoque:</strong> Arquitectura Cliente-Servidor modular con integración de IA Multimodal y validación asistida (Human-in-the-loop).</p>
+
+  <!-- 1. VISTA DE ESCENARIOS -->
+  <h2>1. Vista de Escenarios (+1 / Casos de Uso)</h2>
+  <p>Describe las interacciones clave del emprendedor con la plataforma para centralizar sus facturas/boletas PDF y realizar consultas financieras mediante lenguaje natural.</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Diagrama de Casos de Uso del Sistema</div>
+    <div class="flex-row">
+      <div class="node node-actor">
+        👤 Emprendedor /<br>Administrador<br><small>(Usuario Autenticado)</small>
+      </div>
+
+      <div class="arrow">──────►</div>
+
+      <div class="system-boundary flex-col">
+        <strong>Sistema Web de Gestión Tributaria</strong>
+        <div class="use-case">CU01: Autenticarse en el Sistema (JWT)</div>
+        <div class="use-case">CU02: Crear y Seleccionar Notebooks</div>
+        <div class="use-case">CU03: Cargar PDFs (1-10) y Extraer Datos</div>
+        <div class="use-case">CU04: Validar y Editar en Pantalla Dividida</div>
+        <div class="use-case">CU05: Consultar Chatbot en Lenguaje Natural</div>
+        <div class="use-case">CU06: Visualizar Dashboard de Gastos (CLP)</div>
+      </div>
+
+      <div class="arrow">◄──────►</div>
+
+      <div class="node node-ext">
+        🤖 API IA Multimodal<br><small>(Gemini / OpenAI / Anthropic)</small><br>
+        <span class="badge">HTTPS / JSON</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. VISTA LÓGICA -->
+  <h2>2. Vista Lógica (Modelo de Dominio y Datos)</h2>
+  <p>Representa las entidades principales que garantizan el aislamiento de datos por empresa, la organización en carpetas virtuales (Notebooks) y el almacenamiento de documentos tributarios confirmados.</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Diagrama Lógico de Entidades Principales</div>
+    <div class="flex-row">
+      <div class="entity-card">
+        <div class="entity-header">empresa</div>
+        <ul class="entity-body">
+          <li>🔑 id_empresa</li>
+          <li>rut_empresa</li>
+          <li>razon_social</li>
+          <li>estado</li>
+        </ul>
+      </div>
+
+      <div class="arrow">1 ─── 1</div>
+
+      <div class="entity-card">
+        <div class="entity-header">usuario</div>
+        <ul class="entity-body">
+          <li>🔑 id_usuario</li>
+          <li>🔗 id_empresa</li>
+          <li>rut_usuario</li>
+          <li>nombre / apellido</li>
+          <li>correo / rol / estado</li>
+        </ul>
+      </div>
+
+      <div class="arrow">1 ─── N</div>
+
+      <div class="entity-card">
+        <div class="entity-header">notebook</div>
+        <ul class="entity-body">
+          <li>🔑 id_notebook</li>
+          <li>🔗 id_empresa</li>
+          <li>creado_por</li>
+          <li>nombre / descripcion</li>
+          <li>icono / paleta_colores</li>
+        </ul>
+      </div>
+
+      <div class="arrow">1 ─── N</div>
+
+      <div class="entity-card">
+        <div class="entity-header">lote_procesamiento</div>
+        <ul class="entity-body">
+          <li>🔑 id_lote</li>
+          <li>🔗 id_empresa / id_notebook</li>
+          <li>creado_por</li>
+          <li>cantidad_documentos</li>
+          <li>cantidad_procesados / cantidad_errores</li>
+        </ul>
+      </div>
+
+      <div class="arrow">1 ─── N</div>
+
+      <div class="entity-card">
+        <div class="entity-header">documento</div>
+        <ul class="entity-body">
+          <li>🔑 id_documento</li>
+          <li>🔗 id_empresa / id_notebook / id_lote</li>
+          <li>cargado_por</li>
+          <li>posicion_lote</li>
+          <li>estado</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. VISTA DE DESARROLLO -->
+  <h2>3. Vista de Desarrollo (Componentes de Software)</h2>
+  <p>Divide el sistema en capas claras según las tecnologías definidas en el ERS: un Frontend reactivo y un Backend dividido entre reglas de negocio (Node.js) y procesamiento inteligente/analítico (Python).</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Diagrama de Componentes y Capas</div>
+    <div class="flex-col">
+      <div class="node" style="width: 85%;">
+        <span class="badge">Capa de Presentación (Frontend)</span><br>
+         <strong>Next.js + React + TypeScript + Tailwind CSS</strong><br>
+         <small>[Autenticación] &bull; [Solicitudes de cuenta] &bull; [Módulo Notebooks] &bull; [Carga y revisión de PDFs]</small>
+      </div>
+
+      <div class="arrow">▼ Comunicación vía API REST (HTTPS / JSON + JWT) ▼</div>
+
+      <div class="flex-row" style="width: 90%; align-items: stretch;">
+        <div class="node" style="flex: 1;">
+          <span class="badge">Backend Core</span><br>
+          <strong>Node.js + Express + TypeScript</strong><br>
+          <small>&bull; Autenticación JWT y gestión de sesiones<br>&bull; Solicitudes de cuenta y administración<br>&bull; Gestión de usuarios, empresas y aislamiento por empresa<br>&bull; CRUD de Notebooks y lotes de procesamiento<br>&bull; Validación, almacenamiento y procesamiento de PDFs<br>&bull; Conector de IA y revisión/confirmación de DTE</small>
+        </div>
+
+        <div class="node" style="flex: 1;">
+          <span class="badge">Backend IA y Analítica</span><br>
+          <strong>Python + FastAPI</strong><br>
+          <small><em>(Componente Futuro)</em><br>&bull; Procesos ETL y analítica avanzada<br>&bull; Consultas analíticas de solo lectura<br>&bull; Integración con Data Warehouse</small>
+        </div>
+      </div>
+
+      <div class="arrow">▼ Persistencia y Servicios ▼</div>
+
+      <div class="flex-row" style="width: 90%;">
+        <div class="node node-db">🗄️ <strong>BD Operacional</strong><br><small>PostgreSQL + Prisma<br>Usuarios, empresas, sesiones<br>y documentos</small></div>
+        <div class="node node-db">📁 <strong>Almacenamiento de PDF</strong><br><small>Filesystem local<br>Archivos asociados a documentos<br><em>(Storage privado futuro)</em></small></div>
+        <div class="node node-db">✉️ <strong>Servicio de correo</strong><br><small>Nodemailer / SMTP<br>Verificación, acceso y<br>recuperación de cuenta</small></div>
+        <div class="node node-db">📊 <strong>Data Warehouse</strong><br><small>ETL y analítica<br><em>(Componente futuro)</em></small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. VISTA DE PROCESOS -->
+  <h2>4. Vista de Procesos (Flujos de Ejecución BPMN)</h2>
+  <p>Representa el comportamiento dinámico del sistema en sus dos procesos críticos: la carga asistida de documentos y la consulta analítica con actualización ETL.</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Proceso A: Carga y Validación Asistida de Documentos (Human-in-the-loop)</div>
+    <div class="step-list">
+      <strong>1. Selección/Creación de Notebook:</strong> El usuario elige un notebook existente o crea uno validando que el nombre esté disponible.<br>
+      <strong>2. Carga de Lote PDF:</strong> Sube de 1 a 10 archivos PDF (&le; 15 MB). El sistema verifica formato PDF y legibilidad.<br>
+      <strong>3. Extracción con IA (&le; 20s):</strong> FastAPI envía el PDF a la IA Multimodal y guarda temporalmente el JSON extraído.<br>
+      <strong>4. Revisión Humana (Pantalla Dividida):</strong> El usuario compara el PDF con el formulario, corrige campos si es necesario y confirma cada documento.<br>
+      <strong>5. Guardado Definitivo:</strong> Al confirmar todos los documentos del lote, se guardan de forma atómica en la BD Operacional y el archivo en el Storage.
+    </div>
+
+    <div class="diagram-title" style="margin-top: 25px;">Proceso B: Consulta en Chatbot y Pipeline ETL</div>
+    <div class="step-list">
+      <strong>1. Entrada en Lenguaje Natural:</strong> El usuario escribe su consulta financiera en el Chatbot.<br>
+      <strong>2. Validación de Seguridad (IA):</strong> El sistema verifica que la pregunta sea válida, de solo lectura y restringida a su empresa/notebook.<br>
+      <strong>3. Ejecución en BD Operacional:</strong> Se genera y ejecuta la consulta. Si no hay datos en el rango, sugiere reajustar la pregunta.<br>
+      <strong>4. Pipeline ETL Automático:</strong> Si hay datos, el proceso ETL <em>Extrae</em> los registros, los <em>Transforma</em> y los <em>Carga</em> en el Data Warehouse.<br>
+      <strong>5. Respuesta y Refresco (&le; 3s):</strong> La IA genera la respuesta citando la fuente de datos y actualiza el Dashboard financiero.
+    </div>
+  </div>
+
+  <!-- 5. DIAGRAMAS DE SECUENCIA -->
+  <h2>5. Diagramas de Secuencia</h2>
+  <p>Representa el orden de comunicación entre el usuario, el frontend, el backend Express, la persistencia y los servicios externos actualmente integrados.</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Secuencia A: Inicio de sesión y verificación de código</div>
+    <div class="sequence-diagram">
+      <div class="sequence-head">
+        <div class="sequence-participant">Usuario</div><div class="sequence-participant">Frontend Next.js</div><div class="sequence-participant">API Express</div><div class="sequence-participant">PostgreSQL</div><div class="sequence-participant">Correo SMTP</div>
+      </div>
+      <div class="sequence-row"><div class="sequence-lifeline">1. Ingresa correo y contraseña</div><div class="sequence-message" style="grid-column: 1 / 3;">Enviar credenciales</div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div></div>
+      <div class="sequence-row"><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div><div class="sequence-message" style="grid-column: 2 / 4;">Validar usuario y crear desafío</div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div></div>
+      <div class="sequence-row"><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div><div class="sequence-message" style="grid-column: 3 / 5;">Consultar usuario y guardar token</div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div></div>
+      <div class="sequence-row"><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div><div class="sequence-message" style="grid-column: 3 / 6;">Enviar código de verificación</div></div>
+      <div class="sequence-row"><div class="sequence-message" style="grid-column: 1 / 3;">Ingresar código</div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div></div>
+      <div class="sequence-row"><div class="sequence-lifeline"></div><div class="sequence-message" style="grid-column: 2 / 4;">Verificar código y recibir JWT</div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div></div>
+      <div class="sequence-row"><div class="sequence-note" style="grid-column: 1 / 6;">Resultado: access token para el frontend y refresh token mediante cookie HTTP-only.</div></div>
+    </div>
+  </div>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Secuencia B: Carga, extracción y revisión de un lote PDF</div>
+    <div class="sequence-diagram">
+      <div class="sequence-head">
+        <div class="sequence-participant">Usuario</div><div class="sequence-participant">Frontend Next.js</div><div class="sequence-participant">API Express</div><div class="sequence-participant">Supabase</div><div class="sequence-participant">Gemini</div>
+      </div>
+      <div class="sequence-row"><div class="sequence-lifeline">1. Selecciona 1–10 PDFs</div><div class="sequence-message" style="grid-column: 1 / 3;">Validar archivos y enviar multipart/form-data</div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div></div>
+      <div class="sequence-row"><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div><div class="sequence-message" style="grid-column: 2 / 4;">Crear lote, documentos y archivos</div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div></div>
+      <div class="sequence-row"><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div><div class="sequence-message" style="grid-column: 3 / 5;">Persistir metadatos en PostgreSQL</div><div class="sequence-lifeline"></div></div>
+      <div class="sequence-row"><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div><div class="sequence-message" style="grid-column: 3 / 6;">Enviar PDF para extracción estructurada</div></div>
+      <div class="sequence-row"><div class="sequence-lifeline"></div><div class="sequence-message" style="grid-column: 2 / 4;">Mostrar resultado y formulario de revisión</div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div></div>
+      <div class="sequence-row"><div class="sequence-message" style="grid-column: 1 / 3;">Corregir y confirmar documento</div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div></div>
+      <div class="sequence-row"><div class="sequence-lifeline"></div><div class="sequence-message" style="grid-column: 2 / 4;">Guardar revisión y actualizar estado</div><div class="sequence-lifeline"></div><div class="sequence-lifeline"></div></div>
+    </div>
+  </div>
+
+  <!-- 6. VISTA FÍSICA / DESPLIEGUE -->
+  <h2>6. Vista Física (Despliegue e Infraestructura)</h2>
+  <p>Muestra la distribución física del sistema ejecutado localmente mediante contenedores Docker, con la base de datos operacional alojada en Supabase Cloud.</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Vista Física (Diagrama de Despliegue UML)</div>
+    <div class="physical-diagram">
+      <div class="uml-node">
+        <span class="stereotype">&laquo;device&raquo;</span>
+        <div class="uml-title">Nodo Cliente<br><small>(PC de presentación)</small></div>
+        <div class="artifact"><div class="artifact-title">Sistema Operativo</div><ul class="artifact-desc"><li>Windows 10/11, Linux o macOS</li></ul></div>
+        <div class="artifact"><div class="artifact-title">Navegador Web</div><ul class="artifact-desc"><li>Chrome, Firefox, Edge o Safari</li><li>Aplicación Next.js y visor PDF</li></ul></div>
+      </div>
+
+      <div class="physical-connector"><span class="protocol">HTTP local</span><div class="physical-line"></div><small>JSON / JWT</small></div>
+
+      <div class="uml-node cloud-app">
+        <span class="stereotype">&laquo;execution environment&raquo;</span>
+        <div class="uml-title">Host local de presentación<br><small>Docker Compose</small></div>
+        <div class="artifact"><div class="artifact-title">Contenedor Frontend Web</div><ul class="artifact-desc"><li>Next.js + React + TypeScript + Tailwind CSS</li><li>Autenticación, solicitudes, Notebooks y revisión de PDFs</li></ul></div>
+        <div class="artifact"><div class="artifact-title">Contenedor Backend Core</div><ul class="artifact-desc"><li>Node.js + Express</li><li>JWT, sesiones, empresas, lotes y documentos</li><li>Validación PDF, Gemini y revisión de DTEs</li></ul></div>
+        <div class="artifact"><div class="artifact-title">Volumen local de archivos</div><ul class="artifact-desc"><li>PDFs asociados a documentos</li><li>Almacenamiento cloud: componente futuro</li></ul></div>
+        <div class="env-note">🔒 Supabase, Gemini y SMTP configurados mediante variables de entorno.</div>
+      </div>
+
+      <div class="physical-connector"><div><span class="protocol">PostgreSQL / SSL</span><div class="physical-line"></div><small>Prisma / SQL</small></div><div><span class="protocol">HTTPS / SMTP</span><div class="physical-line"></div><small>Gemini / Nodemailer</small></div></div>
+
+      <div class="physical-right">
+        <div class="uml-node cloud-db"><span class="stereotype">&laquo;database server&raquo;</span><div class="uml-title">Supabase Cloud</div><div class="artifact"><div class="artifact-title">PostgreSQL operacional</div><ul class="artifact-desc"><li>Usuarios, empresas, sesiones, notebooks y documentos</li><li>Conexión desde el backend mediante Prisma</li></ul></div><div class="artifact"><div class="artifact-title">Data Warehouse <span class="badge">Futuro</span></div><ul class="artifact-desc"><li>ETL y analítica avanzada</li></ul></div></div>
+        <div class="uml-node cloud-ext"><span class="stereotype">&laquo;external cloud API&raquo;</span><div class="uml-title">Proveedor IA</div><div class="artifact"><div class="artifact-title">Gemini</div><ul class="artifact-desc"><li>Extracción estructurada desde PDF</li><li>HTTPS y API Key</li></ul></div></div>
+        <div class="uml-node cloud-ext"><span class="stereotype">&laquo;external mail service&raquo;</span><div class="uml-title">Servicio de correo</div><div class="artifact"><div class="artifact-title">Nodemailer <span class="badge">SMTP</span></div><ul class="artifact-desc"><li>Verificación, acceso y recuperación de cuentas</li><li>Aprobación y rechazo de solicitudes</li></ul></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

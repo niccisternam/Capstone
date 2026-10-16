@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Vista Física - Diagrama de Despliegue UML</title>
+  <style>
+    :root {
+      --slate-900: #0f172a;
+      --slate-700: #334155;
+      --slate-500: #64748b;
+      --slate-300: #cbd5e1;
+      --slate-100: #f1f5f9;
+      --blue-800: #1e40af;
+      --blue-600: #2563eb;
+      --blue-50: #eff6ff;
+      --emerald-700: #047857;
+      --emerald-50: #ecfdf5;
+      --purple-700: #6d28d9;
+      --purple-50: #f5f3ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+      background-color: #ffffff;
+      color: var(--slate-900);
+      margin: 0;
+      padding: 40px;
+    }
+    .canvas {
+      max-width: 1150px;
+      margin: 0 auto;
+      border: 1px solid var(--slate-300);
+      border-radius: 10px;
+      padding: 32px;
+      background: #fafafa;
+    }
+    .header {
+      border-bottom: 2px solid var(--slate-900);
+      padding-bottom: 12px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      color: var(--slate-900);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .header span {
+      font-size: 0.85rem;
+      color: var(--slate-500);
+      font-weight: 500;
+    }
+
+    /* Layout principal */
+    .deployment-grid {
+      display: grid;
+      grid-template-columns: 220px 80px 420px 80px 300px;
+      align-items: center;
+      gap: 0;
+    }
+
+    /* Nodos UML (Cajas con efecto 3D sutil / borde superior grueso) */
+    .uml-node {
+      background: #ffffff;
+      border: 2px solid var(--slate-700);
+      border-top: 6px solid var(--slate-700);
+      border-radius: 6px;
+      padding: 16px;
+      box-shadow: 4px 4px 0px rgba(15, 23, 42, 0.08);
+      position: relative;
+    }
+    .uml-node.cloud-app {
+      border-color: var(--blue-800);
+      border-top-color: var(--blue-800);
+      background: var(--blue-50);
+    }
+    .uml-node.cloud-db {
+      border-color: var(--emerald-700);
+      border-top-color: var(--emerald-700);
+      background: var(--emerald-50);
+    }
+    .uml-node.cloud-ext {
+      border-color: var(--purple-700);
+      border-top-color: var(--purple-700);
+      background: var(--purple-50);
+    }
+
+    .stereotype {
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: var(--slate-500);
+      text-align: center;
+      display: block;
+      margin-bottom: 2px;
+      font-weight: bold;
+    }
+    .node-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-align: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--slate-300);
+    }
+
+    /* Artefactos internos */
+    .artifact {
+      background: #ffffff;
+      border: 1.5px solid var(--slate-500);
+      border-radius: 4px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      font-size: 0.82rem;
+    }
+    .artifact:last-child {
+      margin-bottom: 0;
+    }
+    .artifact-title {
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .badge {
+      font-size: 0.68rem;
+      background: var(--slate-100);
+      border: 1px solid var(--slate-300);
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-weight: 600;
+      color: var(--slate-700);
+    }
+    .artifact-desc {
+      color: var(--slate-700);
+      font-size: 0.76rem;
+      line-height: 1.35;
+      margin: 0;
+      padding-left: 14px;
+    }
+
+    /* Conectores de red */
+    .connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .line {
+      width: 100%;
+      height: 2px;
+      background: var(--slate-700);
+      position: relative;
+      margin: 6px 0;
+    }
+    .line::after, .line::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+    }
+    .line::after {
+      right: 0;
+      border-left: 7px solid var(--slate-700);
+    }
+    .line::before {
+      left: 0;
+      border-right: 7px solid var(--slate-700);
+    }
+    .protocol {
+      font-family: 'Courier New', monospace;
+      font-size: 0.72rem;
+      font-weight: bold;
+      background: #ffffff;
+      border: 1px solid var(--slate-300);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--blue-800);
+    }
+
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .env-note {
+      margin-top: 12px;
+      background: #fffbeb;
+      border: 1px dashed #d97706;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: #92400e;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+  <div class="header">
+    <h1>Vista Física (Diagrama de Despliegue UML)</h1>
+    <span>Estándar IEEE 830 / Modelo 4+1 &bull; Despliegue local con Docker y Supabase Cloud</span>
+  </div>
+
+  <div class="deployment-grid">
+
+    <!-- 1. NODO CLIENTE -->
+    <div class="uml-node">
+      <span class="stereotype">&laquo;device&raquo;</span>
+      <div class="node-title">Nodo Cliente<br><small style="font-weight:normal; color:#64748b;">(PC de presentación)</small></div>
+      
+      <div class="artifact">
+        <div class="artifact-title">Sistema Operativo <span class="badge">R100</span></div>
+        <ul class="artifact-desc">
+          <li>Windows 10 / 11</li>
+          <li>Linux / macOS</li>
+        </ul>
+      </div>
+
+      <div class="artifact">
+        <div class="artifact-title">Navegador Web <span class="badge">R99</span></div>
+        <ul class="artifact-desc">
+          <li>Chrome, Firefox, Edge, Safari</li>
+          <li>Aplicación web Next.js + visor PDF</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- CONECTOR CLIENTE -> SERVIDOR -->
+    <div class="connector">
+      <span class="protocol">HTTP local</span>
+      <div class="line"></div>
+      <small style="font-size:0.68rem; color:#475569;">JSON / JWT<br>(R76, R80)</small>
+    </div>
+
+    <!-- 2. HOST LOCAL DE PRESENTACIÓN -->
+    <div class="uml-node cloud-app">
+      <span class="stereotype">&laquo;execution environment&raquo;</span>
+      <div class="node-title">Host local de presentación<br><small style="font-weight:normal; color:#1e40af;">Docker Compose</small></div>
+
+      <div class="artifact">
+        <div class="artifact-title">Contenedor Frontend Web <span class="badge">UI / UX</span></div>
+        <ul class="artifact-desc">
+          <li><strong>Stack:</strong> Next.js + React + TypeScript + Tailwind CSS</li>
+          <li><strong>Módulos:</strong> Autenticación, solicitudes de cuenta, Notebooks y revisión de PDFs</li>
+        </ul>
+      </div>
+
+      <div class="artifact">
+        <div class="artifact-title">Servicio Backend Core (API de Negocio) <span class="badge">Node.js + Express</span></div>
+        <ul class="artifact-desc">
+          <li>Autenticación JWT, sesiones y solicitudes de cuenta</li>
+          <li>Aislamiento por empresa, Notebooks, lotes y documentos</li>
+          <li>Validación, almacenamiento local y procesamiento de PDFs</li>
+          <li>Conector Gemini y revisión/confirmación de DTEs</li>
+        </ul>
+      </div>
+
+      <div class="artifact">
+        <div class="artifact-title">Volumen local de archivos <span class="badge">Docker Volume</span></div>
+        <ul class="artifact-desc">
+          <li>Repositorio local de PDFs asociados a los documentos</li>
+          <li>La migración a almacenamiento cloud queda como componente futuro</li>
+        </ul>
+      </div>
+
+      <div class="env-note">
+        🔒 <strong>Configuración:</strong> Credenciales de Supabase, API Key de Gemini y datos SMTP gestionados mediante variables de entorno.
+      </div>
+    </div>
+
+    <!-- CONECTOR HOST -> PERSISTENCIA Y SERVICIOS EXTERNOS -->
+    <div class="connector" style="gap: 75px;">
+      <div>
+        <span class="protocol">PostgreSQL / SSL</span>
+        <div class="line"></div>
+        <small style="font-size:0.68rem; color:#475569;">Prisma / SQL<br>Supabase Cloud</small>
+      </div>
+      <div>
+        <span class="protocol">HTTPS / SMTP</span>
+        <div class="line"></div>
+        <small style="font-size:0.68rem; color:#475569;">API Gemini / Nodemailer<br>Servicios externos</small>
+      </div>
+    </div>
+
+    <!-- 3. COLUMNA DERECHA: DATOS Y SERVICIOS EXTERNOS -->
+    <div class="right-column">
+      
+      <!-- NODO BASE DE DATOS Y STORAGE -->
+      <div class="uml-node cloud-db">
+        <span class="stereotype">&laquo;database &amp; storage server&raquo;</span>
+        <div class="node-title">Supabase Cloud</div>
+
+        <div class="artifact">
+          <div class="artifact-title">PostgreSQL <span class="badge">Relacional</span></div>
+          <ul class="artifact-desc">
+            <li><strong>BD Operacional:</strong> PostgreSQL para usuarios, empresas, sesiones, notebooks y documentos.</li>
+            <li>Conexión desde el backend mediante Prisma.</li>
+          </ul>
+        </div>
+
+        <div class="artifact">
+          <div class="artifact-title">Data Warehouse <span class="badge">Futuro</span></div>
+          <ul class="artifact-desc">
+            <li>Componente futuro para ETL y analítica avanzada.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- NODO EXTERNO IA -->
+      <div class="uml-node cloud-ext">
+        <span class="stereotype">&laquo;external cloud API&raquo;</span>
+        <div class="node-title">Proveedor IA Multimodal</div>
+
+        <div class="artifact">
+          <div class="artifact-title">Gemini</div>
+          <ul class="artifact-desc">
+            <li>Extracción estructurada de campos tributarios desde PDF.</li>
+            <li>Conexión mediante HTTPS y API Key.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="uml-node cloud-ext">
+        <span class="stereotype">&laquo;external mail service&raquo;</span>
+        <div class="node-title">Servicio externo de correo</div>
+        <div class="artifact">
+          <div class="artifact-title">Nodemailer <span class="badge">SMTP</span></div>
+          <ul class="artifact-desc">
+            <li>Verificación de correo y códigos de acceso.</li>
+            <li>Recuperación, aprobación y rechazo de cuentas.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
