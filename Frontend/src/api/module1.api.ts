@@ -77,7 +77,7 @@ async function validatePdfFile(file: File): Promise<PdfFileIssueReason | null> {
   return hasSignature ? null : "FIRMA_NO_VALIDA";
 }
 
-function parseIdentifier(value: string): string {
+export function parseIdentifier(value: string): string {
   const parsed = uuidSchema.safeParse(value);
   if (!parsed.success) throw new ApiError({ status: 400, code: "INVALID_IDENTIFIER" });
   return parsed.data;
@@ -115,7 +115,7 @@ function parseResponse<TOutput>(result: ApiResult<unknown>, schema: z.ZodType<TO
   return parsed.data;
 }
 
-async function call<TOutput>(run: () => Promise<ApiResult<unknown>>, schema: z.ZodType<TOutput>): Promise<TOutput> {
+export async function call<TOutput>(run: () => Promise<ApiResult<unknown>>, schema: z.ZodType<TOutput>): Promise<TOutput> {
   return parseResponse(await execute(run), schema);
 }
 

@@ -21,6 +21,9 @@ import { env } from "./config/env.js";
 import { GeminiExtractor, UnavailableExtractor } from "./modules/module1/gemini.extractor.js";
 import { createModule1Router } from "./modules/module1/module1.routes.js";
 import { Module1Service } from "./modules/module1/module1.service.js";
+import { createChatRouter } from "./modules/module4/chat.routes.js";
+import { ChatService } from "./modules/module4/chat.service.js";
+import { GeminiChatAssistant, UnavailableChatAssistant } from "./modules/module4/gemini.chat.js";
 
 export interface AppDependencies {
   accountRequestService?: AccountRequestService;
@@ -28,6 +31,7 @@ export interface AppDependencies {
   adminResolver?: AdminResolver;
   databaseProbe?: () => Promise<void>;
   module1Service?: Module1Service;
+  chatService?: ChatService;
 }
 
 export function createApp(dependencies: AppDependencies = {}) {
@@ -82,6 +86,15 @@ export function createApp(dependencies: AppDependencies = {}) {
       env.DOCUMENT_STORAGE_PATH,
     );
 
+  const chatService =
+    dependencies.chatService ??
+    new ChatService(
+      prisma,
+      env.GEMINI_API_KEY
+        ? new GeminiChatAssistant(env.GEMINI_API_KEY, env.GEMINI_MODEL)
+        : new UnavailableChatAssistant(),
+    );
+
   app.use(helmet());
   app.use((req, res, next) => {
     const origin = req.headers.origin;
@@ -109,6 +122,7 @@ export function createApp(dependencies: AppDependencies = {}) {
   );
 
   app.use("/api/v1/module1", createModule1Router(module1Service, jwtService, prisma));
+  app.use("/api/v1/module4", createChatRouter(chatService, jwtService, prisma));
 
   app.get("/health", (_req, res) => {
     res.status(200).json({ status: "ok", service: "backend-javascript" });

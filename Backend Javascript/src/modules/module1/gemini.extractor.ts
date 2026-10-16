@@ -103,7 +103,7 @@ const EXTRACTION_RESPONSE_SCHEMA: Schema = {
   required: ["documento", "errores", "advertencias"],
 };
 
-function parseJson(text: string): unknown {
+export function parseJson(text: string): unknown {
   const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
   try {
     return JSON.parse(cleaned);
@@ -157,8 +157,10 @@ function geminiErrorStatus(error: unknown): number | undefined {
   return match ? Number(match[1]) : undefined;
 }
 
-function normalizeGeminiError(error: unknown): AppError {
+export function normalizeGeminiError(error: unknown): AppError {
   const status = geminiErrorStatus(error);
+  // Gemini responde una clave inválida con 400, no 403; sin esto el mensaje culpa al modelo.
+  if (/API_KEY_INVALID|API key not valid/i.test(error instanceof Error ? error.message : String(error))) return new AppError(502, "AI_AUTHENTICATION", "El servicio de análisis rechazó la API configurada. Revisa la clave y sus permisos.");
   if (status === 400) return new AppError(502, "AI_BAD_REQUEST", "El servicio de análisis rechazó la solicitud. Revisa el modelo o el formato configurado.");
   if (status === 403) return new AppError(502, "AI_AUTHENTICATION", "El servicio de análisis rechazó la API configurada. Revisa la clave y sus permisos.");
   if (status === 404) return new AppError(502, "AI_MODEL_NOT_FOUND", "El modelo de análisis configurado no está disponible.");
