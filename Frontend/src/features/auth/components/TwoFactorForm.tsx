@@ -20,7 +20,10 @@ export function TwoFactorForm() {
     () => (typeof window !== "undefined" ? sessionStorage.getItem("capstone_challenge_id") : null) ?? "",
     () => ""
   );
-  const challengeId = queryChallenge || storedChallenge;
+  // Tras reenviar el código, Express revoca el desafío anterior y emite uno nuevo:
+  // el challengeId adoptado en memoria manda sobre la URL y sessionStorage.
+  const [resentChallengeId, setResentChallengeId] = useState<string>("");
+  const challengeId = resentChallengeId || queryChallenge || storedChallenge;
 
   const [recordarSesion, setRecordarSesion] = useState<boolean>(queryRecordar);
 
@@ -253,6 +256,26 @@ export function TwoFactorForm() {
     try {
       const res = await resendCode(challengeId);
       if (res.status === 200) {
+        const data = res.data as { challengeId?: string } | undefined;
+        const nextChallengeId =
+          typeof data?.challengeId === "string" && data.challengeId.length > 0 ? data.challengeId : null;
+
+        if (nextChallengeId) {
+          // El código recién enviado pertenece al nuevo desafío: se adopta antes de que el
+          // usuario lo escriba y se sincroniza en sessionStorage y en la URL para recargas.
+          setResentChallengeId(nextChallengeId);
+          if (typeof window !== "undefined") {
+            sessionStorage.setItem("capstone_challenge_id", nextChallengeId);
+          }
+          const params = new URLSearchParams({ challengeId: nextChallengeId });
+          if (recordarSesion) params.set("recordar", "true");
+          router.replace(`/verificar-codigo?${params.toString()}`, { scroll: false });
+        }
+
+        // El código anterior dejó de ser válido: se limpian las casillas y el error.
+        setDigits(["", "", "", "", "", ""]);
+        setCodeError(null);
+        inputRefs.current[0]?.focus();
         setFeedback({
           type: "info",
           message: "Se ha enviado un nuevo código a su correo electrónico.",

@@ -81,6 +81,7 @@ export function ResetPasswordForm() {
 
   // Estados de envío y retroalimentación
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [completed, setCompleted] = useState<boolean>(false);
   const [feedback, setFeedback] = useState<{
     type: "success" | "error" | "info";
     message: string;
@@ -117,16 +118,14 @@ export function ResetPasswordForm() {
       const res = await resetPassword(token, nuevaPassword, confirmarPassword);
 
       if (res.status === 200) {
-        // 1. Eliminar el token de memoria
+        // 1. Eliminar el token de memoria (el backend lo marca como usado)
         clearToken();
         // 2. Limpiar los campos de contraseña
         setNuevaPassword("");
         setConfirmarPassword("");
-        // 3. Mostrar que la contraseña fue actualizada
-        setFeedback({
-          type: "success",
-          message: "Tu contraseña ha sido actualizada exitosamente. Redirigiendo al inicio de sesión...",
-        });
+        // 3. Mostrar la confirmación antes de redirigir. `completed` evita que el estado
+        //    "invalid" (el token ya no existe en memoria) sustituya el mensaje de éxito.
+        setCompleted(true);
         // 4. Redirigir al login sin iniciar sesión
         setTimeout(() => {
           router.push("/login");
@@ -152,6 +151,36 @@ export function ResetPasswordForm() {
       setIsSubmitting(false);
     }
   };
+
+  // Estado 0: contraseña restablecida. Se muestra la confirmación antes de redirigir
+  // (el token ya fue eliminado de memoria, pero la vista de éxito tiene prioridad).
+  if (completed) {
+    return (
+      <div role="alert" className="rounded-lg border border-green-200 bg-white p-6 sm:p-8 text-center shadow-xs space-y-4">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600">
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+          </svg>
+        </div>
+        <div className="space-y-1">
+          <h2 className="text-base font-bold text-slate-900">
+            Contraseña actualizada
+          </h2>
+          <p className="text-sm font-medium text-green-700">
+            Tu contraseña ha sido actualizada exitosamente. Redirigiendo al inicio de sesión...
+          </p>
+        </div>
+        <div className="pt-2">
+          <Link
+            href="/login"
+            className="inline-flex items-center justify-center rounded-md bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+          >
+            Ir a Iniciar Sesión
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   // Estado 1: Verificando token al montar
   if (tokenStatus === "checking") {
