@@ -8,9 +8,9 @@ Cada módulo se cierra completamente antes de comenzar el siguiente.
 4. **Usuarios, roles y empresas** — CRUD, permisos, aislamiento por empresa y administración posterior.
 5. **Notebooks** — CRUD, nombre único por empresa, permisos y estados.
 6. **Documentos y carga** — validación de archivos, lotes de 1–10, metadata, hash, almacenamiento y estados.
-7. **Procesamiento FastAPI** — cliente interno, timeouts, reintentos controlados, correlación y actualización de estados.
+7. **Procesamiento con IA** — extracción con Gemini desde Express, timeouts, reintentos controlados y actualización de estados.
 8. **Revisión y confirmación** — correcciones manuales, historial, confirmación y trazabilidad.
-9. **Chatbot y consultas analíticas** — contratos con FastAPI, permisos, límites, auditoría y consumo de tokens.
+9. **Chatbot y dashboard** — chat de solo lectura y métricas del dashboard sobre la base operacional, sin ETL ni Data Warehouse (ADR 0008, ADR 0012); permisos, límites, auditoría y consumo de tokens.
 10. **Operación y endurecimiento** — documentación OpenAPI, observabilidad, rate limiting, backups, despliegue y revisión final.
 
 ## Entregables obligatorios por módulo

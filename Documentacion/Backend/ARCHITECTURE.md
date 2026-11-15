@@ -2,9 +2,9 @@
 
 ## Principios
 
-- Express es el backend principal y dueño de la base de datos operativa.
-- FastAPI expone capacidades especializadas; no modifica directamente la base de datos de Express.
-- Las fronteras se comunican mediante HTTP/JSON y contratos versionados.
+- Express es el único backend y dueño de la base de datos operativa. El servicio FastAPI previsto originalmente no se implementó (ADR 0008, ADR 0012).
+- Los servicios externos (Google Gemini, correo) se consumen desde Express mediante adaptadores aislados.
+- El frontend se comunica con Express mediante HTTP/JSON y contratos versionados.
 - Cada módulo aplica separación por capas: `routes → controllers → services → repositories`.
 - Los estados de documentos tienen una única fuente de verdad en Express.
 
@@ -31,7 +31,7 @@ src/
 
 Express: autenticación, 2FA, recuperación, usuarios/roles, empresas, notebooks, carga y metadata de archivos, lotes, estados, permisos, auditoría y API para frontend.
 
-FastAPI: lectura/procesamiento de PDF, extracción y clasificación con IA, ETL, generación de consultas analíticas y respuestas del chatbot.
+Express también concentra la lectura de PDF y la extracción con Gemini (Módulo 1), el chat financiero de solo lectura (Módulo 4, ADR 0008) y las métricas del dashboard calculadas sobre la base operacional (ADR 0012). No hay pipeline ETL ni Data Warehouse.
 
 ## Contrato de errores
 

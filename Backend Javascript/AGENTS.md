@@ -2,7 +2,7 @@
 
 ## Propósito
 
-Este repositorio contiene el backend principal en Express + TypeScript del sistema tributario Capstone. Express es dueño de la API operativa, autenticación, autorización, persistencia y estados de negocio. FastAPI se consume como servicio especializado para procesamiento documental, IA, ETL y analítica.
+Este repositorio contiene el backend principal en Express + TypeScript del sistema tributario Capstone. Express es dueño de la API operativa, autenticación, autorización, persistencia y estados de negocio. La extracción con IA, el chat y el dashboard también corren en Express; FastAPI no se implementó y no hay pipeline ETL ni Data Warehouse (ADR 0008, ADR 0012).
 
 ## Reglas de trabajo para Codex
 
