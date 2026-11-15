@@ -14,7 +14,9 @@ La arquitectura original asignaba la IA y el chatbot a un servicio FastAPI. En l
 - El historial se guarda en `mensaje_chat` dentro de conversaciones privadas por usuario, empresa y notebook. La evolución del modelo está en ADR 0009.
 
 ## Fuera de alcance por ahora
-Consumo y cuota de tokens (R.100, R.101, R.103) e integración con el ETL/Data Warehouse del Módulo 3 (R.95, R.96).
+Consumo y cuota de tokens (R.100, R.101, R.103).
+
+La integración con el ETL/Data Warehouse del Módulo 3 (R.95, R.96) se descartó: no hay ETL ni Data Warehouse, y el chat no alimenta el dashboard (ADR 0012).
 
 ## Consecuencias
-La migración requiere permiso para crear roles (`CREATE ROLE`). Si en el futuro se crea FastAPI, el contrato HTTP de `/api/v1/module4` se mantiene.
+La migración requiere permiso para crear roles (`CREATE ROLE`).
