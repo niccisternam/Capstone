@@ -251,7 +251,7 @@ Reglas:
 
 - No se implementará el módulo posterior de consultas analíticas.
 - No se implementará el chatbot ni el dashboard.
-- No se implementará ETL.
+- No se implementará ETL (descartado para todo el sistema, ADR 0012).
 - No se diseñará una entidad separada para cada estado, acción o etapa del flujo.
 - No se agregará una entidad negocio/cliente independiente mientras ese modelo siga en evaluación.
 - No se exigirá que todos los campos definidos por el estándar SII aparezcan en cada PDF.
@@ -293,7 +293,7 @@ La migración y el cliente Prisma están implementados; la aplicación contra un
 * Integraciones con SII/DTE o sistemas tributarios externos.
 * Integraciones bancarias.
 * Chatbot.
-* ETL/Data Warehouse.
+* ETL/Data Warehouse (descartado para todo el sistema, ADR 0012).
 * Dashboards y analítica.
 * Funcionalidades correspondientes a otros módulos.
 
