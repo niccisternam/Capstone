@@ -24,6 +24,9 @@ import { Module1Service } from "./modules/module1/module1.service.js";
 import { createChatRouter } from "./modules/module4/chat.routes.js";
 import { ChatService } from "./modules/module4/chat.service.js";
 import { GeminiChatAssistant, UnavailableChatAssistant } from "./modules/module4/gemini.chat.js";
+import { createDashboardRouter } from "./modules/dashboard/dashboard.routes.js";
+import { DashboardService } from "./modules/dashboard/dashboard.service.js";
+import { GeminiWidgetPlanner, UnavailableWidgetPlanner } from "./modules/dashboard/dashboard.ai.js";
 
 export interface AppDependencies {
   accountRequestService?: AccountRequestService;
@@ -32,6 +35,7 @@ export interface AppDependencies {
   databaseProbe?: () => Promise<void>;
   module1Service?: Module1Service;
   chatService?: ChatService;
+  dashboardService?: DashboardService;
 }
 
 export function createApp(dependencies: AppDependencies = {}) {
@@ -95,6 +99,15 @@ export function createApp(dependencies: AppDependencies = {}) {
         : new UnavailableChatAssistant(),
     );
 
+  const dashboardService =
+    dependencies.dashboardService ??
+    new DashboardService(
+      prisma,
+      env.GEMINI_API_KEY
+        ? new GeminiWidgetPlanner(env.GEMINI_API_KEY, env.GEMINI_MODEL)
+        : new UnavailableWidgetPlanner(),
+    );
+
   app.use(helmet());
   app.use((req, res, next) => {
     const origin = req.headers.origin;
@@ -123,6 +136,7 @@ export function createApp(dependencies: AppDependencies = {}) {
 
   app.use("/api/v1/module1", createModule1Router(module1Service, jwtService, prisma));
   app.use("/api/v1/module4", createChatRouter(chatService, jwtService, prisma));
+  app.use("/api/v1/dashboard", createDashboardRouter(dashboardService, jwtService, prisma));
 
   app.get("/health", (_req, res) => {
     res.status(200).json({ status: "ok", service: "backend-javascript" });

@@ -55,6 +55,8 @@ const MESSAGES_BY_CODE: Record<string, string> = {
   AI_INVALID_RESPONSE: "El servicio de IA devolvió una respuesta incompleta o con datos inválidos para la estructura documental requerida. El documento quedó marcado con error; puedes revisar el mensaje y reintentarlo.",
   CHAT_QUERY_REJECTED: "No pude convertir tu pregunta en una consulta segura. Intenta reformularla.",
   CHAT_QUERY_FAILED: "No pude obtener los datos para responder esa pregunta. Intenta reformularla.",
+  CHAT_RATE_LIMITED: "Alcanzaste el límite de preguntas por minuto. Espera un momento y vuelve a intentarlo.",
+  CHAT_CONVERSATION_LIMIT: "Llegaste al máximo de conversaciones de este notebook. Elimina una para iniciar otra.",
   DOCUMENT_PROCESSING_FAILED: "No pudimos procesar este documento. Puedes reintentarlo desde la lista.",
 };
 

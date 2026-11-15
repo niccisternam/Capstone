@@ -11,7 +11,7 @@ La arquitectura original asignaba la IA y el chatbot a un servicio FastAPI. En l
 - La IA genera SQL solo sobre las vistas `v_chat_documentos` y `v_chat_detalles`, que exponen únicamente documentos CONFIRMADOS con su revisión confirmada.
 - Aislamiento en capas: validación del texto SQL; transacción `READ ONLY`; rol `chat_lector` con `SELECT` solo sobre las vistas; empresa y notebook fijados por el backend con `set_config`, y las vistas filtran por esos valores; `statement_timeout` de 5 s y un máximo de 200 filas.
 - `documento.direccion` (`COMPRA` | `VENTA`, por defecto `COMPRA`) se calcula al confirmar comparando el RUT emisor con el RUT de la empresa. Deja abierta la incorporación futura de documentos de venta.
-- El historial se guarda en `mensaje_chat` por usuario, empresa y notebook.
+- El historial se guarda en `mensaje_chat` dentro de conversaciones privadas por usuario, empresa y notebook. La evolución del modelo está en ADR 0009.
 
 ## Fuera de alcance por ahora
 Consumo y cuota de tokens (R.100, R.101, R.103) e integración con el ETL/Data Warehouse del Módulo 3 (R.95, R.96).

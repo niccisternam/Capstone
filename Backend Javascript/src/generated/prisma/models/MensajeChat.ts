@@ -26,9 +26,7 @@ export type AggregateMensajeChat = {
 
 export type MensajeChatMinAggregateOutputType = {
   idMensaje: string | null
-  idEmpresa: string | null
-  idNotebook: string | null
-  idUsuario: string | null
+  idConversacion: string | null
   rol: $Enums.RolMensajeChat | null
   contenido: string | null
   sqlGenerado: string | null
@@ -37,9 +35,7 @@ export type MensajeChatMinAggregateOutputType = {
 
 export type MensajeChatMaxAggregateOutputType = {
   idMensaje: string | null
-  idEmpresa: string | null
-  idNotebook: string | null
-  idUsuario: string | null
+  idConversacion: string | null
   rol: $Enums.RolMensajeChat | null
   contenido: string | null
   sqlGenerado: string | null
@@ -48,9 +44,7 @@ export type MensajeChatMaxAggregateOutputType = {
 
 export type MensajeChatCountAggregateOutputType = {
   idMensaje: number
-  idEmpresa: number
-  idNotebook: number
-  idUsuario: number
+  idConversacion: number
   rol: number
   contenido: number
   sqlGenerado: number
@@ -61,9 +55,7 @@ export type MensajeChatCountAggregateOutputType = {
 
 export type MensajeChatMinAggregateInputType = {
   idMensaje?: true
-  idEmpresa?: true
-  idNotebook?: true
-  idUsuario?: true
+  idConversacion?: true
   rol?: true
   contenido?: true
   sqlGenerado?: true
@@ -72,9 +64,7 @@ export type MensajeChatMinAggregateInputType = {
 
 export type MensajeChatMaxAggregateInputType = {
   idMensaje?: true
-  idEmpresa?: true
-  idNotebook?: true
-  idUsuario?: true
+  idConversacion?: true
   rol?: true
   contenido?: true
   sqlGenerado?: true
@@ -83,9 +73,7 @@ export type MensajeChatMaxAggregateInputType = {
 
 export type MensajeChatCountAggregateInputType = {
   idMensaje?: true
-  idEmpresa?: true
-  idNotebook?: true
-  idUsuario?: true
+  idConversacion?: true
   rol?: true
   contenido?: true
   sqlGenerado?: true
@@ -167,9 +155,7 @@ export type MensajeChatGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type MensajeChatGroupByOutputType = {
   idMensaje: string
-  idEmpresa: string
-  idNotebook: string
-  idUsuario: string
+  idConversacion: string
   rol: $Enums.RolMensajeChat
   contenido: string
   sqlGenerado: string | null
@@ -199,28 +185,22 @@ export type MensajeChatWhereInput = {
   OR?: Prisma.MensajeChatWhereInput[]
   NOT?: Prisma.MensajeChatWhereInput | Prisma.MensajeChatWhereInput[]
   idMensaje?: Prisma.UuidFilter<"MensajeChat"> | string
-  idEmpresa?: Prisma.UuidFilter<"MensajeChat"> | string
-  idNotebook?: Prisma.UuidFilter<"MensajeChat"> | string
-  idUsuario?: Prisma.UuidFilter<"MensajeChat"> | string
+  idConversacion?: Prisma.UuidFilter<"MensajeChat"> | string
   rol?: Prisma.EnumRolMensajeChatFilter<"MensajeChat"> | $Enums.RolMensajeChat
   contenido?: Prisma.StringFilter<"MensajeChat"> | string
   sqlGenerado?: Prisma.StringNullableFilter<"MensajeChat"> | string | null
   createdAt?: Prisma.DateTimeFilter<"MensajeChat"> | Date | string
-  notebook?: Prisma.XOR<Prisma.NotebookScalarRelationFilter, Prisma.NotebookWhereInput>
-  usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
+  conversacion?: Prisma.XOR<Prisma.ConversacionChatScalarRelationFilter, Prisma.ConversacionChatWhereInput>
 }
 
 export type MensajeChatOrderByWithRelationInput = {
   idMensaje?: Prisma.SortOrder
-  idEmpresa?: Prisma.SortOrder
-  idNotebook?: Prisma.SortOrder
-  idUsuario?: Prisma.SortOrder
+  idConversacion?: Prisma.SortOrder
   rol?: Prisma.SortOrder
   contenido?: Prisma.SortOrder
   sqlGenerado?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  notebook?: Prisma.NotebookOrderByWithRelationInput
-  usuario?: Prisma.UsuarioOrderByWithRelationInput
+  conversacion?: Prisma.ConversacionChatOrderByWithRelationInput
 }
 
 export type MensajeChatWhereUniqueInput = Prisma.AtLeast<{
@@ -228,22 +208,17 @@ export type MensajeChatWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.MensajeChatWhereInput | Prisma.MensajeChatWhereInput[]
   OR?: Prisma.MensajeChatWhereInput[]
   NOT?: Prisma.MensajeChatWhereInput | Prisma.MensajeChatWhereInput[]
-  idEmpresa?: Prisma.UuidFilter<"MensajeChat"> | string
-  idNotebook?: Prisma.UuidFilter<"MensajeChat"> | string
-  idUsuario?: Prisma.UuidFilter<"MensajeChat"> | string
+  idConversacion?: Prisma.UuidFilter<"MensajeChat"> | string
   rol?: Prisma.EnumRolMensajeChatFilter<"MensajeChat"> | $Enums.RolMensajeChat
   contenido?: Prisma.StringFilter<"MensajeChat"> | string
   sqlGenerado?: Prisma.StringNullableFilter<"MensajeChat"> | string | null
   createdAt?: Prisma.DateTimeFilter<"MensajeChat"> | Date | string
-  notebook?: Prisma.XOR<Prisma.NotebookScalarRelationFilter, Prisma.NotebookWhereInput>
-  usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
+  conversacion?: Prisma.XOR<Prisma.ConversacionChatScalarRelationFilter, Prisma.ConversacionChatWhereInput>
 }, "idMensaje">
 
 export type MensajeChatOrderByWithAggregationInput = {
   idMensaje?: Prisma.SortOrder
-  idEmpresa?: Prisma.SortOrder
-  idNotebook?: Prisma.SortOrder
-  idUsuario?: Prisma.SortOrder
+  idConversacion?: Prisma.SortOrder
   rol?: Prisma.SortOrder
   contenido?: Prisma.SortOrder
   sqlGenerado?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -258,9 +233,7 @@ export type MensajeChatScalarWhereWithAggregatesInput = {
   OR?: Prisma.MensajeChatScalarWhereWithAggregatesInput[]
   NOT?: Prisma.MensajeChatScalarWhereWithAggregatesInput | Prisma.MensajeChatScalarWhereWithAggregatesInput[]
   idMensaje?: Prisma.UuidWithAggregatesFilter<"MensajeChat"> | string
-  idEmpresa?: Prisma.UuidWithAggregatesFilter<"MensajeChat"> | string
-  idNotebook?: Prisma.UuidWithAggregatesFilter<"MensajeChat"> | string
-  idUsuario?: Prisma.UuidWithAggregatesFilter<"MensajeChat"> | string
+  idConversacion?: Prisma.UuidWithAggregatesFilter<"MensajeChat"> | string
   rol?: Prisma.EnumRolMensajeChatWithAggregatesFilter<"MensajeChat"> | $Enums.RolMensajeChat
   contenido?: Prisma.StringWithAggregatesFilter<"MensajeChat"> | string
   sqlGenerado?: Prisma.StringNullableWithAggregatesFilter<"MensajeChat"> | string | null
@@ -273,15 +246,12 @@ export type MensajeChatCreateInput = {
   contenido: string
   sqlGenerado?: string | null
   createdAt?: Date | string
-  notebook: Prisma.NotebookCreateNestedOneWithoutMensajesChatInput
-  usuario: Prisma.UsuarioCreateNestedOneWithoutMensajesChatInput
+  conversacion: Prisma.ConversacionChatCreateNestedOneWithoutMensajesInput
 }
 
 export type MensajeChatUncheckedCreateInput = {
   idMensaje?: string
-  idEmpresa: string
-  idNotebook: string
-  idUsuario: string
+  idConversacion: string
   rol: $Enums.RolMensajeChat
   contenido: string
   sqlGenerado?: string | null
@@ -294,15 +264,12 @@ export type MensajeChatUpdateInput = {
   contenido?: Prisma.StringFieldUpdateOperationsInput | string
   sqlGenerado?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  notebook?: Prisma.NotebookUpdateOneRequiredWithoutMensajesChatNestedInput
-  usuario?: Prisma.UsuarioUpdateOneRequiredWithoutMensajesChatNestedInput
+  conversacion?: Prisma.ConversacionChatUpdateOneRequiredWithoutMensajesNestedInput
 }
 
 export type MensajeChatUncheckedUpdateInput = {
   idMensaje?: Prisma.StringFieldUpdateOperationsInput | string
-  idEmpresa?: Prisma.StringFieldUpdateOperationsInput | string
-  idNotebook?: Prisma.StringFieldUpdateOperationsInput | string
-  idUsuario?: Prisma.StringFieldUpdateOperationsInput | string
+  idConversacion?: Prisma.StringFieldUpdateOperationsInput | string
   rol?: Prisma.EnumRolMensajeChatFieldUpdateOperationsInput | $Enums.RolMensajeChat
   contenido?: Prisma.StringFieldUpdateOperationsInput | string
   sqlGenerado?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -311,9 +278,7 @@ export type MensajeChatUncheckedUpdateInput = {
 
 export type MensajeChatCreateManyInput = {
   idMensaje?: string
-  idEmpresa: string
-  idNotebook: string
-  idUsuario: string
+  idConversacion: string
   rol: $Enums.RolMensajeChat
   contenido: string
   sqlGenerado?: string | null
@@ -330,9 +295,7 @@ export type MensajeChatUpdateManyMutationInput = {
 
 export type MensajeChatUncheckedUpdateManyInput = {
   idMensaje?: Prisma.StringFieldUpdateOperationsInput | string
-  idEmpresa?: Prisma.StringFieldUpdateOperationsInput | string
-  idNotebook?: Prisma.StringFieldUpdateOperationsInput | string
-  idUsuario?: Prisma.StringFieldUpdateOperationsInput | string
+  idConversacion?: Prisma.StringFieldUpdateOperationsInput | string
   rol?: Prisma.EnumRolMensajeChatFieldUpdateOperationsInput | $Enums.RolMensajeChat
   contenido?: Prisma.StringFieldUpdateOperationsInput | string
   sqlGenerado?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -351,9 +314,7 @@ export type MensajeChatOrderByRelationAggregateInput = {
 
 export type MensajeChatCountOrderByAggregateInput = {
   idMensaje?: Prisma.SortOrder
-  idEmpresa?: Prisma.SortOrder
-  idNotebook?: Prisma.SortOrder
-  idUsuario?: Prisma.SortOrder
+  idConversacion?: Prisma.SortOrder
   rol?: Prisma.SortOrder
   contenido?: Prisma.SortOrder
   sqlGenerado?: Prisma.SortOrder
@@ -362,9 +323,7 @@ export type MensajeChatCountOrderByAggregateInput = {
 
 export type MensajeChatMaxOrderByAggregateInput = {
   idMensaje?: Prisma.SortOrder
-  idEmpresa?: Prisma.SortOrder
-  idNotebook?: Prisma.SortOrder
-  idUsuario?: Prisma.SortOrder
+  idConversacion?: Prisma.SortOrder
   rol?: Prisma.SortOrder
   contenido?: Prisma.SortOrder
   sqlGenerado?: Prisma.SortOrder
@@ -373,96 +332,52 @@ export type MensajeChatMaxOrderByAggregateInput = {
 
 export type MensajeChatMinOrderByAggregateInput = {
   idMensaje?: Prisma.SortOrder
-  idEmpresa?: Prisma.SortOrder
-  idNotebook?: Prisma.SortOrder
-  idUsuario?: Prisma.SortOrder
+  idConversacion?: Prisma.SortOrder
   rol?: Prisma.SortOrder
   contenido?: Prisma.SortOrder
   sqlGenerado?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
-export type MensajeChatCreateNestedManyWithoutUsuarioInput = {
-  create?: Prisma.XOR<Prisma.MensajeChatCreateWithoutUsuarioInput, Prisma.MensajeChatUncheckedCreateWithoutUsuarioInput> | Prisma.MensajeChatCreateWithoutUsuarioInput[] | Prisma.MensajeChatUncheckedCreateWithoutUsuarioInput[]
-  connectOrCreate?: Prisma.MensajeChatCreateOrConnectWithoutUsuarioInput | Prisma.MensajeChatCreateOrConnectWithoutUsuarioInput[]
-  createMany?: Prisma.MensajeChatCreateManyUsuarioInputEnvelope
+export type MensajeChatCreateNestedManyWithoutConversacionInput = {
+  create?: Prisma.XOR<Prisma.MensajeChatCreateWithoutConversacionInput, Prisma.MensajeChatUncheckedCreateWithoutConversacionInput> | Prisma.MensajeChatCreateWithoutConversacionInput[] | Prisma.MensajeChatUncheckedCreateWithoutConversacionInput[]
+  connectOrCreate?: Prisma.MensajeChatCreateOrConnectWithoutConversacionInput | Prisma.MensajeChatCreateOrConnectWithoutConversacionInput[]
+  createMany?: Prisma.MensajeChatCreateManyConversacionInputEnvelope
   connect?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
 }
 
-export type MensajeChatUncheckedCreateNestedManyWithoutUsuarioInput = {
-  create?: Prisma.XOR<Prisma.MensajeChatCreateWithoutUsuarioInput, Prisma.MensajeChatUncheckedCreateWithoutUsuarioInput> | Prisma.MensajeChatCreateWithoutUsuarioInput[] | Prisma.MensajeChatUncheckedCreateWithoutUsuarioInput[]
-  connectOrCreate?: Prisma.MensajeChatCreateOrConnectWithoutUsuarioInput | Prisma.MensajeChatCreateOrConnectWithoutUsuarioInput[]
-  createMany?: Prisma.MensajeChatCreateManyUsuarioInputEnvelope
+export type MensajeChatUncheckedCreateNestedManyWithoutConversacionInput = {
+  create?: Prisma.XOR<Prisma.MensajeChatCreateWithoutConversacionInput, Prisma.MensajeChatUncheckedCreateWithoutConversacionInput> | Prisma.MensajeChatCreateWithoutConversacionInput[] | Prisma.MensajeChatUncheckedCreateWithoutConversacionInput[]
+  connectOrCreate?: Prisma.MensajeChatCreateOrConnectWithoutConversacionInput | Prisma.MensajeChatCreateOrConnectWithoutConversacionInput[]
+  createMany?: Prisma.MensajeChatCreateManyConversacionInputEnvelope
   connect?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
 }
 
-export type MensajeChatUpdateManyWithoutUsuarioNestedInput = {
-  create?: Prisma.XOR<Prisma.MensajeChatCreateWithoutUsuarioInput, Prisma.MensajeChatUncheckedCreateWithoutUsuarioInput> | Prisma.MensajeChatCreateWithoutUsuarioInput[] | Prisma.MensajeChatUncheckedCreateWithoutUsuarioInput[]
-  connectOrCreate?: Prisma.MensajeChatCreateOrConnectWithoutUsuarioInput | Prisma.MensajeChatCreateOrConnectWithoutUsuarioInput[]
-  upsert?: Prisma.MensajeChatUpsertWithWhereUniqueWithoutUsuarioInput | Prisma.MensajeChatUpsertWithWhereUniqueWithoutUsuarioInput[]
-  createMany?: Prisma.MensajeChatCreateManyUsuarioInputEnvelope
+export type MensajeChatUpdateManyWithoutConversacionNestedInput = {
+  create?: Prisma.XOR<Prisma.MensajeChatCreateWithoutConversacionInput, Prisma.MensajeChatUncheckedCreateWithoutConversacionInput> | Prisma.MensajeChatCreateWithoutConversacionInput[] | Prisma.MensajeChatUncheckedCreateWithoutConversacionInput[]
+  connectOrCreate?: Prisma.MensajeChatCreateOrConnectWithoutConversacionInput | Prisma.MensajeChatCreateOrConnectWithoutConversacionInput[]
+  upsert?: Prisma.MensajeChatUpsertWithWhereUniqueWithoutConversacionInput | Prisma.MensajeChatUpsertWithWhereUniqueWithoutConversacionInput[]
+  createMany?: Prisma.MensajeChatCreateManyConversacionInputEnvelope
   set?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
   disconnect?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
   delete?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
   connect?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
-  update?: Prisma.MensajeChatUpdateWithWhereUniqueWithoutUsuarioInput | Prisma.MensajeChatUpdateWithWhereUniqueWithoutUsuarioInput[]
-  updateMany?: Prisma.MensajeChatUpdateManyWithWhereWithoutUsuarioInput | Prisma.MensajeChatUpdateManyWithWhereWithoutUsuarioInput[]
+  update?: Prisma.MensajeChatUpdateWithWhereUniqueWithoutConversacionInput | Prisma.MensajeChatUpdateWithWhereUniqueWithoutConversacionInput[]
+  updateMany?: Prisma.MensajeChatUpdateManyWithWhereWithoutConversacionInput | Prisma.MensajeChatUpdateManyWithWhereWithoutConversacionInput[]
   deleteMany?: Prisma.MensajeChatScalarWhereInput | Prisma.MensajeChatScalarWhereInput[]
 }
 
-export type MensajeChatUncheckedUpdateManyWithoutUsuarioNestedInput = {
-  create?: Prisma.XOR<Prisma.MensajeChatCreateWithoutUsuarioInput, Prisma.MensajeChatUncheckedCreateWithoutUsuarioInput> | Prisma.MensajeChatCreateWithoutUsuarioInput[] | Prisma.MensajeChatUncheckedCreateWithoutUsuarioInput[]
-  connectOrCreate?: Prisma.MensajeChatCreateOrConnectWithoutUsuarioInput | Prisma.MensajeChatCreateOrConnectWithoutUsuarioInput[]
-  upsert?: Prisma.MensajeChatUpsertWithWhereUniqueWithoutUsuarioInput | Prisma.MensajeChatUpsertWithWhereUniqueWithoutUsuarioInput[]
-  createMany?: Prisma.MensajeChatCreateManyUsuarioInputEnvelope
+export type MensajeChatUncheckedUpdateManyWithoutConversacionNestedInput = {
+  create?: Prisma.XOR<Prisma.MensajeChatCreateWithoutConversacionInput, Prisma.MensajeChatUncheckedCreateWithoutConversacionInput> | Prisma.MensajeChatCreateWithoutConversacionInput[] | Prisma.MensajeChatUncheckedCreateWithoutConversacionInput[]
+  connectOrCreate?: Prisma.MensajeChatCreateOrConnectWithoutConversacionInput | Prisma.MensajeChatCreateOrConnectWithoutConversacionInput[]
+  upsert?: Prisma.MensajeChatUpsertWithWhereUniqueWithoutConversacionInput | Prisma.MensajeChatUpsertWithWhereUniqueWithoutConversacionInput[]
+  createMany?: Prisma.MensajeChatCreateManyConversacionInputEnvelope
   set?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
   disconnect?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
   delete?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
   connect?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
-  update?: Prisma.MensajeChatUpdateWithWhereUniqueWithoutUsuarioInput | Prisma.MensajeChatUpdateWithWhereUniqueWithoutUsuarioInput[]
-  updateMany?: Prisma.MensajeChatUpdateManyWithWhereWithoutUsuarioInput | Prisma.MensajeChatUpdateManyWithWhereWithoutUsuarioInput[]
-  deleteMany?: Prisma.MensajeChatScalarWhereInput | Prisma.MensajeChatScalarWhereInput[]
-}
-
-export type MensajeChatCreateNestedManyWithoutNotebookInput = {
-  create?: Prisma.XOR<Prisma.MensajeChatCreateWithoutNotebookInput, Prisma.MensajeChatUncheckedCreateWithoutNotebookInput> | Prisma.MensajeChatCreateWithoutNotebookInput[] | Prisma.MensajeChatUncheckedCreateWithoutNotebookInput[]
-  connectOrCreate?: Prisma.MensajeChatCreateOrConnectWithoutNotebookInput | Prisma.MensajeChatCreateOrConnectWithoutNotebookInput[]
-  createMany?: Prisma.MensajeChatCreateManyNotebookInputEnvelope
-  connect?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
-}
-
-export type MensajeChatUncheckedCreateNestedManyWithoutNotebookInput = {
-  create?: Prisma.XOR<Prisma.MensajeChatCreateWithoutNotebookInput, Prisma.MensajeChatUncheckedCreateWithoutNotebookInput> | Prisma.MensajeChatCreateWithoutNotebookInput[] | Prisma.MensajeChatUncheckedCreateWithoutNotebookInput[]
-  connectOrCreate?: Prisma.MensajeChatCreateOrConnectWithoutNotebookInput | Prisma.MensajeChatCreateOrConnectWithoutNotebookInput[]
-  createMany?: Prisma.MensajeChatCreateManyNotebookInputEnvelope
-  connect?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
-}
-
-export type MensajeChatUpdateManyWithoutNotebookNestedInput = {
-  create?: Prisma.XOR<Prisma.MensajeChatCreateWithoutNotebookInput, Prisma.MensajeChatUncheckedCreateWithoutNotebookInput> | Prisma.MensajeChatCreateWithoutNotebookInput[] | Prisma.MensajeChatUncheckedCreateWithoutNotebookInput[]
-  connectOrCreate?: Prisma.MensajeChatCreateOrConnectWithoutNotebookInput | Prisma.MensajeChatCreateOrConnectWithoutNotebookInput[]
-  upsert?: Prisma.MensajeChatUpsertWithWhereUniqueWithoutNotebookInput | Prisma.MensajeChatUpsertWithWhereUniqueWithoutNotebookInput[]
-  createMany?: Prisma.MensajeChatCreateManyNotebookInputEnvelope
-  set?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
-  disconnect?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
-  delete?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
-  connect?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
-  update?: Prisma.MensajeChatUpdateWithWhereUniqueWithoutNotebookInput | Prisma.MensajeChatUpdateWithWhereUniqueWithoutNotebookInput[]
-  updateMany?: Prisma.MensajeChatUpdateManyWithWhereWithoutNotebookInput | Prisma.MensajeChatUpdateManyWithWhereWithoutNotebookInput[]
-  deleteMany?: Prisma.MensajeChatScalarWhereInput | Prisma.MensajeChatScalarWhereInput[]
-}
-
-export type MensajeChatUncheckedUpdateManyWithoutNotebookNestedInput = {
-  create?: Prisma.XOR<Prisma.MensajeChatCreateWithoutNotebookInput, Prisma.MensajeChatUncheckedCreateWithoutNotebookInput> | Prisma.MensajeChatCreateWithoutNotebookInput[] | Prisma.MensajeChatUncheckedCreateWithoutNotebookInput[]
-  connectOrCreate?: Prisma.MensajeChatCreateOrConnectWithoutNotebookInput | Prisma.MensajeChatCreateOrConnectWithoutNotebookInput[]
-  upsert?: Prisma.MensajeChatUpsertWithWhereUniqueWithoutNotebookInput | Prisma.MensajeChatUpsertWithWhereUniqueWithoutNotebookInput[]
-  createMany?: Prisma.MensajeChatCreateManyNotebookInputEnvelope
-  set?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
-  disconnect?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
-  delete?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
-  connect?: Prisma.MensajeChatWhereUniqueInput | Prisma.MensajeChatWhereUniqueInput[]
-  update?: Prisma.MensajeChatUpdateWithWhereUniqueWithoutNotebookInput | Prisma.MensajeChatUpdateWithWhereUniqueWithoutNotebookInput[]
-  updateMany?: Prisma.MensajeChatUpdateManyWithWhereWithoutNotebookInput | Prisma.MensajeChatUpdateManyWithWhereWithoutNotebookInput[]
+  update?: Prisma.MensajeChatUpdateWithWhereUniqueWithoutConversacionInput | Prisma.MensajeChatUpdateWithWhereUniqueWithoutConversacionInput[]
+  updateMany?: Prisma.MensajeChatUpdateManyWithWhereWithoutConversacionInput | Prisma.MensajeChatUpdateManyWithWhereWithoutConversacionInput[]
   deleteMany?: Prisma.MensajeChatScalarWhereInput | Prisma.MensajeChatScalarWhereInput[]
 }
 
@@ -470,49 +385,46 @@ export type EnumRolMensajeChatFieldUpdateOperationsInput = {
   set?: $Enums.RolMensajeChat
 }
 
-export type MensajeChatCreateWithoutUsuarioInput = {
+export type MensajeChatCreateWithoutConversacionInput = {
   idMensaje?: string
-  rol: $Enums.RolMensajeChat
-  contenido: string
-  sqlGenerado?: string | null
-  createdAt?: Date | string
-  notebook: Prisma.NotebookCreateNestedOneWithoutMensajesChatInput
-}
-
-export type MensajeChatUncheckedCreateWithoutUsuarioInput = {
-  idMensaje?: string
-  idEmpresa: string
-  idNotebook: string
   rol: $Enums.RolMensajeChat
   contenido: string
   sqlGenerado?: string | null
   createdAt?: Date | string
 }
 
-export type MensajeChatCreateOrConnectWithoutUsuarioInput = {
+export type MensajeChatUncheckedCreateWithoutConversacionInput = {
+  idMensaje?: string
+  rol: $Enums.RolMensajeChat
+  contenido: string
+  sqlGenerado?: string | null
+  createdAt?: Date | string
+}
+
+export type MensajeChatCreateOrConnectWithoutConversacionInput = {
   where: Prisma.MensajeChatWhereUniqueInput
-  create: Prisma.XOR<Prisma.MensajeChatCreateWithoutUsuarioInput, Prisma.MensajeChatUncheckedCreateWithoutUsuarioInput>
+  create: Prisma.XOR<Prisma.MensajeChatCreateWithoutConversacionInput, Prisma.MensajeChatUncheckedCreateWithoutConversacionInput>
 }
 
-export type MensajeChatCreateManyUsuarioInputEnvelope = {
-  data: Prisma.MensajeChatCreateManyUsuarioInput | Prisma.MensajeChatCreateManyUsuarioInput[]
+export type MensajeChatCreateManyConversacionInputEnvelope = {
+  data: Prisma.MensajeChatCreateManyConversacionInput | Prisma.MensajeChatCreateManyConversacionInput[]
   skipDuplicates?: boolean
 }
 
-export type MensajeChatUpsertWithWhereUniqueWithoutUsuarioInput = {
+export type MensajeChatUpsertWithWhereUniqueWithoutConversacionInput = {
   where: Prisma.MensajeChatWhereUniqueInput
-  update: Prisma.XOR<Prisma.MensajeChatUpdateWithoutUsuarioInput, Prisma.MensajeChatUncheckedUpdateWithoutUsuarioInput>
-  create: Prisma.XOR<Prisma.MensajeChatCreateWithoutUsuarioInput, Prisma.MensajeChatUncheckedCreateWithoutUsuarioInput>
+  update: Prisma.XOR<Prisma.MensajeChatUpdateWithoutConversacionInput, Prisma.MensajeChatUncheckedUpdateWithoutConversacionInput>
+  create: Prisma.XOR<Prisma.MensajeChatCreateWithoutConversacionInput, Prisma.MensajeChatUncheckedCreateWithoutConversacionInput>
 }
 
-export type MensajeChatUpdateWithWhereUniqueWithoutUsuarioInput = {
+export type MensajeChatUpdateWithWhereUniqueWithoutConversacionInput = {
   where: Prisma.MensajeChatWhereUniqueInput
-  data: Prisma.XOR<Prisma.MensajeChatUpdateWithoutUsuarioInput, Prisma.MensajeChatUncheckedUpdateWithoutUsuarioInput>
+  data: Prisma.XOR<Prisma.MensajeChatUpdateWithoutConversacionInput, Prisma.MensajeChatUncheckedUpdateWithoutConversacionInput>
 }
 
-export type MensajeChatUpdateManyWithWhereWithoutUsuarioInput = {
+export type MensajeChatUpdateManyWithWhereWithoutConversacionInput = {
   where: Prisma.MensajeChatScalarWhereInput
-  data: Prisma.XOR<Prisma.MensajeChatUpdateManyMutationInput, Prisma.MensajeChatUncheckedUpdateManyWithoutUsuarioInput>
+  data: Prisma.XOR<Prisma.MensajeChatUpdateManyMutationInput, Prisma.MensajeChatUncheckedUpdateManyWithoutConversacionInput>
 }
 
 export type MensajeChatScalarWhereInput = {
@@ -520,128 +432,39 @@ export type MensajeChatScalarWhereInput = {
   OR?: Prisma.MensajeChatScalarWhereInput[]
   NOT?: Prisma.MensajeChatScalarWhereInput | Prisma.MensajeChatScalarWhereInput[]
   idMensaje?: Prisma.UuidFilter<"MensajeChat"> | string
-  idEmpresa?: Prisma.UuidFilter<"MensajeChat"> | string
-  idNotebook?: Prisma.UuidFilter<"MensajeChat"> | string
-  idUsuario?: Prisma.UuidFilter<"MensajeChat"> | string
+  idConversacion?: Prisma.UuidFilter<"MensajeChat"> | string
   rol?: Prisma.EnumRolMensajeChatFilter<"MensajeChat"> | $Enums.RolMensajeChat
   contenido?: Prisma.StringFilter<"MensajeChat"> | string
   sqlGenerado?: Prisma.StringNullableFilter<"MensajeChat"> | string | null
   createdAt?: Prisma.DateTimeFilter<"MensajeChat"> | Date | string
 }
 
-export type MensajeChatCreateWithoutNotebookInput = {
+export type MensajeChatCreateManyConversacionInput = {
   idMensaje?: string
   rol: $Enums.RolMensajeChat
   contenido: string
   sqlGenerado?: string | null
   createdAt?: Date | string
-  usuario: Prisma.UsuarioCreateNestedOneWithoutMensajesChatInput
 }
 
-export type MensajeChatUncheckedCreateWithoutNotebookInput = {
-  idMensaje?: string
-  idUsuario: string
-  rol: $Enums.RolMensajeChat
-  contenido: string
-  sqlGenerado?: string | null
-  createdAt?: Date | string
-}
-
-export type MensajeChatCreateOrConnectWithoutNotebookInput = {
-  where: Prisma.MensajeChatWhereUniqueInput
-  create: Prisma.XOR<Prisma.MensajeChatCreateWithoutNotebookInput, Prisma.MensajeChatUncheckedCreateWithoutNotebookInput>
-}
-
-export type MensajeChatCreateManyNotebookInputEnvelope = {
-  data: Prisma.MensajeChatCreateManyNotebookInput | Prisma.MensajeChatCreateManyNotebookInput[]
-  skipDuplicates?: boolean
-}
-
-export type MensajeChatUpsertWithWhereUniqueWithoutNotebookInput = {
-  where: Prisma.MensajeChatWhereUniqueInput
-  update: Prisma.XOR<Prisma.MensajeChatUpdateWithoutNotebookInput, Prisma.MensajeChatUncheckedUpdateWithoutNotebookInput>
-  create: Prisma.XOR<Prisma.MensajeChatCreateWithoutNotebookInput, Prisma.MensajeChatUncheckedCreateWithoutNotebookInput>
-}
-
-export type MensajeChatUpdateWithWhereUniqueWithoutNotebookInput = {
-  where: Prisma.MensajeChatWhereUniqueInput
-  data: Prisma.XOR<Prisma.MensajeChatUpdateWithoutNotebookInput, Prisma.MensajeChatUncheckedUpdateWithoutNotebookInput>
-}
-
-export type MensajeChatUpdateManyWithWhereWithoutNotebookInput = {
-  where: Prisma.MensajeChatScalarWhereInput
-  data: Prisma.XOR<Prisma.MensajeChatUpdateManyMutationInput, Prisma.MensajeChatUncheckedUpdateManyWithoutNotebookInput>
-}
-
-export type MensajeChatCreateManyUsuarioInput = {
-  idMensaje?: string
-  idEmpresa: string
-  idNotebook: string
-  rol: $Enums.RolMensajeChat
-  contenido: string
-  sqlGenerado?: string | null
-  createdAt?: Date | string
-}
-
-export type MensajeChatUpdateWithoutUsuarioInput = {
+export type MensajeChatUpdateWithoutConversacionInput = {
   idMensaje?: Prisma.StringFieldUpdateOperationsInput | string
   rol?: Prisma.EnumRolMensajeChatFieldUpdateOperationsInput | $Enums.RolMensajeChat
   contenido?: Prisma.StringFieldUpdateOperationsInput | string
   sqlGenerado?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  notebook?: Prisma.NotebookUpdateOneRequiredWithoutMensajesChatNestedInput
 }
 
-export type MensajeChatUncheckedUpdateWithoutUsuarioInput = {
+export type MensajeChatUncheckedUpdateWithoutConversacionInput = {
   idMensaje?: Prisma.StringFieldUpdateOperationsInput | string
-  idEmpresa?: Prisma.StringFieldUpdateOperationsInput | string
-  idNotebook?: Prisma.StringFieldUpdateOperationsInput | string
   rol?: Prisma.EnumRolMensajeChatFieldUpdateOperationsInput | $Enums.RolMensajeChat
   contenido?: Prisma.StringFieldUpdateOperationsInput | string
   sqlGenerado?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type MensajeChatUncheckedUpdateManyWithoutUsuarioInput = {
+export type MensajeChatUncheckedUpdateManyWithoutConversacionInput = {
   idMensaje?: Prisma.StringFieldUpdateOperationsInput | string
-  idEmpresa?: Prisma.StringFieldUpdateOperationsInput | string
-  idNotebook?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolMensajeChatFieldUpdateOperationsInput | $Enums.RolMensajeChat
-  contenido?: Prisma.StringFieldUpdateOperationsInput | string
-  sqlGenerado?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type MensajeChatCreateManyNotebookInput = {
-  idMensaje?: string
-  idUsuario: string
-  rol: $Enums.RolMensajeChat
-  contenido: string
-  sqlGenerado?: string | null
-  createdAt?: Date | string
-}
-
-export type MensajeChatUpdateWithoutNotebookInput = {
-  idMensaje?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolMensajeChatFieldUpdateOperationsInput | $Enums.RolMensajeChat
-  contenido?: Prisma.StringFieldUpdateOperationsInput | string
-  sqlGenerado?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  usuario?: Prisma.UsuarioUpdateOneRequiredWithoutMensajesChatNestedInput
-}
-
-export type MensajeChatUncheckedUpdateWithoutNotebookInput = {
-  idMensaje?: Prisma.StringFieldUpdateOperationsInput | string
-  idUsuario?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolMensajeChatFieldUpdateOperationsInput | $Enums.RolMensajeChat
-  contenido?: Prisma.StringFieldUpdateOperationsInput | string
-  sqlGenerado?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type MensajeChatUncheckedUpdateManyWithoutNotebookInput = {
-  idMensaje?: Prisma.StringFieldUpdateOperationsInput | string
-  idUsuario?: Prisma.StringFieldUpdateOperationsInput | string
   rol?: Prisma.EnumRolMensajeChatFieldUpdateOperationsInput | $Enums.RolMensajeChat
   contenido?: Prisma.StringFieldUpdateOperationsInput | string
   sqlGenerado?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -652,79 +475,62 @@ export type MensajeChatUncheckedUpdateManyWithoutNotebookInput = {
 
 export type MensajeChatSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   idMensaje?: boolean
-  idEmpresa?: boolean
-  idNotebook?: boolean
-  idUsuario?: boolean
+  idConversacion?: boolean
   rol?: boolean
   contenido?: boolean
   sqlGenerado?: boolean
   createdAt?: boolean
-  notebook?: boolean | Prisma.NotebookDefaultArgs<ExtArgs>
-  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  conversacion?: boolean | Prisma.ConversacionChatDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["mensajeChat"]>
 
 export type MensajeChatSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   idMensaje?: boolean
-  idEmpresa?: boolean
-  idNotebook?: boolean
-  idUsuario?: boolean
+  idConversacion?: boolean
   rol?: boolean
   contenido?: boolean
   sqlGenerado?: boolean
   createdAt?: boolean
-  notebook?: boolean | Prisma.NotebookDefaultArgs<ExtArgs>
-  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  conversacion?: boolean | Prisma.ConversacionChatDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["mensajeChat"]>
 
 export type MensajeChatSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   idMensaje?: boolean
-  idEmpresa?: boolean
-  idNotebook?: boolean
-  idUsuario?: boolean
+  idConversacion?: boolean
   rol?: boolean
   contenido?: boolean
   sqlGenerado?: boolean
   createdAt?: boolean
-  notebook?: boolean | Prisma.NotebookDefaultArgs<ExtArgs>
-  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  conversacion?: boolean | Prisma.ConversacionChatDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["mensajeChat"]>
 
 export type MensajeChatSelectScalar = {
   idMensaje?: boolean
-  idEmpresa?: boolean
-  idNotebook?: boolean
-  idUsuario?: boolean
+  idConversacion?: boolean
   rol?: boolean
   contenido?: boolean
   sqlGenerado?: boolean
   createdAt?: boolean
 }
 
-export type MensajeChatOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"idMensaje" | "idEmpresa" | "idNotebook" | "idUsuario" | "rol" | "contenido" | "sqlGenerado" | "createdAt", ExtArgs["result"]["mensajeChat"]>
+export type MensajeChatOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"idMensaje" | "idConversacion" | "rol" | "contenido" | "sqlGenerado" | "createdAt", ExtArgs["result"]["mensajeChat"]>
 export type MensajeChatInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  notebook?: boolean | Prisma.NotebookDefaultArgs<ExtArgs>
-  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  conversacion?: boolean | Prisma.ConversacionChatDefaultArgs<ExtArgs>
 }
 export type MensajeChatIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  notebook?: boolean | Prisma.NotebookDefaultArgs<ExtArgs>
-  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  conversacion?: boolean | Prisma.ConversacionChatDefaultArgs<ExtArgs>
 }
 export type MensajeChatIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  notebook?: boolean | Prisma.NotebookDefaultArgs<ExtArgs>
-  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  conversacion?: boolean | Prisma.ConversacionChatDefaultArgs<ExtArgs>
 }
 
 export type $MensajeChatPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "MensajeChat"
   objects: {
-    notebook: Prisma.$NotebookPayload<ExtArgs>
-    usuario: Prisma.$UsuarioPayload<ExtArgs>
+    conversacion: Prisma.$ConversacionChatPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     idMensaje: string
-    idEmpresa: string
-    idNotebook: string
-    idUsuario: string
+    idConversacion: string
     rol: $Enums.RolMensajeChat
     contenido: string
     sqlGenerado: string | null
@@ -1123,8 +929,7 @@ readonly fields: MensajeChatFieldRefs;
  */
 export interface Prisma__MensajeChatClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  notebook<T extends Prisma.NotebookDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.NotebookDefaultArgs<ExtArgs>>): Prisma.Prisma__NotebookClient<runtime.Types.Result.GetResult<Prisma.$NotebookPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  usuario<T extends Prisma.UsuarioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UsuarioDefaultArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  conversacion<T extends Prisma.ConversacionChatDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ConversacionChatDefaultArgs<ExtArgs>>): Prisma.Prisma__ConversacionChatClient<runtime.Types.Result.GetResult<Prisma.$ConversacionChatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1155,9 +960,7 @@ export interface Prisma__MensajeChatClient<T, Null = never, ExtArgs extends runt
  */
 export interface MensajeChatFieldRefs {
   readonly idMensaje: Prisma.FieldRef<"MensajeChat", 'String'>
-  readonly idEmpresa: Prisma.FieldRef<"MensajeChat", 'String'>
-  readonly idNotebook: Prisma.FieldRef<"MensajeChat", 'String'>
-  readonly idUsuario: Prisma.FieldRef<"MensajeChat", 'String'>
+  readonly idConversacion: Prisma.FieldRef<"MensajeChat", 'String'>
   readonly rol: Prisma.FieldRef<"MensajeChat", 'RolMensajeChat'>
   readonly contenido: Prisma.FieldRef<"MensajeChat", 'String'>
   readonly sqlGenerado: Prisma.FieldRef<"MensajeChat", 'String'>

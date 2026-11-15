@@ -71,6 +71,33 @@ Implementación en `src/api/module1.api.ts`, con esquemas en `src/api/module1.sc
 | `retryDocument` | `POST /api/v1/module1/documents/:idDocumento/retry` | UUID | `{ documento }` o error de reintento | Bearer | `module1-api.test.mjs` | Conectado |
 | `deleteDocument` | `DELETE /api/v1/module1/documents/:idDocumento` | UUID | `{ idDocumento, eliminado: true }` | Bearer | `module1-api.test.mjs` | Conectado |
 
+La acción “Descargar PDF” en las filas de la cola y de “Documentos existentes” utiliza `getDocumentPdf` y guarda el Blob como archivo con el nombre original del documento.
+
 Errores del módulo: `normalizeErrorBody` convierte el envelope `{ error: { code } }` en `ApiError` con `status`, `code` y `kind` (`NETWORK`, `UNAUTHENTICATED`, `FORBIDDEN`, `NOT_FOUND`, `CONFLICT`, `VALIDATION`, `UNAVAILABLE`, `INVALID_RESPONSE`, `UNEXPECTED`). El mensaje visible sale de un catálogo del frontend; el texto del servidor no se muestra. Los `details` solo se conservan para `VALIDATION_ERROR`.
 
 Códigos solo del cliente: `INVALID_IDENTIFIER` (UUID mal formado, sin petición), `NETWORK_ERROR` (fallo de red), `UNKNOWN_ERROR` (respuesta de error sin envelope) e `INVALID_RESPONSE` (respuesta 2xx que no cumple el esquema).
+
+## Dashboard del notebook
+
+El dashboard carga automáticamente todas las métricas disponibles mediante `src/api/dashboard.api.ts`; la pestaña del dashboard no consulta a la IA. Las solicitudes van a Express y se limitan al notebook seleccionado.
+
+| Función | Método y endpoint Express | Request validado | Respuesta validada | Auth | Prueba | Estado |
+|---|---|---|---|---|---|---|
+| `consultarMetrica` | `POST /api/v1/dashboard/notebooks/:idNotebook/query` | `{ metrica, filtros: { direccion: "COMPRA" } }` | `{ metrica, filtros, datos, actualizadoEn }` | Bearer | `dashboard-api.test.mjs` | Conectado |
+
+Métricas cargadas automáticamente: resumen de montos, compras por periodo, proveedor y producto, pagos pendientes, descuentos y recargos. Cada consulta falla de forma independiente para mantener visibles los demás gráficos.
+
+## Chat e historial de conversaciones
+
+El historial se organiza en conversaciones privadas por usuario dentro del notebook. Express valida empresa y usuario en cada acceso; el frontend usa solo el ID de conversación para las operaciones de mensajes.
+
+| Función | Método y endpoint Express | Request validado | Respuesta validada | Auth | Prueba | Estado |
+|---|---|---|---|---|---|---|
+| `getConversaciones` | `GET /api/v1/module4/notebooks/:idNotebook/conversaciones?pagina=1` | UUID del notebook, página 1–1000 | `{ conversaciones, total, pagina, hayMas }` (20 por página) | Bearer | `chat-api.test.mjs` | Conectado |
+| `crearConversacion` | `POST /api/v1/module4/notebooks/:idNotebook/conversaciones` | UUID del notebook, body vacío | `201 { conversacion }`; reutiliza un borrador vacío | Bearer | `chat-api.test.mjs` | Conectado |
+| `getChat` | `GET /api/v1/module4/conversaciones/:idConversacion/mensajes?cursor=:idMensaje` | UUID conversación y cursor opcional | `{ mensajes, hayMas }` (50 por página) | Bearer | `chat-api.test.mjs` | Conectado |
+| `sendChatMessage` | `POST /api/v1/module4/conversaciones/:idConversacion/mensajes` | UUID y `{ pregunta }` | `201 { mensajes, conversacion }` | Bearer | `chat-api.test.mjs` | Conectado |
+| `eliminarConversacion` | `DELETE /api/v1/module4/conversaciones/:idConversacion` | UUID de conversación | `{ idConversacion, eliminado: true }` | Bearer | `chat-api.test.mjs` | Conectado |
+
+El endpoint anterior `/api/v1/module4/notebooks/:idNotebook/chat` fue reemplazado. La migración mantiene su historial agrupándolo en una conversación por usuario y notebook.
+El límite es de 50 conversaciones por usuario/notebook y 20 preguntas por minuto por usuario. La interfaz solo crea el registro al enviar el primer mensaje, así que “Nueva conversación” no persiste borradores vacíos.

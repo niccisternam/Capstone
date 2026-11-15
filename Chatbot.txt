@@ -1,0 +1,5 @@
+50 conversaciones máximo por notebook.
+20 conversaciones cargadas por página.
+50 mensajes cargados por página, con opción de ver los anteriores.
+20 preguntas por minuto por usuario, al excederlo, el backend responde 429 e indica cuánto esperar.
+Los chats nuevos quedan como borrador local y se guardan al enviar el primer mensaje, si ya hay uno vacío, se reutiliza.

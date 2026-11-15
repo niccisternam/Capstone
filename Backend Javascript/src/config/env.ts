@@ -27,7 +27,12 @@ const schema = z.object({
   MAIL_FROM: z.string().min(1).optional(),
   MAX_FILE_SIZE_MB: z.coerce.number().int().positive().max(15).default(15),
   MAX_BATCH_SIZE: z.coerce.number().int().min(1).max(10).default(10),
-  APP_ORIGIN: z.string().url().default("http://localhost:5173"),
+  APP_ORIGIN: z
+    .string()
+    .url()
+    // El navegador envía el origen sin "/" final; comparar igual evita romper CORS.
+    .transform((value) => value.replace(/\/+$/, ""))
+    .default("http://localhost:5173"),
   GEMINI_API_KEY: z.string().min(1).optional(),
   GEMINI_MODEL: z.string().default("gemini-3.5-flash"),
   GEMINI_LIVE_TESTS: booleanString.default("false"),

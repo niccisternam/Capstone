@@ -127,6 +127,7 @@ model Empresa {
   notebooks   Notebook[]
   lotes       LoteProcesamiento[]
   documentos  Documento[]
+  widgets     DashboardWidget[]
 
   @@map("empresa")
 }
@@ -157,7 +158,8 @@ model Usuario {
   lotesCreados         LoteProcesamiento[] @relation("LoteCreador")
   documentosCargados   Documento[]         @relation("DocumentoCargador")
   revisionesDocumentos RevisionDocumento[] @relation("RevisionRevisor")
-  mensajesChat         MensajeChat[]
+  conversacionesChat   ConversacionChat[]
+  widgetsCreados       DashboardWidget[]   @relation("WidgetCreador")
 
   @@index([estado], map: "idx_usuario_estado")
   @@map("usuario")
@@ -233,20 +235,21 @@ model EventoSeguridad {
 }
 
 model Notebook {
-  idNotebook    String              @id @default(dbgenerated("gen_random_uuid()")) @map("id_notebook") @db.Uuid
-  idEmpresa     String              @map("id_empresa") @db.Uuid
-  creadoPorId   String              @map("creado_por") @db.Uuid
-  nombre        String              @db.VarChar(150)
-  descripcion   String?             @db.Text
-  icono         String?             @db.VarChar(80)
-  paletaColores Json?               @map("paleta_colores") @db.JsonB
-  createdAt     DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt     DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  empresa       Empresa             @relation(fields: [idEmpresa], references: [idEmpresa], onDelete: Restrict, map: "fk_notebook_empresa")
-  creador       Usuario             @relation("NotebookCreador", fields: [creadoPorId], references: [idUsuario], onDelete: Restrict, map: "fk_notebook_creador")
-  lotes         LoteProcesamiento[]
-  documentos    Documento[]
-  mensajesChat  MensajeChat[]
+  idNotebook         String              @id @default(dbgenerated("gen_random_uuid()")) @map("id_notebook") @db.Uuid
+  idEmpresa          String              @map("id_empresa") @db.Uuid
+  creadoPorId        String              @map("creado_por") @db.Uuid
+  nombre             String              @db.VarChar(150)
+  descripcion        String?             @db.Text
+  icono              String?             @db.VarChar(80)
+  paletaColores      Json?               @map("paleta_colores") @db.JsonB
+  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  empresa            Empresa             @relation(fields: [idEmpresa], references: [idEmpresa], onDelete: Restrict, map: "fk_notebook_empresa")
+  creador            Usuario             @relation("NotebookCreador", fields: [creadoPorId], references: [idUsuario], onDelete: Restrict, map: "fk_notebook_creador")
+  lotes              LoteProcesamiento[]
+  documentos         Documento[]
+  conversacionesChat ConversacionChat[]
+  widgets            DashboardWidget[]
 
   @@unique([idEmpresa, idNotebook], map: "uq_notebook_empresa_id")
   @@index([idEmpresa], map: "idx_notebook_empresa")
@@ -499,18 +502,51 @@ model AjusteGlobalRevision {
   @@map("ajuste_global_revision")
 }
 
-model MensajeChat {
-  idMensaje   String         @id @default(dbgenerated("gen_random_uuid()")) @map("id_mensaje") @db.Uuid
-  idEmpresa   String         @map("id_empresa") @db.Uuid
-  idNotebook  String         @map("id_notebook") @db.Uuid
-  idUsuario   String         @map("id_usuario") @db.Uuid
-  rol         RolMensajeChat
-  contenido   String         @db.Text
-  sqlGenerado String?        @map("sql_generado") @db.Text
-  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
-  notebook    Notebook       @relation(fields: [idEmpresa, idNotebook], references: [idEmpresa, idNotebook], onDelete: Cascade, map: "fk_mensaje_chat_empresa_notebook")
-  usuario     Usuario        @relation(fields: [idUsuario], references: [idUsuario], onDelete: Cascade, map: "fk_mensaje_chat_usuario")
+model ConversacionChat {
+  idConversacion String        @id @default(dbgenerated("gen_random_uuid()")) @map("id_conversacion") @db.Uuid
+  idEmpresa      String        @map("id_empresa") @db.Uuid
+  idNotebook     String        @map("id_notebook") @db.Uuid
+  idUsuario      String        @map("id_usuario") @db.Uuid
+  titulo         String        @default("Nueva conversación") @db.VarChar(120)
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  notebook       Notebook      @relation(fields: [idEmpresa, idNotebook], references: [idEmpresa, idNotebook], onDelete: Cascade, map: "fk_conversacion_chat_empresa_notebook")
+  usuario        Usuario       @relation(fields: [idUsuario], references: [idUsuario], onDelete: Cascade, map: "fk_conversacion_chat_usuario")
+  mensajes       MensajeChat[]
 
-  @@index([idNotebook, idUsuario, createdAt], map: "idx_mensaje_chat_notebook_usuario_fecha")
+  @@index([idEmpresa, idNotebook, idUsuario, updatedAt(sort: Desc)], map: "idx_conversacion_chat_usuario_fecha")
+  @@map("conversacion_chat")
+}
+
+model MensajeChat {
+  idMensaje      String           @id @default(dbgenerated("gen_random_uuid()")) @map("id_mensaje") @db.Uuid
+  idConversacion String           @map("id_conversacion") @db.Uuid
+  rol            RolMensajeChat
+  contenido      String           @db.Text
+  sqlGenerado    String?          @map("sql_generado") @db.Text
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  conversacion   ConversacionChat @relation(fields: [idConversacion], references: [idConversacion], onDelete: Cascade, map: "fk_mensaje_chat_conversacion")
+
+  @@index([idConversacion, createdAt], map: "idx_mensaje_chat_conversacion_fecha")
   @@map("mensaje_chat")
+}
+
+model DashboardWidget {
+  idWidget      String   @id @default(dbgenerated("gen_random_uuid()")) @map("id_widget") @db.Uuid
+  idEmpresa     String   @map("id_empresa") @db.Uuid
+  idNotebook    String   @map("id_notebook") @db.Uuid
+  creadoPorId   String   @map("creado_por") @db.Uuid
+  titulo        String   @db.VarChar(150)
+  metrica       String   @db.VarChar(40)
+  filtros       Json     @default("{}") @db.JsonB
+  visualizacion String   @default("bar") @db.VarChar(20)
+  orden         Int      @default(0)
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  empresa       Empresa  @relation(fields: [idEmpresa], references: [idEmpresa], onDelete: Cascade, map: "fk_widget_empresa")
+  notebook      Notebook @relation(fields: [idEmpresa, idNotebook], references: [idEmpresa, idNotebook], onDelete: Cascade, map: "fk_widget_empresa_notebook")
+  creador       Usuario  @relation("WidgetCreador", fields: [creadoPorId], references: [idUsuario], onDelete: Cascade, map: "fk_widget_creador")
+
+  @@index([idEmpresa, idNotebook, orden], map: "idx_widget_empresa_notebook")
+  @@map("dashboard_widget")
 }

@@ -107,9 +107,9 @@ Para todos los módulos: alcance y criterios aprobados; UI y estados aplicables 
 
 - **Objetivo:** conversar con historial y contexto autorizado.
 - **Dependencias:** módulos 6 y 11; contratos de mensajes, streaming si existe, historial, permisos y notebooks confirmados.
-- **Alcance:** conversaciones, mensajes, estados y selección de uno o varios notebooks autorizados únicamente si el contrato lo soporta.
-- **Aceptación:** el contexto elegido es visible; no se envían notebooks no autorizados; streaming/cancelación/errores siguen el contrato; cuota se refleja.
-- **Pruebas:** envío, historial, vacío, error, reintento seguro, permisos, uno/varios notebooks si aplica y accesibilidad.
+- **Alcance:** conversaciones privadas por usuario y notebook; panel lateral retráctil, selección, eliminación, paginación del historial y borrador local para chats nuevos.
+- **Aceptación:** al abrir se selecciona la conversación más reciente; se cargan mensajes y conversaciones por páginas; el límite de conversaciones y preguntas se comunica claramente; el notebook limita el contexto.
+- **Pruebas:** envío, paginación, borrador vacío, límite, error, permisos, responsive y accesibilidad.
 - **DoD:** DoD común más formato de mensajes, contexto y política de historial documentados.
 
 ## 13. Dashboard y KPIs

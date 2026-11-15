@@ -34,7 +34,7 @@ Estado real:
 14. Guarda la revisión y confirma el documento.
 15. El documento pasa a `CONFIRMADO` y se navega al siguiente pendiente.
 16. Un documento `ERROR` puede reintentarse.
-17. Los documentos `PENDIENTE` o `ERROR` pueden eliminarse desde la cola; los documentos existentes procesados o confirmados también pueden eliminarse desde su tabla.
+17. Los documentos de la cola y los ya procesados pueden descargarse; los documentos `PENDIENTE` o `ERROR` pueden eliminarse desde la cola y los procesados o confirmados desde su tabla.
 18. Un archivo seleccionado en “Cargar documentos” puede quitarse localmente antes de enviarlo al backend.
 19. Un notebook puede editarse y eliminarse, incluyendo sus documentos asociados.
 20. Un documento confirmado puede reabrirse para editarlo; al modificar campos vuelve a requerir confirmación.
@@ -109,7 +109,7 @@ DELETE /documents/:idDocumento
 
 `GET /documents/:idDocumento` incluye archivo, resultados de extracción con detalles y ajustes, y revisiones.
 
-`GET /documents/:idDocumento/pdf` devuelve binario `application/pdf` con `Content-Disposition: inline`. `getDocumentPdf` valida y devuelve un `Blob` para el visor PDF.
+`GET /documents/:idDocumento/pdf` devuelve binario `application/pdf` con `Content-Disposition: inline`. `getDocumentPdf` valida y devuelve un `Blob` usado tanto por el visor PDF como por la descarga desde “Documentos existentes”.
 
 La revisión actual valida:
 

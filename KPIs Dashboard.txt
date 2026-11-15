@@ -1,0 +1,6 @@
+Resumen de montos
+Compras por mes
+Compras por proveedor
+Compras por producto o servicio
+Pagos pendientes
+Descuentos y recargos

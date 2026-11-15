@@ -68,7 +68,9 @@ export const ModelName = {
   RevisionDocumento: 'RevisionDocumento',
   DetalleRevision: 'DetalleRevision',
   AjusteGlobalRevision: 'AjusteGlobalRevision',
-  MensajeChat: 'MensajeChat'
+  ConversacionChat: 'ConversacionChat',
+  MensajeChat: 'MensajeChat',
+  DashboardWidget: 'DashboardWidget'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -402,11 +404,22 @@ export const AjusteGlobalRevisionScalarFieldEnum = {
 export type AjusteGlobalRevisionScalarFieldEnum = (typeof AjusteGlobalRevisionScalarFieldEnum)[keyof typeof AjusteGlobalRevisionScalarFieldEnum]
 
 
-export const MensajeChatScalarFieldEnum = {
-  idMensaje: 'idMensaje',
+export const ConversacionChatScalarFieldEnum = {
+  idConversacion: 'idConversacion',
   idEmpresa: 'idEmpresa',
   idNotebook: 'idNotebook',
   idUsuario: 'idUsuario',
+  titulo: 'titulo',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ConversacionChatScalarFieldEnum = (typeof ConversacionChatScalarFieldEnum)[keyof typeof ConversacionChatScalarFieldEnum]
+
+
+export const MensajeChatScalarFieldEnum = {
+  idMensaje: 'idMensaje',
+  idConversacion: 'idConversacion',
   rol: 'rol',
   contenido: 'contenido',
   sqlGenerado: 'sqlGenerado',
@@ -414,6 +427,23 @@ export const MensajeChatScalarFieldEnum = {
 } as const
 
 export type MensajeChatScalarFieldEnum = (typeof MensajeChatScalarFieldEnum)[keyof typeof MensajeChatScalarFieldEnum]
+
+
+export const DashboardWidgetScalarFieldEnum = {
+  idWidget: 'idWidget',
+  idEmpresa: 'idEmpresa',
+  idNotebook: 'idNotebook',
+  creadoPorId: 'creadoPorId',
+  titulo: 'titulo',
+  metrica: 'metrica',
+  filtros: 'filtros',
+  visualizacion: 'visualizacion',
+  orden: 'orden',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DashboardWidgetScalarFieldEnum = (typeof DashboardWidgetScalarFieldEnum)[keyof typeof DashboardWidgetScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -430,6 +460,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

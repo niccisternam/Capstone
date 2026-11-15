@@ -125,7 +125,17 @@ export type DetalleRevision = Prisma.DetalleRevisionModel
  */
 export type AjusteGlobalRevision = Prisma.AjusteGlobalRevisionModel
 /**
+ * Model ConversacionChat
+ * 
+ */
+export type ConversacionChat = Prisma.ConversacionChatModel
+/**
  * Model MensajeChat
  * 
  */
 export type MensajeChat = Prisma.MensajeChatModel
+/**
+ * Model DashboardWidget
+ * 
+ */
+export type DashboardWidget = Prisma.DashboardWidgetModel
