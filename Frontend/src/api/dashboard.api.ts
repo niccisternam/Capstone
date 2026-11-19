@@ -21,22 +21,38 @@ export interface ResultadoMetrica {
   actualizadoEn: string;
 }
 
+export type FiltrosConsulta = {
+  direccion?: "COMPRA" | "VENTA" | "TODAS";
+  /** Mes inicial inclusivo en formato YYYY-MM. */
+  desde?: string;
+  /** Mes final inclusivo en formato YYYY-MM. */
+  hasta?: string;
+};
+
+const mesSchema = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/);
+
 const resultadoSchema = z.object({
   metrica: metricaSchema,
   filtros: z.object({
     direccion: z.enum(["COMPRA", "VENTA", "TODAS"]),
+    desde: mesSchema.optional(),
+    hasta: mesSchema.optional(),
   }),
   datos: z.array(z.record(z.string(), z.unknown())),
   actualizadoEn: z.string(),
 });
 
-export async function consultarMetrica(idNotebook: string, metrica: Metrica): Promise<ResultadoMetrica> {
+export async function consultarMetrica(
+  idNotebook: string,
+  metrica: Metrica,
+  filtros: FiltrosConsulta = { direccion: "COMPRA" },
+): Promise<ResultadoMetrica> {
   const id = parseIdentifier(idNotebook);
   const path = `/dashboard/notebooks/${encodeURIComponent(id)}/query`;
   return call(
     () => request<unknown>(
       path,
-      { method: "POST", body: JSON.stringify({ metrica, filtros: { direccion: "COMPRA" } }) },
+      { method: "POST", body: JSON.stringify({ metrica, filtros: { direccion: "COMPRA", ...filtros } }) },
       getAccessToken(),
     ),
     resultadoSchema,

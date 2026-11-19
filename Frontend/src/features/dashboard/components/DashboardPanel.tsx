@@ -1,8 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ApiError } from "@/api/api-error";
 import { consultarMetrica, metricas, type DatoWidget, type Metrica } from "@/api/dashboard.api";
+import { etiquetaRango, mesesDelRango, resolverPeriodo, validarRango, type FiltrosPeriodo, type RangoMeses } from "../periodos";
+import { DashboardFilters } from "./DashboardFilters";
 
 const INDICADORES: { metrica: Metrica; titulo: string }[] = [
   { metrica: "resumen_montos", titulo: "Resumen de montos" },
@@ -94,13 +96,22 @@ function ResumenMontos({ fila }: { fila: DatoWidget }) {
   );
 }
 
-function TendenciaMensual({ filas }: { filas: DatoWidget[] }) {
-  const periodos = filas.slice(-12);
+function TendenciaMensual({ filas, rango }: { filas: DatoWidget[]; rango: RangoMeses | null }) {
+  // Con un periodo activo se muestran todos sus meses, incluidos los que no tienen compras.
+  const periodos = rango
+    ? (() => {
+        const porPeriodo = new Map(filas.map((fila) => [String(fila.periodo ?? ""), fila]));
+        return mesesDelRango(rango).map(
+          (periodo) => porPeriodo.get(periodo) ?? { periodo, total: "0", documentos: 0 },
+        );
+      })()
+    : filas.slice(-12);
   if (!periodos.length) return <p className="py-8 text-center text-sm text-slate-500">Aún no hay compras por periodo.</p>;
 
-  const ancho = 720;
   const alto = 250;
   const margen = { arriba: 14, derecha: 12, abajo: 38, izquierda: 58 };
+  // Cada mes conserva ~56 px para que las etiquetas del eje X no se solapen.
+  const ancho = Math.max(720, periodos.length * 56 + margen.izquierda + margen.derecha);
   const anchoGrafico = ancho - margen.izquierda - margen.derecha;
   const altoGrafico = alto - margen.arriba - margen.abajo;
   const maximo = Math.max(...periodos.map((fila) => numero(fila.total)), 1) * 1.18;
@@ -110,11 +121,14 @@ function TendenciaMensual({ filas }: { filas: DatoWidget[] }) {
 
   return (
     <div className="overflow-x-auto">
-      <figure className="min-w-[640px] rounded-xl bg-white px-3 pb-1 pt-4">
+      <figure
+        className="rounded-xl bg-white px-3 pb-1 pt-4"
+        style={{ minWidth: ancho }}
+      >
         <svg
           viewBox={`0 0 ${ancho} ${alto}`}
           role="img"
-          aria-label={`Compras mensuales de los últimos ${periodos.length} periodos`}
+          aria-label={rango ? `Compras mensuales de ${etiquetaRango(rango)}` : `Compras mensuales de los últimos ${periodos.length} periodos`}
           className="h-auto w-full overflow-visible"
         >
           <desc>Gráfico de barras verticales con el total confirmado por mes de emisión.</desc>
@@ -184,7 +198,9 @@ function TendenciaMensual({ filas }: { filas: DatoWidget[] }) {
           })}
         </svg>
       </figure>
-      <p className="mt-2 text-right text-xs text-slate-500">Últimos {periodos.length} periodos con compras</p>
+      <p className="mt-2 text-right text-xs text-slate-500">
+        {rango ? `Periodo: ${etiquetaRango(rango)}` : `Últimos ${periodos.length} periodos con compras`}
+      </p>
     </div>
   );
 }
@@ -289,7 +305,7 @@ function Ajustes({ filas }: { filas: DatoWidget[] }) {
   );
 }
 
-function Contenido({ metrica, datos }: { metrica: Metrica; datos: DatoWidget[] }) {
+function Contenido({ metrica, datos, rango }: { metrica: Metrica; datos: DatoWidget[]; rango: RangoMeses | null }) {
   const [fila] = datos;
 
   switch (metrica) {
@@ -298,7 +314,7 @@ function Contenido({ metrica, datos }: { metrica: Metrica; datos: DatoWidget[] }
     case "compras_por_periodo":
       return (
         <Panel titulo="Compras por mes" descripcion="Evolución según fecha de emisión" className="border-blue-200 bg-[#f7f9fe] lg:col-span-12">
-          <TendenciaMensual filas={datos} />
+          <TendenciaMensual filas={datos} rango={rango} />
         </Panel>
       );
     case "compras_por_proveedor":
@@ -329,33 +345,69 @@ function Contenido({ metrica, datos }: { metrica: Metrica; datos: DatoWidget[] }
 }
 
 export function DashboardPanel({ idNotebook }: { idNotebook: string }) {
+  const [periodo, setPeriodo] = useState<FiltrosPeriodo>({ tipo: "todo" });
+  const [mesesDisponibles, setMesesDisponibles] = useState<string[]>([]);
   const [paneles, setPaneles] = useState<PanelMetrica[]>([]);
   const [loading, setLoading] = useState(true);
   const [actualizando, setActualizando] = useState(false);
+  const solicitudRef = useRef(0);
+
+  const rango = useMemo(() => resolverPeriodo(periodo), [periodo]);
+  const errorRango = periodo.tipo === "rango" ? validarRango(periodo.desde, periodo.hasta) : null;
+  const desde = rango?.desde;
+  const hasta = rango?.hasta;
 
   const cargar = useCallback(async () => {
+    if (errorRango) return;
+
+    const solicitud = ++solicitudRef.current;
     setActualizando(true);
     setLoading(true);
     setPaneles([]);
-    const resultados = await Promise.all(
-      metricas.map(async (metrica): Promise<PanelMetrica> => {
-        try {
-          const resultado = await consultarMetrica(idNotebook, metrica);
-          return { metrica, datos: resultado.datos, actualizadoEn: resultado.actualizadoEn };
-        } catch (error) {
-          return { metrica, datos: [], error: errorMessage(error) };
-        }
-      }),
-    );
+
+    const filtros = desde && hasta
+      ? { direccion: "COMPRA" as const, desde, hasta }
+      : { direccion: "COMPRA" as const };
+
+    const disponibilidadPromise = consultarMetrica(idNotebook, "compras_por_periodo", {
+      direccion: "COMPRA",
+    }).catch(() => null);
+
+    const [resultados, disponibilidad] = await Promise.all([
+      Promise.all(
+        metricas.map(async (metrica): Promise<PanelMetrica> => {
+          try {
+            const resultado = metrica === "compras_por_periodo" && !desde && !hasta
+              ? await disponibilidadPromise
+              : await consultarMetrica(idNotebook, metrica, filtros);
+            if (!resultado) throw new Error("No fue posible cargar los meses disponibles.");
+            return { metrica, datos: resultado.datos, actualizadoEn: resultado.actualizadoEn };
+          } catch (error) {
+            return { metrica, datos: [], error: errorMessage(error) };
+          }
+        }),
+      ),
+      disponibilidadPromise,
+    ]);
+
+    // Ignora respuestas de filtros anteriores que terminen después de la más reciente.
+    if (solicitud !== solicitudRef.current) return;
+
+    const meses = disponibilidad?.datos
+      .map((fila) => String(fila.periodo ?? ""))
+      .filter((mes) => /^\d{4}-(0[1-9]|1[0-2])$/.test(mes)) ?? [];
+    setMesesDisponibles([...new Set(meses)].sort());
+
     setPaneles(resultados);
     setLoading(false);
     setActualizando(false);
-  }, [idNotebook]);
+  }, [idNotebook, desde, hasta, errorRango]);
 
   useEffect(() => {
+    if (errorRango) return;
     const timer = window.setTimeout(() => void cargar(), 0);
     return () => window.clearTimeout(timer);
-  }, [cargar]);
+  }, [cargar, errorRango]);
 
   const ultimaActualizacion = paneles
     .map((panel) => panel.actualizadoEn)
@@ -381,13 +433,15 @@ export function DashboardPanel({ idNotebook }: { idNotebook: string }) {
           <button
             type="button"
             onClick={() => void cargar()}
-            disabled={actualizando}
+            disabled={actualizando || Boolean(errorRango)}
             className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-400 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50"
           >
             {actualizando ? "Actualizando…" : "Actualizar"}
           </button>
         </div>
       </header>
+
+      <DashboardFilters valor={periodo} onCambio={setPeriodo} mesesDisponibles={mesesDisponibles} />
 
       {loading && (
         <p aria-live="polite" className="rounded-xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-600">
@@ -400,7 +454,7 @@ export function DashboardPanel({ idNotebook }: { idNotebook: string }) {
           {INDICADORES.map(({ metrica, titulo }) => {
             const panel = paneles.find((item) => item.metrica === metrica);
             if (metrica === "resumen_montos" && panel && !panel.error) {
-              return <Contenido key={metrica} metrica={metrica} datos={panel.datos} />;
+              return <Contenido key={metrica} metrica={metrica} datos={panel.datos} rango={rango} />;
             }
             if (panel?.error) {
               return (
@@ -409,7 +463,7 @@ export function DashboardPanel({ idNotebook }: { idNotebook: string }) {
                 </Panel>
               );
             }
-            if (panel) return <Contenido key={metrica} metrica={metrica} datos={panel.datos} />;
+            if (panel) return <Contenido key={metrica} metrica={metrica} datos={panel.datos} rango={rango} />;
             return (
               <Panel key={metrica} titulo={titulo} descripcion="Documentos confirmados">
                 <p className="text-sm text-slate-500">No fue posible cargar este indicador.</p>

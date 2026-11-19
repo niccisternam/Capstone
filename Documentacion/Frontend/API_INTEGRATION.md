@@ -35,7 +35,7 @@ El contrato backend disponible del Módulo 1 está documentado en `Documentacion
 
 | Módulo | Operación | Método y endpoint Express | Request validado | Respuesta validada | Auth | Prueba | Estado |
 |---|---|---|---|---|---|---|---|
-| Autenticación | Inicio de sesión | `POST /api/v1/auth/login` | `{ correo, password }` | `200` (`2FA_REQUERIDO` / `CAMBIO_PASSWORD_REQUERIDO`) | Pública | `login.schema.test.mjs` | Conectado |
+| Autenticación | Inicio de sesión | `POST /api/v1/auth/login` | `{ correo, password }` | `200` (`CODIGO_REQUERIDO` / `CAMBIO_PASSWORD_REQUERIDO`); errores `401 INVALID_CREDENTIALS`, `423 ACCOUNT_BLOCKED` | Pública | `login.schema.test.mjs`, `api-error.test.mjs` | Conectado |
 | Autenticación | Verificación 2FA | `POST /api/v1/auth/verify-code` | `{ challengeId, codigo, recordarSesion }` | `200` (`accessToken`, `usuario`, Set-Cookie) | Pública | `two-factor.schema.test.mjs` | Conectado |
 | Autenticación | Reenvío código 2FA | `POST /api/v1/auth/login-code/resend` | `{ challengeId }` | `200` (`challengeId`, `expiraEnSegundos`) | Pública | Manual / Unit | Conectado |
 | Autenticación | Primer ingreso (cambio clave temporal) | `POST /api/v1/auth/change-temporary-password` | `{ nuevaPassword, confirmarPassword }` | `200` (`mensaje`, `challengeId`) | Bearer temporal | `first-access.schema.test.mjs` | Conectado |
@@ -83,9 +83,11 @@ El dashboard carga automáticamente todas las métricas disponibles mediante `sr
 
 | Función | Método y endpoint Express | Request validado | Respuesta validada | Auth | Prueba | Estado |
 |---|---|---|---|---|---|---|
-| `consultarMetrica` | `POST /api/v1/dashboard/notebooks/:idNotebook/query` | `{ metrica, filtros: { direccion: "COMPRA" } }` | `{ metrica, filtros, datos, actualizadoEn }` | Bearer | `dashboard-api.test.mjs` | Conectado |
+| `consultarMetrica` | `POST /api/v1/dashboard/notebooks/:idNotebook/query` | `{ metrica, filtros: { direccion: "COMPRA", desde?: "YYYY-MM", hasta?: "YYYY-MM" } }` | `{ metrica, filtros, datos, actualizadoEn }` | Bearer | `dashboard-api.test.mjs` | Conectado |
 
 Métricas cargadas automáticamente: resumen de montos, compras por periodo, proveedor y producto, pagos pendientes, descuentos y recargos. Cada consulta falla de forma independiente para mantener visibles los demás gráficos.
+
+El dashboard aplica un filtro global por rango de meses, semestre o año completo. `desde` y `hasta` son meses inclusivos y filtran por fecha de emisión de la revisión confirmada; sin ellos se mantiene el historial completo del notebook. El filtro vive en el estado del panel y no se persiste entre recargas.
 
 ## Chat e historial de conversaciones
 

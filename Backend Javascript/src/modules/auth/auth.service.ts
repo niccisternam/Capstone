@@ -84,12 +84,35 @@ export class AuthService {
 
   async login(input: LoginInput) {
     const user = await this.repository.findUserByEmail(input.correo);
+    const now = this.now();
+    const currentlyBlocked =
+      user?.estado === "BLOQUEADO" &&
+      user.bloqueadoHasta !== null &&
+      user.bloqueadoHasta.getTime() > now.getTime();
+    if (currentlyBlocked) {
+      throw new AppError(
+        423,
+        "ACCOUNT_BLOCKED",
+        "La cuenta está temporalmente bloqueada",
+      );
+    }
     const validPassword = user
       ? await verifyPassword(input.password, user.passwordHash)
       : false;
     if (!user || !validPassword) {
-      if (user)
-        await this.repository.registerFailedLogin(user.idUsuario, this.now());
+      if (user && !currentlyBlocked) {
+        const blocked = await this.repository.registerFailedLogin(
+          user.idUsuario,
+          now,
+        );
+        if (blocked) {
+          throw new AppError(
+            423,
+            "ACCOUNT_BLOCKED",
+            "La cuenta está bloqueada durante 15 minutos por intentos fallidos",
+          );
+        }
+      }
       throw new AppError(
         401,
         "INVALID_CREDENTIALS",

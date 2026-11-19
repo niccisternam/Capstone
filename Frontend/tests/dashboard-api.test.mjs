@@ -36,6 +36,36 @@ test("consultarMetrica llama a Express con el notebook, la métrica y el token",
   }
 });
 
+test("consultarMetrica envía el rango de meses al dashboard", async () => {
+  const originalFetch = globalThis.fetch;
+  client.setAccessToken("token-dashboard");
+  let llamada;
+  globalThis.fetch = async (url, init) => {
+    llamada = { url: String(url), init };
+    return new Response(JSON.stringify({
+      metrica: "compras_por_periodo",
+      filtros: { direccion: "COMPRA", desde: "2026-01", hasta: "2026-06" },
+      datos: [{ periodo: "2026-01", total: "1000", documentos: 1 }],
+      actualizadoEn: "2026-11-13T12:00:00.000Z",
+    }), { status: 200, headers: { "content-type": "application/json" } });
+  };
+
+  try {
+    const result = await api.consultarMetrica(idNotebook, "compras_por_periodo", {
+      desde: "2026-01",
+      hasta: "2026-06",
+    });
+    assert.equal(result.datos[0].periodo, "2026-01");
+    assert.deepEqual(JSON.parse(llamada.init.body), {
+      metrica: "compras_por_periodo",
+      filtros: { direccion: "COMPRA", desde: "2026-01", hasta: "2026-06" },
+    });
+  } finally {
+    globalThis.fetch = originalFetch;
+    client.setAccessToken(null);
+  }
+});
+
 test("consultarMetrica rechaza un id de notebook inválido sin llamar a Express", async () => {
   const originalFetch = globalThis.fetch;
   let llamadas = 0;

@@ -23,3 +23,7 @@ La estrategia concreta (middleware, layout servidor, consulta de sesión o combi
 ## Seguridad de interfaz
 
 No registrar contraseñas, OTP, tokens ni respuestas sensibles. Usar autocompletado apropiado, mensajes que no filtren existencia de cuentas cuando el backend lo exija y controles accesibles para mostrar/ocultar contraseña. No inventar códigos de respaldo, expiraciones ni límites de intentos.
+
+## Bloqueo por intentos de contraseña
+
+Express bloquea la cuenta durante 15 minutos después de cinco contraseñas incorrectas. Si responde `423 ACCOUNT_BLOCKED`, el login informa que se puede esperar o restablecer la contraseña desde el enlace existente `/recuperar-clave`.

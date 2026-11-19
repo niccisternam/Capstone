@@ -62,6 +62,7 @@ class MemoryAuthRepository implements AuthRepository {
         bloqueadoHasta: new Date(now.getTime() + 15 * 60 * 1000),
       });
     }
+    return attempts >= 5;
   }
 
   async clearFailedLogins(userId: string, unblockTo?: "PENDIENTE" | "ACTIVO") {
@@ -398,6 +399,78 @@ describe("verification codes and authentication", () => {
 
     expect(response.status).toBe(401);
     expect(response.body.error.code).toBe("INVALID_CREDENTIALS");
+  });
+
+  it("blocks after five wrong passwords without extending the lock on retries", async () => {
+    const context = await testContext();
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      const response = await request(context.app)
+        .post("/api/v1/auth/login")
+        .send({ correo: "admin@capstone.test", password: "incorrecta" });
+      expect(response.status).toBe(attempt === 4 ? 423 : 401);
+      if (attempt === 4) {
+        expect(response.body.error.code).toBe("ACCOUNT_BLOCKED");
+      }
+    }
+
+    const lockedUser = context.repository.users.get(context.userId)!;
+    const blockedUntil = lockedUser.bloqueadoHasta!;
+    expect(lockedUser.estado).toBe("BLOQUEADO");
+    expect(blockedUntil.getTime()).toBe(
+      new Date("2026-09-11T12:15:00.000Z").getTime(),
+    );
+
+    await request(context.app)
+      .post("/api/v1/auth/login")
+      .send({ correo: "admin@capstone.test", password: "incorrecta" });
+    const retriedUser = context.repository.users.get(context.userId)!;
+    expect(retriedUser.bloqueadoHasta).toEqual(blockedUntil);
+    expect((retriedUser as AuthUser & { attempts?: number }).attempts).toBe(5);
+
+    const stillBlocked = await login(context.app);
+    expect(stillBlocked.status).toBe(423);
+    expect(stillBlocked.body.error.code).toBe("ACCOUNT_BLOCKED");
+
+    context.advanceSeconds(15 * 60);
+    const afterWait = await login(context.app);
+    expect(afterWait.status).toBe(200);
+    expect(afterWait.body.estado).toBe("CODIGO_REQUERIDO");
+  });
+
+  it("password recovery clears an active login lock", async () => {
+    const context = await testContext();
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      await request(context.app)
+        .post("/api/v1/auth/login")
+        .send({ correo: "admin@capstone.test", password: "incorrecta" });
+    }
+
+    await request(context.app)
+      .post("/api/v1/auth/forgot-password")
+      .send({ correo: "admin@capstone.test" });
+    const recoveryToken =
+      context.emailSender.recovery[0]!.recoveryUrl.split("#token=")[1]!;
+    const reset = await request(context.app)
+      .post("/api/v1/auth/reset-password")
+      .set("Authorization", `Bearer ${recoveryToken}`)
+      .send({
+        nuevaPassword: "NuevaSegura123!",
+        confirmarPassword: "NuevaSegura123!",
+      });
+
+    expect(reset.status).toBe(200);
+    expect(context.repository.users.get(context.userId)).toMatchObject({
+      estado: "ACTIVO",
+      bloqueadoHasta: null,
+    });
+    const afterReset = await request(context.app)
+      .post("/api/v1/auth/login")
+      .send({
+        correo: "admin@capstone.test",
+        password: "NuevaSegura123!",
+      });
+    expect(afterReset.status).toBe(200);
+    expect(afterReset.body.estado).toBe("CODIGO_REQUERIDO");
   });
 
   it("requires 2FA, emails the code and stores only its hash", async () => {
@@ -1041,4 +1114,3 @@ describe("verification codes and authentication", () => {
     expect(response.body.error.code).toBe("ENDPOINT_DEPRECATED");
   });
 });
-

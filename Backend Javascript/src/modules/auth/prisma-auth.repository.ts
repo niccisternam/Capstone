@@ -26,23 +26,42 @@ export class PrismaAuthRepository implements AuthRepository {
     return this.prisma.usuario.findUnique({ where: { idUsuario: id } });
   }
 
-  async registerFailedLogin(userId: string, now: Date): Promise<void> {
-    await this.prisma.$transaction(async (transaction) => {
-      const user = await transaction.usuario.findUniqueOrThrow({
+  async registerFailedLogin(userId: string, now: Date): Promise<boolean> {
+    return this.prisma.$transaction(async (transaction) => {
+      let user = await transaction.usuario.findUniqueOrThrow({
         where: { idUsuario: userId },
       });
-      const attempts = user.intentosFallidos + 1;
-      const blocked = attempts >= 5;
-      await transaction.usuario.update({
-        where: { idUsuario: userId },
-        data: {
-          intentosFallidos: attempts,
-          estado: blocked ? "BLOQUEADO" : user.estado,
-          bloqueadoHasta: blocked
-            ? new Date(now.getTime() + 15 * 60 * 1000)
-            : user.bloqueadoHasta,
-        },
-      });
+      let blocked = false;
+      while (true) {
+        if (
+          user.estado === "BLOQUEADO" &&
+          user.bloqueadoHasta &&
+          user.bloqueadoHasta > now
+        ) {
+          blocked = true;
+          break;
+        }
+        const attempts = user.intentosFallidos + 1;
+        blocked = attempts >= 5;
+        const updated = await transaction.usuario.updateMany({
+          where: {
+            idUsuario: userId,
+            intentosFallidos: user.intentosFallidos,
+            estado: user.estado,
+          },
+          data: {
+            intentosFallidos: attempts,
+            estado: blocked ? "BLOQUEADO" : user.estado,
+            bloqueadoHasta: blocked
+              ? new Date(now.getTime() + 15 * 60 * 1000)
+              : user.bloqueadoHasta,
+          },
+        });
+        if (updated.count === 1) break;
+        user = await transaction.usuario.findUniqueOrThrow({
+          where: { idUsuario: userId },
+        });
+      }
       await transaction.eventoSeguridad.create({
         data: {
           idUsuario: userId,
@@ -53,6 +72,7 @@ export class PrismaAuthRepository implements AuthRepository {
           createdAt: now,
         },
       });
+      return blocked;
     });
   }
 

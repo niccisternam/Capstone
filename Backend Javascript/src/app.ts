@@ -95,7 +95,7 @@ export function createApp(dependencies: AppDependencies = {}) {
     new ChatService(
       prisma,
       env.GEMINI_API_KEY
-        ? new GeminiChatAssistant(env.GEMINI_API_KEY, env.GEMINI_MODEL)
+        ? new GeminiChatAssistant(env.GEMINI_API_KEY, env.GEMINI_MODEL, env.GEMINI_TIMEOUT_MS)
         : new UnavailableChatAssistant(),
     );
 

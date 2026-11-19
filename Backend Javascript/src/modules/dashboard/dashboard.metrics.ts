@@ -1,5 +1,6 @@
 import type { PrismaClient } from "../../generated/prisma/client.js";
 import { Prisma } from "../../generated/prisma/client.js";
+import { limitesEmision } from "./dashboard.periodo.js";
 
 // Catálogo cerrado: la IA y el frontend solo pueden pedir estas métricas.
 export const METRICAS = [
@@ -24,7 +25,23 @@ export const DESCRIPCION_METRICAS: Record<Metrica, string> = {
 
 export type Filtros = {
   direccion?: "COMPRA" | "VENTA" | "TODAS";
+  /** Mes inicial inclusivo en formato YYYY-MM. */
+  desde?: string;
+  /** Mes final inclusivo en formato YYYY-MM. */
+  hasta?: string;
 };
+
+function rangoEmision(filtros: Filtros) {
+  const limites = limitesEmision(filtros);
+  if (!limites) return Prisma.empty;
+
+  const condiciones = [
+    limites.desdeFecha ? Prisma.sql`r."fecha_emision" >= ${limites.desdeFecha}::date` : null,
+    limites.hastaExclusivo ? Prisma.sql`r."fecha_emision" < ${limites.hastaExclusivo}::date` : null,
+  ].filter((condicion): condicion is Prisma.Sql => condicion !== null);
+
+  return Prisma.sql`AND ${Prisma.join(condiciones, " AND ")}`;
+}
 
 // Revisión CONFIRMADA es única por documento (índice parcial), así que no duplica filas.
 function base(idEmpresa: string, idNotebook: string, filtros: Filtros, extra = Prisma.empty) {
@@ -37,6 +54,7 @@ function base(idEmpresa: string, idNotebook: string, filtros: Filtros, extra = P
       AND d."id_empresa" = ${idEmpresa}::uuid
       AND d."id_notebook" = ${idNotebook}::uuid
       AND (${direccion} = 'TODAS' OR d."direccion"::text = ${direccion})
+      ${rangoEmision(filtros)}
   `;
 }
 

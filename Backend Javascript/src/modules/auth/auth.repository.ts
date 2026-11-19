@@ -32,7 +32,7 @@ export interface RotateSessionData {
 export interface AuthRepository {
   findUserByEmail(email: string): Promise<AuthUser | null>;
   findUserById(id: string): Promise<AuthUser | null>;
-  registerFailedLogin(userId: string, now: Date): Promise<void>;
+  registerFailedLogin(userId: string, now: Date): Promise<boolean>;
   clearFailedLogins(
     userId: string,
     unblockTo?: "PENDIENTE" | "ACTIVO",

@@ -24,6 +24,7 @@ const MESSAGES_BY_KIND: Record<ApiErrorKind, string> = {
 const MESSAGES_BY_CODE: Record<string, string> = {
   AUTHENTICATION_REQUIRED: "Tu sesión ya no es válida. Inicia sesión nuevamente.",
   INVALID_AUTH_TOKEN: "Tu sesión ya no es válida. Inicia sesión nuevamente.",
+  ACCOUNT_BLOCKED: "Tu cuenta está bloqueada temporalmente por intentos incorrectos. Espera 15 minutos o usa «¿Olvidó su contraseña?» para restablecerla.",
   USER_NOT_ACTIVE: "Tu usuario no está habilitado para usar esta función.",
   NOTEBOOK_NOT_FOUND: "No encontramos el notebook solicitado.",
   NOTEBOOK_NAME_TAKEN: "Ya existe un notebook con ese nombre.",

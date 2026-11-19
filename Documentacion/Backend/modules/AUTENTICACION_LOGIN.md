@@ -3,6 +3,7 @@
 ## Alcance
 
 - Login con segundo paso por código enviado al correo registrado.
+- Bloqueo temporal durante 15 minutos al alcanzar cinco contraseñas incorrectas; reintentar mientras está bloqueada no prolonga el plazo.
 - Recuperación de contraseña sin revelar si el correo existe.
 - Reenvío controlado de códigos.
 - Gmail SMTP encapsulado mediante Nodemailer.
@@ -45,6 +46,8 @@ AUTH_TEST_ADMIN_EMAIL=capstonepicdt@gmail.com
 ### `POST /api/v1/auth/login`
 
 Valida correo y contraseña. Si no se requiere cambiar una contraseña temporal, crea un código `CODIGO_INICIO_SESION`, lo envía y responde `CODIGO_REQUERIDO` con `challengeId` y `expiresAt`. Nunca devuelve el código.
+
+La quinta contraseña incorrecta bloquea la cuenta por 15 minutos y responde `423 ACCOUNT_BLOCKED`. Mientras el bloqueo está activo, un nuevo intento incorrecto no amplía el plazo. Esperar el plazo o completar la recuperación de contraseña permite volver a ingresar.
 
 ### `POST /api/v1/auth/login-code/resend`
 
@@ -138,4 +141,4 @@ La tabla `sesion_usuario` ya incluía el hash del refresh token, `recordar_sesio
 
 ## Pruebas
 
-Los tests usan un servicio de correo en memoria. Cubren generación, hash, login 2FA, expiración, uso único, tres intentos, propósito, usuario, invalidación, reenvíos, correo inexistente, SMTP, recuperación, cookie persistente y de navegador, rotación, expiración por inactividad y logout.
+Los tests usan un servicio de correo en memoria. Cubren generación, hash, login 2FA, bloqueo al quinto intento y expiración del bloqueo sin extensión por reintentos, desbloqueo por recuperación, expiración y uso único de códigos, propósito, usuario, invalidación, reenvíos, correo inexistente, SMTP, cookie persistente y de navegador, rotación, expiración por inactividad y logout.

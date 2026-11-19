@@ -82,11 +82,14 @@ Variables adicionales:
 ```dotenv
 GEMINI_API_KEY=<credencial-no-registrada>
 GEMINI_MODEL=gemini-3.5-flash
+GEMINI_TIMEOUT_MS=15000
 GEMINI_LIVE_TESTS=false
 DOCUMENT_STORAGE_PATH=./storage/documents
 ```
 
 La API de Gemini no se invoca durante pruebas automatizadas ni verificaciones rutinarias. La integración real solo se utiliza cuando está configurada explícitamente.
+
+En el chat financiero cada llamada a Gemini se corta a los `GEMINI_TIMEOUT_MS` (15 s por defecto) y responde `504 AI_TIMEOUT` si el proveedor no contesta. Las preguntas que devuelven una sola fila se responden con los datos de la consulta, sin una segunda llamada de redacción, y el plan SQL de una pregunta idéntica se reutiliza durante el mismo día. Cada respuesta registra un evento `chat_timing` con los milisegundos de planificación, SQL, redacción y persistencia.
 
 ## Estado del scaffold
 

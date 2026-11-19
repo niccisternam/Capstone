@@ -1,7 +1,7 @@
 import { request, type ApiResult } from "./client";
 
 export interface LoginInput { correo: string; password: string; }
-export function login(input: LoginInput): Promise<ApiResult> { return request("/auth/login", { method: "POST", body: JSON.stringify(input) }, null); }
+export function login(input: LoginInput): Promise<ApiResult> { return request("/auth/login", { method: "POST", body: JSON.stringify(input) }, null, false); }
 export function changeTemporaryPassword(token: string, nuevaPassword: string, confirmarPassword: string): Promise<ApiResult> {
   return request("/auth/change-temporary-password", { method: "POST", body: JSON.stringify({ nuevaPassword, confirmarPassword }) }, token);
 }

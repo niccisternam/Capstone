@@ -3,3 +3,8 @@
 50 mensajes cargados por página, con opción de ver los anteriores.
 20 preguntas por minuto por usuario, al excederlo, el backend responde 429 e indica cuánto esperar.
 Los chats nuevos quedan como borrador local y se guardan al enviar el primer mensaje, si ya hay uno vacío, se reutiliza.
+
+
+psql --single-transaction "$DATABASE_URL" \
+  -f "datos_prueba_dashboard.txt"
+

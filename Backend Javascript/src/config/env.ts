@@ -35,6 +35,7 @@ const schema = z.object({
     .default("http://localhost:5173"),
   GEMINI_API_KEY: z.string().min(1).optional(),
   GEMINI_MODEL: z.string().default("gemini-3.5-flash"),
+  GEMINI_TIMEOUT_MS: z.coerce.number().int().positive().default(15_000),
   GEMINI_LIVE_TESTS: booleanString.default("false"),
   DOCUMENT_STORAGE_PATH: z.string().default("./storage/documents"),
 });

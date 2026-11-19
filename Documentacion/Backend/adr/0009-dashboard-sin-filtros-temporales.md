@@ -2,7 +2,7 @@
 
 ## Estado
 
-Aceptada — 13-11-2026
+Reemplazada por ADR 0010 — 13-11-2026
 
 ## Contexto
 

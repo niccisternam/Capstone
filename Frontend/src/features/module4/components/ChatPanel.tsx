@@ -11,6 +11,8 @@ import {
   type ConversacionChat,
   type MensajeChat,
 } from "@/api/chat.api";
+import { contieneTabla, parsearMensaje } from "../chatTable";
+import { TablaMensaje } from "./TablaMensaje";
 
 const SUGERIDAS = ["¿Cuánto gastamos en total?", "¿A qué proveedor le compramos más?", "Listar facturas pendientes de pago"];
 const MENSAJES_POR_PAGINA = 50;
@@ -31,6 +33,25 @@ function TextoEscribiendo({ texto, onProgress }: { texto: string; onProgress: ()
     return () => window.clearInterval(intervalo);
   }, [texto, onProgress, velocidad]);
   return <>{visible}</>;
+}
+
+/** Texto normal o mezcla de texto y tablas reales, sin mostrar los pipes de Markdown. */
+function ContenidoAsistente({ contenido }: { contenido: string }) {
+  const bloques = parsearMensaje(contenido);
+  if (!bloques.some((bloque) => bloque.tipo === "tabla")) {
+    return <span className="whitespace-pre-wrap text-slate-950">{contenido}</span>;
+  }
+  return (
+    <div className="space-y-1 text-slate-950">
+      {bloques.map((bloque, indice) =>
+        bloque.tipo === "tabla" ? (
+          <TablaMensaje key={indice} tabla={bloque.tabla} />
+        ) : (
+          <p key={indice} className="whitespace-pre-wrap">{bloque.contenido}</p>
+        ),
+      )}
+    </div>
+  );
 }
 
 export function ChatPanel({ idNotebook }: { idNotebook: string }) {
@@ -197,7 +218,9 @@ export function ChatPanel({ idNotebook }: { idNotebook: string }) {
       const resultado = await sendChatMessage(idConversacion, limpio);
       actualizarConversacion(resultado.conversacion);
       const respuestas = resultado.mensajes.filter((mensaje) => mensaje.rol === "ASISTENTE");
-      setMensajeAnimado(respuestas.at(-1)?.idMensaje ?? null);
+      const ultima = respuestas.at(-1);
+      // Las tablas se muestran completas: animarlas dejaría tablas a medio formar.
+      setMensajeAnimado(ultima && !contieneTabla(ultima.contenido) ? ultima.idMensaje : null);
       setMensajes((actuales) => {
         const actualizados = [...actuales, ...respuestas];
         if (actualizados.length > MENSAJES_POR_PAGINA) setHayMasMensajes(true);
@@ -205,6 +228,8 @@ export function ChatPanel({ idNotebook }: { idNotebook: string }) {
       });
     } catch (e) {
       setMensajes((actuales) => actuales.filter((mensaje) => mensaje.idMensaje !== mensajeOptimista.idMensaje));
+      // Si la IA falló o expiró, la pregunta vuelve al campo para reintentar sin escribirla de nuevo.
+      setPregunta((actual) => actual.trim() ? actual : limpio);
       setError(errorMessage(e, "No fue posible responder tu pregunta."));
     } finally { setBusy(false); }
   }
@@ -272,16 +297,23 @@ export function ChatPanel({ idNotebook }: { idNotebook: string }) {
           {!loading && !mensajes.length && !busy && <p className="m-auto max-w-sm text-center text-sm leading-6 text-slate-500">{activa ? "Haz una pregunta sobre los documentos confirmados de este notebook." : "Este chat nuevo aún no se guarda. Envía un mensaje para comenzarlo."}</p>}
           {mensajes.map((mensaje) => {
             const esUsuario = mensaje.rol === "USUARIO";
+            const esAnimado = !esUsuario && mensaje.idMensaje === mensajeAnimado;
             return <div key={mensaje.idMensaje} className={`flex w-full gap-3 py-2 ${esUsuario ? "justify-end" : "justify-start"}`}>
               {!esUsuario && <span aria-hidden="true" className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-700 text-xs font-bold text-white">IA</span>}
               <div className={`max-w-[85%] text-sm leading-6 ${esUsuario ? "text-right" : "text-left"}`}>
                 <span className={`mb-1 block text-xs font-bold ${esUsuario ? "text-blue-800" : "text-blue-700"}`}>{esUsuario ? "Tú" : "IA Capstone"}</span>
-                <span className={`whitespace-pre-wrap ${esUsuario ? "inline-block rounded-[16px_16px_4px_16px] bg-[#2448c8] px-4 py-2.5 text-left text-white" : "text-slate-950"}`}>{mensaje.rol === "ASISTENTE" && mensaje.idMensaje === mensajeAnimado ? <TextoEscribiendo texto={mensaje.contenido} onProgress={mantenerAlFinal} /> : mensaje.contenido}</span>
+                {esUsuario ? (
+                  <span className="inline-block whitespace-pre-wrap rounded-[16px_16px_4px_16px] bg-[#2448c8] px-4 py-2.5 text-left text-white">{mensaje.contenido}</span>
+                ) : esAnimado ? (
+                  <span className="whitespace-pre-wrap text-slate-950"><TextoEscribiendo texto={mensaje.contenido} onProgress={mantenerAlFinal} /></span>
+                ) : (
+                  <ContenidoAsistente contenido={mensaje.contenido} />
+                )}
               </div>
               {esUsuario && <span aria-hidden="true" className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-700 text-xs font-bold text-white">Tú</span>}
             </div>;
           })}
-          {busy && <div role="status" aria-label="La IA está escribiendo" className="flex items-center gap-3 text-sm text-slate-600"><span aria-hidden="true" className="flex h-7 w-7 items-center justify-center rounded-[8px] bg-[#2448c8] text-[10px] font-bold text-white">IA</span><span className="sr-only">La IA está escribiendo</span><span aria-hidden="true" className="flex items-center gap-1"><span className="chat-typing-dot" /><span className="chat-typing-dot" style={{ animationDelay: "200ms" }} /><span className="chat-typing-dot" style={{ animationDelay: "400ms" }} /></span></div>}
+          {busy && <div role="status" aria-label="La IA está escribiendo" className="flex items-center gap-3 text-sm text-slate-600"><span aria-hidden="true" className="flex h-7 w-7 items-center justify-center rounded-[8px] bg-[#2448c8] text-[10px] font-bold text-white">IA</span><span className="sr-only">La IA está escribiendo</span><span aria-hidden="true" className="flex items-center gap-1"><span className="chat-typing-dot" /><span className="chat-typing-dot" style={{ animationDelay: "200ms" }} /><span className="chat-typing-dot" style={{ animationDelay: "400ms" }} /></span><span className="text-xs text-slate-400">puede tardar unos segundos</span></div>}
         </div>
       </div>
       {error && <p role="alert" className="mx-5 mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-700 sm:mx-7">{error}</p>}

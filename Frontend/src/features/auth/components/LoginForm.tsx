@@ -9,6 +9,7 @@ import {
   validatePasswordField,
 } from "../schemas/login.schema";
 import { login } from "@/api/auth.api";
+import { messageForApiCode } from "@/api/api-error";
 
 export function LoginForm() {
   const router = useRouter();
@@ -160,6 +161,16 @@ export function LoginForm() {
         setFeedback({
           type: "error",
           message: "Demasiados intentos. Por favor espere unos minutos.",
+        });
+      } else if (res.status === 423) {
+        const errorCode = (res.data as { error?: { code?: string } } | undefined)
+          ?.error?.code;
+        setFeedback({
+          type: "error",
+          message:
+            errorCode === "ACCOUNT_BLOCKED"
+              ? messageForApiCode(errorCode)
+              : "La cuenta no está disponible temporalmente. Intente más tarde.",
         });
       } else {
         const errData = res.data as { message?: string } | undefined;
