@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { WelcomeCard } from "@/features/account-requests/components/WelcomeCard";
+import { HeaderSessionAction } from "@/features/auth/components/HeaderSessionAction";
 
 export const metadata: Metadata = {
   title: "Bienvenido | Capstone Gestión Documental",
@@ -19,12 +20,8 @@ export default function HomePage() {
           >
             Capstone
           </Link>
-          <Link
-            href="/login"
-            className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
-          >
-            Iniciar Sesión
-          </Link>
+          {/* "Volver a la consola" si la sesión sigue activa; si no, "Iniciar Sesión" */}
+          <HeaderSessionAction />
         </div>
       </header>
 
