@@ -85,7 +85,11 @@ Revoca la sesión asociada a la cookie, elimina la cookie y responde HTTP `204`.
 { "correo": "persona@ejemplo.cl" }
 ```
 
-Siempre responde HTTP `202` con el mismo mensaje, exista o no la cuenta, se haya alcanzado el límite o falle SMTP. Si corresponde, genera un token criptográficamente seguro, guarda su hash SHA-256 en `token_seguridad` con propósito `RECUPERACION_PASSWORD` y envía un enlace por correo al usuario (`{APP_ORIGIN}/recuperar-password#token={TOKEN_TEMPORAL}`). Para reenviar se repite este endpoint respetando las reglas de espera (60s) y límite de envíos (3 por 15 minutos).
+Siempre responde HTTP `202` con el mismo mensaje, exista o no la cuenta, se haya alcanzado el límite o falle SMTP. Si corresponde, genera un token criptográficamente seguro, guarda su hash SHA-256 en `token_seguridad` con propósito `RECUPERACION_PASSWORD` y envía un enlace por correo al usuario (`{APP_ORIGIN}/recuperar-password#token={TOKEN_TEMPORAL}`). El enlace expira a los 5 minutos. Para reenviar se repite este endpoint respetando las reglas de espera (60s) y límite de envíos (3 por 15 minutos).
+
+### `GET /api/v1/auth/reset-password/validate`
+
+Requiere `Authorization: Bearer <token>` con el token temporal del enlace. Responde HTTP `200` con `{ "estado": "VALIDO" | "USADO" | "EXPIRADO" | "INVALIDO" }`, sin consumir el token. `USADO` indica que el enlace ya se utilizó para cambiar la contraseña.
 
 ### `POST /api/v1/auth/verify-recovery-code` *(Obsoleto / Retirado)*
 
@@ -103,7 +107,8 @@ Requiere `Authorization: Bearer <token>`, donde `<token>` es el token temporal e
 ```
 
 Valida:
-- Token presente, vigente, no utilizado, no revocado y con hash coincidente.
+- Token presente, vigente (5 minutos), no utilizado, no revocado y con hash coincidente.
+- Un token ya utilizado responde HTTP `410` `RECOVERY_TOKEN_USED`.
 - Usuario existente y no marcado como `INACTIVO`.
 - Reglas de complejidad de contraseña (12-200 caracteres, mayúscula, minúscula, número, símbolo).
 - Confirmación idéntica.

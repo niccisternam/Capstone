@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useSyncExternalStore } from "react";
+import React, { useState, useEffect, useSyncExternalStore } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { cleanNumericCode, validateTwoFactorCode } from "../schemas/two-factor.schema";
+import { validateTwoFactorCode } from "../schemas/two-factor.schema";
 import { verifyCode, resendCode } from "@/api/auth.api";
 import { setAccessToken, parseJwtPayload } from "@/api/client";
+import { Alert } from "@/components/feedback/Alert";
+import { OtpInput } from "./OtpInput";
 
 export function TwoFactorForm() {
   const searchParams = useSearchParams();
@@ -29,7 +31,6 @@ export function TwoFactorForm() {
 
   // 6 casillas individuales para los dígitos
   const [digits, setDigits] = useState<string[]>(["", "", "", "", "", ""]);
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // Estados de validación y retroalimentación
   const [touched, setTouched] = useState<boolean>(false);
@@ -49,7 +50,7 @@ export function TwoFactorForm() {
       sessionStorage.setItem("capstone_challenge_id", queryChallenge);
     }
     // Auto-foco en la primera casilla al montar
-    inputRefs.current[0]?.focus();
+    document.getElementById("otp-digit-0")?.focus();
   }, [queryChallenge]);
 
   // Manejo del temporizador de reenvío
@@ -63,104 +64,13 @@ export function TwoFactorForm() {
 
   const fullCode = digits.join("");
 
-  // Manejo de pegado en cualquiera de las casillas
-  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>, startIndex: number) => {
-    e.preventDefault();
+  const handleDigitsChange = (nextDigits: string[]) => {
     setTouched(true);
     setFeedback(null);
+    setDigits(nextDigits);
 
-    const pastedText = e.clipboardData.getData("text");
-    const cleaned = cleanNumericCode(pastedText);
-
-    if (!cleaned) return;
-
-    const newDigits = [...digits];
-    // Si pega 6 dígitos completos, llenamos desde el inicio o desde donde esté
-    const targetStart = cleaned.length === 6 ? 0 : startIndex;
-
-    for (let i = 0; i < cleaned.length && targetStart + i < 6; i++) {
-      newDigits[targetStart + i] = cleaned[i];
-    }
-
-    setDigits(newDigits);
-
-    // Validar el nuevo código completo
-    const updatedFullCode = newDigits.join("");
-    if (updatedFullCode.length === 6) {
-      setCodeError(validateTwoFactorCode(updatedFullCode));
-    } else {
-      setCodeError(null);
-    }
-
-    // Foco en la siguiente casilla libre o en la última
-    const nextEmptyIndex = newDigits.findIndex((d) => d === "");
-    const focusTarget = nextEmptyIndex !== -1 ? nextEmptyIndex : 5;
-    inputRefs.current[focusTarget]?.focus();
-  };
-
-  // Manejo de cambio en cada casilla individual
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const rawVal = e.target.value;
-    setTouched(true);
-    setFeedback(null);
-
-    // Filtrar caracteres no numéricos al escribir
-    const numericOnly = cleanNumericCode(rawVal);
-
-    if (!numericOnly) {
-      const newDigits = [...digits];
-      newDigits[index] = "";
-      setDigits(newDigits);
-      setCodeError(null);
-      return;
-    }
-
-    // Tomar solo el último dígito ingresado
-    const digit = numericOnly.slice(-1);
-    const newDigits = [...digits];
-    newDigits[index] = digit;
-    setDigits(newDigits);
-
-    const updatedCode = newDigits.join("");
-    if (updatedCode.length === 6) {
-      setCodeError(validateTwoFactorCode(updatedCode));
-    } else {
-      setCodeError(null);
-    }
-
-    // Salto automático a la siguiente casilla
-    if (digit && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
-  };
-
-  // Manejo de teclas especiales (Backspace, Flechas)
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-    if (e.key === "Backspace") {
-      e.preventDefault();
-      setFeedback(null);
-
-      const newDigits = [...digits];
-
-      if (digits[index] !== "") {
-        // Borrar el dígito actual
-        newDigits[index] = "";
-        setDigits(newDigits);
-        setCodeError(null);
-      } else if (index > 0) {
-        // Si ya estaba vacío, retroceder y borrar el anterior
-        newDigits[index - 1] = "";
-        setDigits(newDigits);
-        setCodeError(null);
-        inputRefs.current[index - 1]?.focus();
-      }
-    } else if (e.key === "ArrowLeft" && index > 0) {
-      e.preventDefault();
-      inputRefs.current[index - 1]?.focus();
-    } else if (e.key === "ArrowRight" && index < 5) {
-      e.preventDefault();
-      inputRefs.current[index + 1]?.focus();
-    }
+    const updatedCode = nextDigits.join("");
+    setCodeError(updatedCode.length === 6 ? validateTwoFactorCode(updatedCode) : null);
   };
 
   // Envío del código de verificación
@@ -173,8 +83,7 @@ export function TwoFactorForm() {
 
     if (err) {
       const firstEmptyIndex = digits.findIndex((d) => d === "");
-      const target = firstEmptyIndex !== -1 ? firstEmptyIndex : 0;
-      inputRefs.current[target]?.focus();
+      document.getElementById(`otp-digit-${firstEmptyIndex !== -1 ? firstEmptyIndex : 0}`)?.focus();
       return;
     }
 
@@ -275,7 +184,7 @@ export function TwoFactorForm() {
         // El código anterior dejó de ser válido: se limpian las casillas y el error.
         setDigits(["", "", "", "", "", ""]);
         setCodeError(null);
-        inputRefs.current[0]?.focus();
+        document.getElementById("otp-digit-0")?.focus();
         setFeedback({
           type: "info",
           message: "Se ha enviado un nuevo código a su correo electrónico.",
@@ -317,18 +226,9 @@ export function TwoFactorForm() {
 
       {/* Alerta de feedback general */}
       {feedback && (
-        <div
-          role="alert"
-          className={`rounded-md p-3 text-sm font-medium transition-all ${
-            feedback.type === "error"
-              ? "border border-red-200 bg-red-50 text-red-700"
-              : feedback.type === "success"
-                ? "border border-green-200 bg-green-50 text-green-700"
-                : "border border-blue-200 bg-blue-50 text-blue-700"
-          }`}
-        >
+        <Alert type={feedback.type} className="p-3">
           {feedback.message}
-        </div>
+        </Alert>
       )}
 
       {/* Aviso si falta challengeId */}
@@ -345,39 +245,12 @@ export function TwoFactorForm() {
 
       {/* Contenedor de las 6 casillas numéricas */}
       <div className="space-y-2">
-        <div
-          className="flex items-center justify-start gap-2 sm:gap-3.5"
-          role="group"
-          aria-label="Casillas de código de verificación de 6 dígitos"
-        >
-          {digits.map((digit, index) => (
-            <input
-              key={index}
-              ref={(el) => {
-                inputRefs.current[index] = el;
-              }}
-              id={`otp-digit-${index}`}
-              name={`otp-digit-${index}`}
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              autoComplete={index === 0 ? "one-time-code" : "off"}
-              maxLength={1}
-              value={digit}
-              disabled={isSubmitting}
-              onPaste={(e) => handlePaste(e, index)}
-              onChange={(e) => handleChange(e, index)}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-              aria-label={`Dígito ${index + 1} de 6`}
-              aria-invalid={touched && !!codeError}
-              className={`h-12 w-11 sm:h-14 sm:w-13 rounded-md border-2 bg-white text-center text-xl sm:text-2xl font-bold text-slate-900 shadow-xs transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-1 ${
-                touched && codeError
-                  ? "border-red-500 focus:border-red-500 focus:ring-red-400"
-                  : "border-slate-700 focus:border-blue-600 focus:ring-blue-500"
-              }`}
-            />
-          ))}
-        </div>
+        <OtpInput
+          digits={digits}
+          onChange={handleDigitsChange}
+          disabled={isSubmitting}
+          invalid={touched && !!codeError}
+        />
 
         {/* Error inferior si no cumple las reglas */}
         {touched && codeError && (

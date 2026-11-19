@@ -750,7 +750,7 @@ describe("verification codes and authentication", () => {
     expect(emailSender.recovery).toHaveLength(1);
     expect(emailSender.recovery[0]!.recipient).toBe("admin@capstone.test");
     expect(emailSender.recovery[0]!.userName).toBe("Admin");
-    expect(emailSender.recovery[0]!.expiresInMinutes).toBe(15);
+    expect(emailSender.recovery[0]!.expiresInMinutes).toBe(5);
     expect(emailSender.recovery[0]!.recoveryUrl).toMatch(
       /^http:\/\/localhost:5173\/recuperar-password#token=[A-Za-z0-9_-]+$/,
     );
@@ -846,6 +846,37 @@ describe("verification codes and authentication", () => {
     ).toBe(true);
   });
 
+  it("6b. rechaza una contraseña idéntica a la anterior y conserva el token", async () => {
+    const { app, emailSender } = await testContext();
+    await request(app)
+      .post("/api/v1/auth/forgot-password")
+      .send({ correo: "admin@capstone.test" });
+
+    const rawToken = emailSender.recovery[0]!.recoveryUrl.split("#token=")[1]!;
+    const reused = await request(app)
+      .post("/api/v1/auth/reset-password")
+      .set("Authorization", `Bearer ${rawToken}`)
+      .send({
+        nuevaPassword: "AdminTemporal1!",
+        confirmarPassword: "AdminTemporal1!",
+      });
+
+    expect(reused.status).toBe(400);
+    expect(reused.body.error.code).toBe("PASSWORD_REUSE");
+    expect(reused.body.error.message).toBe(
+      "La contraseña no puede ser idéntica a la anterior.",
+    );
+
+    const retry = await request(app)
+      .post("/api/v1/auth/reset-password")
+      .set("Authorization", `Bearer ${rawToken}`)
+      .send({
+        nuevaPassword: "NuevaValida123!",
+        confirmarPassword: "NuevaValida123!",
+      });
+    expect(retry.status).toBe(200);
+  });
+
   it("7. token incorrecto es rechazado", async () => {
     const { app } = await testContext();
     const response = await request(app)
@@ -868,7 +899,7 @@ describe("verification codes and authentication", () => {
 
     const rawToken =
       context.emailSender.recovery[0]!.recoveryUrl.split("#token=")[1]!;
-    context.advanceSeconds(15 * 60 + 1);
+    context.advanceSeconds(5 * 60 + 1);
 
     const response = await request(context.app)
       .post("/api/v1/auth/reset-password")
@@ -889,6 +920,11 @@ describe("verification codes and authentication", () => {
       .send({ correo: "admin@capstone.test" });
 
     const rawToken = emailSender.recovery[0]!.recoveryUrl.split("#token=")[1]!;
+    const before = await request(app)
+      .get("/api/v1/auth/reset-password/validate")
+      .set("Authorization", `Bearer ${rawToken}`);
+    expect(before.body.estado).toBe("VALIDO");
+
     const first = await request(app)
       .post("/api/v1/auth/reset-password")
       .set("Authorization", `Bearer ${rawToken}`)
@@ -896,6 +932,9 @@ describe("verification codes and authentication", () => {
         nuevaPassword: "NuevaValida123!",
         confirmarPassword: "NuevaValida123!",
       });
+    const after = await request(app)
+      .get("/api/v1/auth/reset-password/validate")
+      .set("Authorization", `Bearer ${rawToken}`);
     const second = await request(app)
       .post("/api/v1/auth/reset-password")
       .set("Authorization", `Bearer ${rawToken}`)
@@ -905,8 +944,9 @@ describe("verification codes and authentication", () => {
       });
 
     expect(first.status).toBe(200);
-    expect(second.status).toBe(401);
-    expect(second.body.error.code).toBe("INVALID_RECOVERY_TOKEN");
+    expect(after.body.estado).toBe("USADO");
+    expect(second.status).toBe(410);
+    expect(second.body.error.code).toBe("RECOVERY_TOKEN_USED");
   });
 
   it("10. un enlace nuevo revoca el anterior", async () => {

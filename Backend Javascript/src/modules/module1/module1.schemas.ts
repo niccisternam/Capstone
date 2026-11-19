@@ -66,6 +66,14 @@ export const createNotebookSchema = z.object({
   paletaColores: z.record(z.string()).optional(),
 });
 
+export const notebookDocumentsQuerySchema = z.object({
+  pagina: z.coerce.number().int().min(1).max(100000).default(1),
+  buscar: z.string().trim().max(200).optional(),
+  estado: z.enum(["PENDIENTE_REVISION", "CONFIRMADO"]).optional(),
+  estadoPago: z.string().trim().max(40).optional(),
+  proveedor: z.string().trim().max(200).optional(),
+});
+
 const reviewDecimal = z.string().regex(/^-?\d+(\.\d+)?$/).nullable().optional();
 const reviewText = z.string().nullable().optional();
 const reviewDetailSchema = z.object({

@@ -146,13 +146,39 @@ export async function deleteNotebook(idNotebook: string): Promise<{ idNotebook: 
   return body;
 }
 
-export async function getNotebook(idNotebook: string): Promise<NotebookDetalle> {
+export type NotebookDocumentosQuery = {
+  pagina?: number;
+  buscar?: string;
+  estado?: "PENDIENTE_REVISION" | "CONFIRMADO";
+  estadoPago?: string;
+  proveedor?: string;
+};
+
+export async function getNotebook(idNotebook: string, query: NotebookDocumentosQuery = {}): Promise<NotebookDetalle> {
   const id = parseIdentifier(idNotebook);
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(query)) {
+    if (value !== undefined && value !== "") params.set(key, String(value));
+  }
+  const search = params.toString();
   const body = await call(
-    () => request<unknown>(`${MODULE1_PATH}/notebooks/${encodeURIComponent(id)}`, {}, getAccessToken()),
+    () => request<unknown>(`${MODULE1_PATH}/notebooks/${encodeURIComponent(id)}${search ? `?${search}` : ""}`, {}, getAccessToken()),
     notebookDetalleResponseSchema,
   );
   return body.notebook;
+}
+
+export async function getPendingDocuments(idNotebook: string): Promise<Documento[]> {
+  const id = parseIdentifier(idNotebook);
+  const documents: Documento[] = [];
+  for (let pagina = 1; ; pagina += 1) {
+    const body = await call(
+      () => request<unknown>(`${MODULE1_PATH}/notebooks/${encodeURIComponent(id)}?pagina=${pagina}&estado=PENDIENTE_REVISION`, {}, getAccessToken()),
+      notebookDetalleResponseSchema,
+    );
+    documents.push(...body.notebook.documentos);
+    if (!body.notebook.hayMas) return documents;
+  }
 }
 
 /**

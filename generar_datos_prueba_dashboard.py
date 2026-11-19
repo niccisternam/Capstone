@@ -10,7 +10,7 @@ import uuid
 
 ID_USUARIO = "82bbfd47-ed8c-45f8-96f9-cb887be532c5"
 ID_EMPRESA = "122569bb-eb95-4be0-8988-3b92a994f731"
-CANTIDAD_DOCUMENTOS = 500  # Cambia este valor para generar más o menos documentos.
+CANTIDAD_DOCUMENTOS = 1000  # Cambia este valor para generar más o menos documentos.
 DOCUMENTOS_POR_LOTE = 10
 
 ROOT = Path(__file__).resolve().parent

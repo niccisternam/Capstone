@@ -11,7 +11,7 @@ export default function UsuarioPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Barra superior con marca Capstone, distintivo de usuario y botón de cerrar sesión */}
-      <AppHeader role="Usuario" />
+      <AppHeader />
       {/* Contenedor central con el mensaje de rol usuario */}
       <NotebooksPage />
     </div>

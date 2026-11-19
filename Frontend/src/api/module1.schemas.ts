@@ -58,6 +58,11 @@ export const documentoSchema = z.object({
 
 export const notebookDetalleSchema = notebookSchema.extend({
   documentos: z.array(documentoSchema),
+  totalDocumentos: z.number().int().nonnegative(),
+  total: z.number().int().nonnegative(),
+  pagina: z.number().int().positive(),
+  hayMas: z.boolean(),
+  lotesPendientes: z.array(z.uuid()),
 });
 
 export const loteSchema = z.object({

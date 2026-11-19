@@ -253,7 +253,7 @@ Todas las rutas están protegidas por autenticación y validan que el usuario pe
 | `PATCH` | `/module1/notebooks/:idNotebook` | Editar nombre, descripción, icono y paleta. |
 | `DELETE` | `/module1/notebooks/:idNotebook` | Eliminar notebook, documentos, lotes y archivos asociados. |
 | `GET` | `/module1/notebooks` | Listar notebooks con conteo de documentos. |
-| `GET` | `/module1/notebooks/:idNotebook` | Obtener detalle del notebook, lotes y documentos. |
+| `GET` | `/module1/notebooks/:idNotebook` | Obtener detalle del notebook y una página de 50 documentos; acepta `pagina`, `buscar`, `estado`, `estadoPago` y `proveedor`. |
 | `POST` | `/module1/notebooks/:idNotebook/documents` | Cargar PDFs y crear un lote. |
 | `POST` | `/module1/batches/:idLote/process` | Iniciar procesamiento secuencial del lote. |
 | `GET` | `/module1/batches/:idLote` | Consultar estado y errores del lote. |

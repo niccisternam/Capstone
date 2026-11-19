@@ -10,5 +10,6 @@ export function verifyCode(challengeId: string, codigo: string, recordarSesion =
 }
 export function resendCode(challengeId: string): Promise<ApiResult> { return request("/auth/login-code/resend", { method: "POST", body: JSON.stringify({ challengeId }) }, null); }
 export function forgotPassword(correo: string): Promise<ApiResult> { return request("/auth/forgot-password", { method: "POST", body: JSON.stringify({ correo }) }, null); }
+export function validateResetPasswordToken(token: string): Promise<ApiResult> { return request("/auth/reset-password/validate", { method: "GET" }, token, false); }
 export function verifyRecoveryCode(correo: string, codigo: string): Promise<ApiResult> { return request("/auth/verify-recovery-code", { method: "POST", body: JSON.stringify({ correo, codigo }) }, null); }
 export function resetPassword(token: string, nuevaPassword: string, confirmarPassword: string): Promise<ApiResult> { return request("/auth/reset-password", { method: "POST", body: JSON.stringify({ nuevaPassword, confirmarPassword }) }, token, false); }

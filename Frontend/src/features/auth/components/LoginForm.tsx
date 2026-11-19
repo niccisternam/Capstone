@@ -10,6 +10,7 @@ import {
 } from "../schemas/login.schema";
 import { login } from "@/api/auth.api";
 import { messageForApiCode } from "@/api/api-error";
+import { Alert } from "@/components/feedback/Alert";
 
 export function LoginForm() {
   const router = useRouter();
@@ -198,18 +199,9 @@ export function LoginForm() {
     >
       {/* Mensaje global de feedback si existe */}
       {feedback && (
-        <div
-          role="alert"
-          className={`rounded-md p-3 text-sm font-medium transition-all ${
-            feedback.type === "error"
-              ? "border border-red-200 bg-red-50 text-red-700"
-              : feedback.type === "success"
-                ? "border border-green-200 bg-green-50 text-green-700"
-                : "border border-blue-200 bg-blue-50 text-blue-700"
-          }`}
-        >
+        <Alert type={feedback.type} className="p-3">
           {feedback.message}
-        </div>
+        </Alert>
       )}
 
       {/* Campo: Correo Electrónico */}

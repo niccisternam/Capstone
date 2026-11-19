@@ -177,10 +177,30 @@ paths:
       responses:
         "410":
           $ref: "#/components/responses/Error"
+  /api/v1/auth/reset-password/validate:
+    get:
+      summary: Consultar el estado del enlace de recuperación
+      description: Informa estado VALIDO, USADO, EXPIRADO o INVALIDO sin consumir el token. El enlace expira a los 5 minutos y USADO indica que ya se cambió la contraseña con él.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Estado del token
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [estado]
+                properties:
+                  estado:
+                    type: string
+                    enum: [VALIDO, USADO, EXPIRADO, INVALIDO]
+        "401":
+          $ref: "#/components/responses/Error"
   /api/v1/auth/reset-password:
     post:
       summary: Establecer una nueva contraseña mediante el token del enlace
-      description: Recibe el token temporal extraído del enlace en Authorization Bearer. Valida y consume el token atómicamente, actualiza la contraseña con scrypt y revoca sesiones previas.
+      description: Recibe el token temporal extraído del enlace en Authorization Bearer. Valida y consume el token atómicamente, actualiza la contraseña con scrypt y revoca sesiones previas. Un token ya utilizado responde 410 RECOVERY_TOKEN_USED.
       security:
         - bearerAuth: []
       requestBody:
@@ -201,6 +221,8 @@ paths:
         "401":
           $ref: "#/components/responses/Error"
         "403":
+          $ref: "#/components/responses/Error"
+        "410":
           $ref: "#/components/responses/Error"
 components:
   securitySchemes:

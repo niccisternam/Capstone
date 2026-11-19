@@ -4,6 +4,7 @@ import { AppError } from "../../shared/errors/app-error.js";
 export interface AccessIdentity {
   idUsuario: string;
   rol: "USUARIO" | "ADMINISTRADOR";
+  razonSocial?: string;
 }
 
 export interface PasswordRecoveryIdentity {
@@ -31,7 +32,11 @@ export class JwtService {
   }
 
   createAccessToken(identity: AccessIdentity): Promise<string> {
-    return new SignJWT({ rol: identity.rol, scope: "access" })
+    return new SignJWT({
+      rol: identity.rol,
+      razonSocial: identity.razonSocial,
+      scope: "access",
+    })
       .setProtectedHeader({ alg: "HS256" })
       .setSubject(identity.idUsuario)
       .setIssuedAt()

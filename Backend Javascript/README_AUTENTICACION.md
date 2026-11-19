@@ -114,6 +114,7 @@ El antiguo `AUTH_TEST_CODE` ya no se utiliza y puede eliminarse del `.env`. Las 
 | `POST` | `/api/v1/auth/refresh`                   | Cookie HttpOnly            | Renueva el access token              |
 | `POST` | `/api/v1/auth/logout`                    | Cookie HttpOnly            | Revoca y elimina la sesión           |
 | `POST` | `/api/v1/auth/forgot-password`           | Pública                    | Genera token y envía enlace por correo |
+| `GET`  | `/api/v1/auth/reset-password/validate`   | Bearer token del enlace    | Informa `VALIDO`, `USADO` o `EXPIRADO` |
 | `POST` | `/api/v1/auth/verify-recovery-code`      | (Obsoleto)                 | Retirado (HTTP 410)                  |
 | `POST` | `/api/v1/auth/reset-password`            | Bearer token del enlace    | Valida, consume y cambia contraseña  |
 
@@ -150,10 +151,10 @@ Antes de 60 segundos no se genera un nuevo código o enlace. Después de tres en
 ### Recuperación por enlace
 
 1. Enviar el correo a `POST /api/v1/auth/forgot-password`.
-2. El usuario recibe un correo con enlace `{APP_ORIGIN}/recuperar-password#token={TOKEN_TEMPORAL}`.
-3. El frontend extrae el token del hash `#token=`.
+2. El usuario recibe un correo con enlace `{APP_ORIGIN}/recuperar-password#token={TOKEN_TEMPORAL}`, vigente por 5 minutos.
+3. El frontend extrae el token del hash `#token=` y consulta `GET /api/v1/auth/reset-password/validate` para mostrar si el enlace sigue vigente o ya fue usado.
 4. El frontend envía la nueva contraseña a `POST /api/v1/auth/reset-password` con `Authorization: Bearer <token>`.
-5. El backend consume atómicamente el token, actualiza la contraseña y revoca las sesiones anteriores.
+5. El backend consume atómicamente el token, actualiza la contraseña y revoca las sesiones anteriores. Un enlace ya consumido responde HTTP 410 `RECOVERY_TOKEN_USED`.
 6. El usuario inicia sesión normalmente con su nueva contraseña.
 
 La recuperación no devuelve sesión (no access token, no refresh cookie).

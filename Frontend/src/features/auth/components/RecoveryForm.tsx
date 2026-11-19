@@ -4,6 +4,7 @@ import React, { useState, useId } from "react";
 import Link from "next/link";
 import { recoverySchema, validateRecoveryEmail } from "../schemas/recovery.schema";
 import { forgotPassword } from "@/api/auth.api";
+import { Alert } from "@/components/feedback/Alert";
 
 export function RecoveryForm() {
   const correoId = useId();
@@ -61,7 +62,7 @@ export function RecoveryForm() {
         setFeedback({
           type: "success",
           message:
-            "Si existe una cuenta asociada a este correo, se enviará un enlace de recuperación seguro con vigencia de 15 minutos. Por favor revisa tu bandeja de entrada y la carpeta de spam.",
+            "Si existe una cuenta asociada a este correo, se enviará un enlace de recuperación seguro con vigencia de 5 minutos. Por favor revisa tu bandeja de entrada y la carpeta de spam.",
         });
       } else if (res.status === 429) {
         setFeedback({
@@ -101,24 +102,11 @@ export function RecoveryForm() {
         aria-label="Información de vigencia del enlace"
         className="rounded-md border-2 border-slate-700 bg-white p-3.5 text-xs sm:text-sm font-medium text-slate-800 shadow-xs"
       >
-        <p>Te enviaremos un enlace de recuperación seguro con vigencia de 15 min.</p>
+        <p>Te enviaremos un enlace de recuperación seguro con vigencia de 5 min.</p>
       </div>
 
       {/* Alerta de feedback general si existe */}
-      {feedback && (
-        <div
-          role="alert"
-          className={`rounded-md p-3.5 text-sm font-medium transition-all ${
-            feedback.type === "error"
-              ? "border border-red-200 bg-red-50 text-red-700"
-              : feedback.type === "success"
-                ? "border border-green-200 bg-green-50 text-green-700"
-                : "border border-blue-200 bg-blue-50 text-blue-700"
-          }`}
-        >
-          {feedback.message}
-        </div>
-      )}
+      {feedback && <Alert type={feedback.type}>{feedback.message}</Alert>}
 
       {/* Campo: Correo Electrónico Registrado */}
       <div className="space-y-1.5">

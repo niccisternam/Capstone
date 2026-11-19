@@ -9,6 +9,9 @@ import {
   changeTemporaryPasswordFormSchema,
 } from "../schemas/first-access.schema";
 import { changeTemporaryPassword } from "@/api/auth.api";
+import { Alert } from "@/components/feedback/Alert";
+import { PasswordField } from "@/components/ui/PasswordField";
+import { RequirementList } from "@/components/ui/RequirementList";
 
 export function FirstAccessForm() {
   const searchParams = useSearchParams();
@@ -46,11 +49,6 @@ export function FirstAccessForm() {
   const [nuevaPassword, setNuevaPassword] = useState<string>("");
   const [confirmarPassword, setConfirmarPassword] = useState<string>("");
 
-  // Visibilidad de contraseñas (icono de ojo)
-  const [showProvisoria, setShowProvisoria] = useState<boolean>(false);
-  const [showNueva, setShowNueva] = useState<boolean>(false);
-  const [showConfirm, setShowConfirm] = useState<boolean>(false);
-
   // Estados dirty para validación en tiempo real
   const [nuevaDirty, setNuevaDirty] = useState<boolean>(false);
   const [confirmDirty, setConfirmDirty] = useState<boolean>(false);
@@ -69,8 +67,7 @@ export function FirstAccessForm() {
   // Requisitos calculados
   const requirements = checkPasswordRequirements(nuevaPassword);
 
-  const handleNuevaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
+  const handleNuevaChange = (val: string) => {
     setNuevaPassword(val);
     setNuevaDirty(true);
     setFeedback(null);
@@ -83,8 +80,7 @@ export function FirstAccessForm() {
     }
   };
 
-  const handleConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
+  const handleConfirmChange = (val: string) => {
     setConfirmarPassword(val);
     setConfirmDirty(true);
     setFeedback(null);
@@ -202,20 +198,7 @@ export function FirstAccessForm() {
       aria-label="Formulario de primer ingreso y definición de clave definitiva"
     >
       {/* Alerta general de feedback si existe */}
-      {feedback && (
-        <div
-          role="alert"
-          className={`rounded-md p-3.5 text-sm font-medium transition-all ${
-            feedback.type === "error"
-              ? "border border-red-200 bg-red-50 text-red-700"
-              : feedback.type === "success"
-                ? "border border-green-200 bg-green-50 text-green-700"
-                : "border border-blue-200 bg-blue-50 text-blue-700"
-          }`}
-        >
-          {feedback.message}
-        </div>
-      )}
+      {feedback && <Alert type={feedback.type}>{feedback.message}</Alert>}
 
       {/* Campo 1: Correo de la Cuenta (Solo Lectura) */}
       <div className="space-y-1.5">
@@ -234,85 +217,27 @@ export function FirstAccessForm() {
         </div>
       </div>
 
-      {/* Campo 2: Contraseña Temporal Provisoria (con ojo) */}
-      <div className="space-y-1.5">
-        <label
-          htmlFor={provisionalId}
-          className="block text-sm font-semibold text-slate-800"
-        >
-          Contraseña Temporal Provisoria:
-        </label>
-        <div className="relative flex items-center">
-          <input
-            id={provisionalId}
-            type={showProvisoria ? "text" : "password"}
-            value={passwordProvisoria}
-            onChange={(e) => setPasswordProvisoria(e.target.value)}
-            disabled={isSubmitting}
-            className="w-full rounded-md border border-slate-400 bg-white px-3.5 py-2 pr-10 text-sm text-slate-800 shadow-xs focus:border-blue-600 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            type="button"
-            onClick={() => setShowProvisoria(!showProvisoria)}
-            aria-label={showProvisoria ? "Ocultar contraseña provisoria" : "Mostrar contraseña provisoria"}
-            className="absolute right-3 text-slate-500 hover:text-slate-800 focus:outline-hidden"
-          >
-            {showProvisoria ? (
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
-              </svg>
-            ) : (
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-              </svg>
-            )}
-          </button>
-        </div>
-      </div>
+      {/* Campo 2: Contraseña Temporal Provisoria */}
+      <PasswordField
+        id={provisionalId}
+        label="Contraseña Temporal Provisoria:"
+        value={passwordProvisoria}
+        onChange={setPasswordProvisoria}
+        disabled={isSubmitting}
+      />
 
       {/* Campo 3: Nueva Contraseña Definitiva */}
       <div className="space-y-1.5">
-        <label
-          htmlFor={nuevaPassId}
-          className="block text-sm font-semibold text-slate-800"
-        >
-          Nueva Contraseña:
-        </label>
-        <div className="relative flex items-center">
-          <input
-            id={nuevaPassId}
-            type={showNueva ? "text" : "password"}
-            placeholder="Ingrese su nueva clave definitiva"
-            value={nuevaPassword}
-            onChange={handleNuevaChange}
-            disabled={isSubmitting}
-            aria-invalid={nuevaDirty && !!nuevaError}
-            aria-describedby={nuevaDirty && nuevaError ? nuevaPassErrorId : undefined}
-            className={`w-full rounded-md border bg-white px-3.5 py-2 pr-10 text-sm text-slate-900 placeholder:text-slate-400 shadow-xs focus:outline-hidden focus:ring-2 focus:ring-offset-1 ${
-              nuevaDirty && nuevaError
-                ? "border-red-500 focus:border-red-500 focus:ring-red-400"
-                : "border-slate-400 focus:border-blue-600 focus:ring-blue-500"
-            }`}
-          />
-          <button
-            type="button"
-            onClick={() => setShowNueva(!showNueva)}
-            aria-label={showNueva ? "Ocultar nueva contraseña" : "Mostrar nueva contraseña"}
-            className="absolute right-3 text-slate-500 hover:text-slate-800 focus:outline-hidden"
-          >
-            {showNueva ? (
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
-              </svg>
-            ) : (
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-              </svg>
-            )}
-          </button>
-        </div>
+        <PasswordField
+          id={nuevaPassId}
+          label="Nueva Contraseña:"
+          placeholder="Ingrese su nueva clave definitiva"
+          value={nuevaPassword}
+          onChange={handleNuevaChange}
+          disabled={isSubmitting}
+          invalid={nuevaDirty && !!nuevaError}
+          describedBy={nuevaPassErrorId}
+        />
 
         {/* Error inferior */}
         {nuevaDirty && nuevaError && (
@@ -323,71 +248,33 @@ export function FirstAccessForm() {
 
         {/* Guía de requisitos de seguridad interactiva */}
         {nuevaDirty && (
-          <div className="mt-2 space-y-1 rounded-md bg-slate-50 p-2.5 text-xs text-slate-600 border border-slate-200">
+          <div className="mt-2 space-y-1 rounded-md border border-slate-200 bg-slate-50 p-2.5 text-xs text-slate-600">
             <p className="font-semibold text-slate-700">Requisitos de seguridad:</p>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1 pt-1">
-              <li className={`flex items-center gap-1.5 ${requirements.hasMinLength ? "text-green-700 font-medium" : "text-slate-500"}`}>
-                <span>{requirements.hasMinLength ? "✓" : "○"}</span> Mínimo 12 caracteres
-              </li>
-              <li className={`flex items-center gap-1.5 ${requirements.hasUpper ? "text-green-700 font-medium" : "text-slate-500"}`}>
-                <span>{requirements.hasUpper ? "✓" : "○"}</span> Una letra mayúscula
-              </li>
-              <li className={`flex items-center gap-1.5 ${requirements.hasLower ? "text-green-700 font-medium" : "text-slate-500"}`}>
-                <span>{requirements.hasLower ? "✓" : "○"}</span> Una letra minúscula
-              </li>
-              <li className={`flex items-center gap-1.5 ${requirements.hasNumber ? "text-green-700 font-medium" : "text-slate-500"}`}>
-                <span>{requirements.hasNumber ? "✓" : "○"}</span> Un número
-              </li>
-              <li className={`flex items-center gap-1.5 ${requirements.hasSymbol ? "text-green-700 font-medium" : "text-slate-500"}`}>
-                <span>{requirements.hasSymbol ? "✓" : "○"}</span> Un símbolo especial (!@#$...)
-              </li>
-            </ul>
+            <RequirementList
+              items={[
+                { label: "Mínimo 12 caracteres", met: requirements.hasMinLength },
+                { label: "Una letra mayúscula", met: requirements.hasUpper },
+                { label: "Una letra minúscula", met: requirements.hasLower },
+                { label: "Un número", met: requirements.hasNumber },
+                { label: "Un símbolo especial (!@#$...)", met: requirements.hasSymbol },
+              ]}
+            />
           </div>
         )}
       </div>
 
       {/* Campo 4: Confirmar Nueva Contraseña */}
       <div className="space-y-1.5">
-        <label
-          htmlFor={confirmPassId}
-          className="block text-sm font-semibold text-slate-800"
-        >
-          Confirmar Nueva Contraseña:
-        </label>
-        <div className="relative flex items-center">
-          <input
-            id={confirmPassId}
-            type={showConfirm ? "text" : "password"}
-            placeholder="Repita su nueva clave"
-            value={confirmarPassword}
-            onChange={handleConfirmChange}
-            disabled={isSubmitting}
-            aria-invalid={confirmDirty && !!confirmError}
-            aria-describedby={confirmDirty && confirmError ? confirmPassErrorId : undefined}
-            className={`w-full rounded-md border bg-white px-3.5 py-2 pr-10 text-sm text-slate-900 placeholder:text-slate-400 shadow-xs focus:outline-hidden focus:ring-2 focus:ring-offset-1 ${
-              confirmDirty && confirmError
-                ? "border-red-500 focus:border-red-500 focus:ring-red-400"
-                : "border-slate-400 focus:border-blue-600 focus:ring-blue-500"
-            }`}
-          />
-          <button
-            type="button"
-            onClick={() => setShowConfirm(!showConfirm)}
-            aria-label={showConfirm ? "Ocultar confirmación" : "Mostrar confirmación"}
-            className="absolute right-3 text-slate-500 hover:text-slate-800 focus:outline-hidden"
-          >
-            {showConfirm ? (
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
-              </svg>
-            ) : (
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-              </svg>
-            )}
-          </button>
-        </div>
+        <PasswordField
+          id={confirmPassId}
+          label="Confirmar Nueva Contraseña:"
+          placeholder="Repita su nueva clave"
+          value={confirmarPassword}
+          onChange={handleConfirmChange}
+          disabled={isSubmitting}
+          invalid={confirmDirty && !!confirmError}
+          describedBy={confirmPassErrorId}
+        />
 
         {/* Error inferior */}
         {confirmDirty && confirmError && (

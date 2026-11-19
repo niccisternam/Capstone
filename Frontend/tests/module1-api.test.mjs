@@ -36,6 +36,11 @@ function notebookFixture(overrides = {}) {
     paletaColores: { principal: "#2563eb" },
     createdAt: TS,
     updatedAt: TS,
+    totalDocumentos: 1,
+    total: 1,
+    pagina: 1,
+    hayMas: false,
+    lotesPendientes: [],
     ...overrides,
   };
 }
@@ -352,6 +357,14 @@ test("getNotebook devuelve documentos y mapea 404 a NOT_FOUND", async () => {
   const error = await apiError(api.getNotebook("0a000000-0000-4000-8000-000000000099"));
   assert.equal(error.kind, "NOT_FOUND");
   assert.equal(error.message, "No encontramos el notebook solicitado.");
+});
+
+test("getNotebook envía página y búsqueda para encontrar documentos fuera de la primera página", async () => {
+  mockFetch(() => json(200, { notebook: { ...notebookFixture(), documentos: [documentoFixture()] } }));
+
+  await api.getNotebook(IDS.notebook, { pagina: 50, buscar: "folio 123", estado: "CONFIRMADO" });
+
+  assert.equal(calls[0].path, `/module1/notebooks/${IDS.notebook}?pagina=50&buscar=folio+123&estado=CONFIRMADO`);
 });
 
 test("uploadDocuments envía FormData con campo documents repetido y sin Content-Type", async () => {

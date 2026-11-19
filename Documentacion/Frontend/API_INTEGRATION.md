@@ -41,6 +41,7 @@ El contrato backend disponible del Módulo 1 está documentado en `Documentacion
 | Autenticación | Primer ingreso (cambio clave temporal) | `POST /api/v1/auth/change-temporary-password` | `{ nuevaPassword, confirmarPassword }` | `200` (`mensaje`, `challengeId`) | Bearer temporal | `first-access.schema.test.mjs` | Conectado |
 | Autenticación | Solicitar enlace de recuperación | `POST /api/v1/auth/forgot-password` | `{ correo }` | `202` (`mensaje`) | Pública | `recovery.schema.test.mjs` | Conectado |
 | Autenticación | Restablecer contraseña | `POST /api/v1/auth/reset-password` | `{ nuevaPassword, confirmarPassword }` | `200` (`mensaje`) | Bearer token (hash) | `reset-password.schema.test.mjs` | Conectado |
+| Autenticación | Validar enlace de recuperación | `GET /api/v1/auth/reset-password/validate` | — | `200` (`estado`: `VALIDO\|USADO\|EXPIRADO\|INVALIDO`) | Bearer token (hash) | Manual | Conectado |
 | Autenticación | Refrescar sesión | `POST /api/v1/auth/refresh` | Vía cookie `capstone_refresh_token` | `200` (`accessToken`, `usuario`) | Cookie HttpOnly | `client.ts` | Conectado |
 | Autenticación | Cerrar sesión | `POST /api/v1/auth/logout` | Vía cookie `capstone_refresh_token` | `204 No Content` | Cookie HttpOnly | `client.ts` | Conectado |
 | Solicitudes | Crear solicitud de cuenta | `POST /api/v1/account-requests` | `{ rutEmpresa, razonSocial, rutUsuario, nombre, apellido, correo, descripcion? }` | `201` (`{ solicitud }`) | Pública | `create-account-request.schema.test.mjs` | Conectado |
@@ -59,7 +60,7 @@ Implementación en `src/api/module1.api.ts`, con esquemas en `src/api/module1.sc
 | `createNotebook` | `POST /api/v1/module1/notebooks` | `notebookInputSchema` | `201 { notebook }` | Bearer | `module1-api.test.mjs` | Conectado |
 | `updateNotebook` | `PATCH /api/v1/module1/notebooks/:idNotebook` | `notebookInputSchema` | `{ notebook }` | Bearer | `module1-api.test.mjs` | Conectado |
 | `deleteNotebook` | `DELETE /api/v1/module1/notebooks/:idNotebook` | UUID | `{ idNotebook, eliminado: true }` | Bearer | `module1-api.test.mjs` | Conectado |
-| `getNotebook` | `GET /api/v1/module1/notebooks/:idNotebook` | UUID | `{ notebook }` con `documentos` | Bearer | `module1-api.test.mjs` | Conectado |
+| `getNotebook` | `GET /api/v1/module1/notebooks/:idNotebook?pagina=&buscar=&estado=&estadoPago=&proveedor=` | UUID; 50 documentos por página | `{ notebook }` con `documentos`, `total`, `pagina`, `hayMas`, `totalDocumentos`, `lotesPendientes` | Bearer | `module1-api.test.mjs` | Conectado |
 | `uploadDocuments` | `POST /api/v1/module1/notebooks/:idNotebook/documents` | `multipart`, campo `documents`, 1–10 PDF ≤ 15 MB con firma `%PDF` | `201 { lote }` | Bearer | `module1-api.test.mjs` | Conectado |
 | `processBatch` | `POST /api/v1/module1/batches/:idLote/process` | UUID, `AbortSignal` opcional | `{ lote }` con `documentos` | Bearer | `module1-api.test.mjs` | Conectado |
 | `getBatch` | `GET /api/v1/module1/batches/:idLote` | UUID | `{ lote }` | Bearer | `module1-api.test.mjs` | Conectado |

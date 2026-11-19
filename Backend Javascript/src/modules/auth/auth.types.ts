@@ -9,6 +9,7 @@ export interface AuthUser {
   debeCambiarPassword: boolean;
   bloqueadoHasta: Date | null;
   correoVerificadoAt: Date | null;
+  empresa?: { razonSocial: string };
 }
 
 export type SecurityCodePurpose =

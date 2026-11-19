@@ -4,7 +4,8 @@ import {
   type Request,
   type Response,
 } from "express";
-import { AppError } from "../../shared/errors/app-error.js";
+import { readBearerToken } from "../../shared/auth/bearer.js";
+import { handle } from "../../shared/http/handler.js";
 import {
   changeTemporaryPasswordSchema,
   loginSchema,
@@ -15,21 +16,37 @@ import {
 } from "./auth.schemas.js";
 import type { AuthService } from "./auth.service.js";
 
-function bearerToken(authorization: string | undefined): string {
-  const match = /^Bearer\s+(.+)$/i.exec(authorization ?? "");
-  if (!match?.[1]) {
-    throw new AppError(
-      401,
-      "AUTHENTICATION_REQUIRED",
-      "Se requiere un token de autenticación",
-    );
+const REFRESH_COOKIE = "capstone_refresh_token";
+
+type SessionResult = {
+  estado: string;
+  tokenType: string;
+  accessToken: string;
+  expiresInSeconds: number;
+  refreshToken: string;
+  sessionId: string;
+  rememberSession: boolean;
+  refreshTokenExpiresAt: Date;
+};
+
+function readRefreshCookie(req: Request): string | undefined {
+  const cookies = req.headers.cookie?.split(";") ?? [];
+  for (const cookie of cookies) {
+    const separator = cookie.indexOf("=");
+    if (separator < 0) continue;
+    const name = cookie.slice(0, separator).trim();
+    if (name !== REFRESH_COOKIE) continue;
+    try {
+      return decodeURIComponent(cookie.slice(separator + 1));
+    } catch {
+      return undefined;
+    }
   }
-  return match[1];
+  return undefined;
 }
 
 export function createAuthRouter(service: AuthService) {
   const router = Router();
-  const refreshCookieName = "capstone_refresh_token";
   const cookieBase: CookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -37,121 +54,98 @@ export function createAuthRouter(service: AuthService) {
     path: "/api/v1/auth",
   };
 
-  function readRefreshCookie(req: Request): string | undefined {
-    const cookies = req.headers.cookie?.split(";") ?? [];
-    for (const cookie of cookies) {
-      const separator = cookie.indexOf("=");
-      if (separator < 0) continue;
-      const name = cookie.slice(0, separator).trim();
-      if (name !== refreshCookieName) continue;
-      try {
-        return decodeURIComponent(cookie.slice(separator + 1));
-      } catch {
-        return undefined;
-      }
-    }
-    return undefined;
-  }
-
   function setRefreshCookie(
     res: Response,
     token: string,
     rememberSession: boolean,
     expiresAt: Date,
   ) {
-    res.cookie(refreshCookieName, token, {
+    res.cookie(REFRESH_COOKIE, token, {
       ...cookieBase,
       ...(rememberSession ? { expires: expiresAt } : {}),
     });
   }
 
-  router.post("/login", async (req, res, next) => {
-    try {
+  function sendSession(res: Response, result: SessionResult) {
+    const { refreshToken, ...response } = result;
+    setRefreshCookie(
+      res,
+      refreshToken,
+      result.rememberSession,
+      result.refreshTokenExpiresAt,
+    );
+    res.status(200).json(response);
+  }
+
+  router.post(
+    "/login",
+    handle(async (req, res) => {
       res.status(200).json(await service.login(loginSchema.parse(req.body)));
-    } catch (error) {
-      next(error);
-    }
-  });
+    }),
+  );
 
-  router.post("/change-temporary-password", async (req, res, next) => {
-    try {
+  router.post(
+    "/change-temporary-password",
+    handle(async (req, res) => {
       const input = changeTemporaryPasswordSchema.parse(req.body);
-      const result = await service.changeTemporaryPassword(
-        bearerToken(req.headers.authorization),
-        input.nuevaPassword,
+      res.status(200).json(
+        await service.changeTemporaryPassword(
+          readBearerToken(req.headers.authorization),
+          input.nuevaPassword,
+        ),
       );
-      res.status(200).json(result);
-    } catch (error) {
-      next(error);
-    }
-  });
+    }),
+  );
 
-  router.post("/verify-code", async (req, res, next) => {
-    try {
+  router.post(
+    "/verify-code",
+    handle(async (req, res) => {
       const input = verifyLoginCodeSchema.parse(req.body);
-      const result = await service.verifyLoginCode(
-        input.challengeId,
-        input.codigo,
-        input.recordarSesion,
-      );
-      setRefreshCookie(
+      sendSession(
         res,
-        result.refreshToken,
-        result.rememberSession,
-        result.refreshTokenExpiresAt,
+        await service.verifyLoginCode(
+          input.challengeId,
+          input.codigo,
+          input.recordarSesion,
+        ),
       );
-      const { refreshToken: _refreshToken, ...response } = result;
-      void _refreshToken;
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
-    }
-  });
+    }),
+  );
 
-  router.post("/refresh", async (req, res, next) => {
-    try {
-      const result = await service.refreshSession(readRefreshCookie(req) ?? "");
-      setRefreshCookie(
+  router.post(
+    "/refresh",
+    handle(async (req, res) => {
+      sendSession(
         res,
-        result.refreshToken,
-        result.rememberSession,
-        result.refreshTokenExpiresAt,
+        await service.refreshSession(readRefreshCookie(req) ?? ""),
       );
-      const { refreshToken: _refreshToken, ...response } = result;
-      void _refreshToken;
-      res.status(200).json(response);
-    } catch (error) {
-      next(error);
-    }
-  });
+    }),
+  );
 
-  router.post("/logout", async (req, res, next) => {
-    try {
+  router.post(
+    "/logout",
+    handle(async (req, res) => {
       await service.logout(readRefreshCookie(req));
-      res.clearCookie(refreshCookieName, cookieBase);
+      res.clearCookie(REFRESH_COOKIE, cookieBase);
       res.status(204).send();
-    } catch (error) {
-      next(error);
-    }
-  });
+    }),
+  );
 
-  router.post("/login-code/resend", async (req, res, next) => {
-    try {
+  router.post(
+    "/login-code/resend",
+    handle(async (req, res) => {
       const input = resendLoginCodeSchema.parse(req.body);
       res.status(200).json(await service.resendLoginCode(input.challengeId));
-    } catch (error) {
-      next(error);
-    }
-  });
+    }),
+  );
 
-  router.post("/forgot-password", async (req, res, next) => {
-    try {
+  router.post(
+    "/forgot-password",
+    handle(async (req, res) => {
       const input = requestPasswordRecoverySchema.parse(req.body);
       res.status(202).json(await service.requestPasswordRecovery(input.correo));
-    } catch (error) {
-      next(error);
-    }
-  });
+    }),
+  );
 
   router.post("/verify-recovery-code", (_req, res) => {
     res.status(410).json({
@@ -163,19 +157,29 @@ export function createAuthRouter(service: AuthService) {
     });
   });
 
-  router.post("/reset-password", async (req, res, next) => {
-    try {
+  router.get(
+    "/reset-password/validate",
+    handle(async (req, res) => {
+      res.status(200).json(
+        await service.validatePasswordRecoveryToken(
+          readBearerToken(req.headers.authorization),
+        ),
+      );
+    }),
+  );
+
+  router.post(
+    "/reset-password",
+    handle(async (req, res) => {
       const input = resetPasswordSchema.parse(req.body);
       const result = await service.resetPassword(
-        bearerToken(req.headers.authorization),
+        readBearerToken(req.headers.authorization),
         input.nuevaPassword,
       );
-      res.clearCookie(refreshCookieName, cookieBase);
+      res.clearCookie(REFRESH_COOKIE, cookieBase);
       res.status(200).json(result);
-    } catch (error) {
-      next(error);
-    }
-  });
+    }),
+  );
 
   return router;
 }

@@ -11,6 +11,9 @@ import {
   filterAccountRequests,
   paginateRequests,
 } from "../types/account-request.types";
+import { formatDateTime } from "../utils/formatDate";
+import { RequestStatusBadge } from "./RequestStatusBadge";
+import { Pagination } from "@/components/ui/Pagination";
 
 export function AccountRequestsTable() {
   const router = useRouter();
@@ -105,46 +108,6 @@ export function AccountRequestsTable() {
       updated.add(id);
     }
     setSelectedIds(updated);
-  };
-
-  // Formato de fecha y hora local DD/MM/AAAA HH:mm
-  const formatDateTime = (isoString: string) => {
-    try {
-      const date = new Date(isoString);
-      const day = String(date.getDate()).padStart(2, "0");
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const year = date.getFullYear();
-      const hours = String(date.getHours()).padStart(2, "0");
-      const mins = String(date.getMinutes()).padStart(2, "0");
-      return `${day}/${month}/${year} ${hours}:${mins}`;
-    } catch {
-      return isoString;
-    }
-  };
-
-  // Badge de estado con estilo semántico
-  const renderEstadoBadge = (estado: string) => {
-    switch (estado) {
-      case "APROBADA":
-        return (
-          <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-800">
-            Aprobada
-          </span>
-        );
-      case "RECHAZADA":
-        return (
-          <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-semibold text-red-800">
-            Rechazada
-          </span>
-        );
-      case "PENDIENTE":
-      default:
-        return (
-          <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800">
-            Pendiente
-          </span>
-        );
-    }
   };
 
   return (
@@ -300,7 +263,7 @@ export function AccountRequestsTable() {
                       {item.razonSocial ?? item.rutEmpresa}
                     </td>
                     <td className="p-2.5 sm:p-3 whitespace-nowrap border-l border-slate-200">
-                      {renderEstadoBadge(item.estado)}
+                      <RequestStatusBadge estado={item.estado} />
                     </td>
                     {/* Botón al lado derecho de estado para pasar a otra página */}
                     <td className="p-2.5 sm:p-3 whitespace-nowrap border-l border-slate-200 text-center">
@@ -323,40 +286,7 @@ export function AccountRequestsTable() {
         </div>
 
         {/* Paginador inferior idéntico al mockup */}
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-1 sm:gap-2">
-          <button
-            type="button"
-            disabled={paginaActual <= 1}
-            onClick={() => setPaginaActual((prev) => Math.max(1, prev - 1))}
-            className="rounded border border-slate-400 bg-white px-3 py-1 text-xs font-medium text-slate-700 shadow-2xs hover:bg-slate-100 disabled:opacity-40 disabled:pointer-events-none"
-          >
-            &lt; Previous
-          </button>
-
-          {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((num) => (
-            <button
-              key={num}
-              type="button"
-              onClick={() => setPaginaActual(num)}
-              className={`rounded border px-3 py-1 text-xs font-semibold transition-colors ${
-                paginaActual === num
-                  ? "border-blue-600 bg-blue-600 text-white"
-                  : "border-slate-400 bg-white text-slate-700 hover:bg-slate-100"
-              }`}
-            >
-              {num}
-            </button>
-          ))}
-
-          <button
-            type="button"
-            disabled={paginaActual >= totalPaginas}
-            onClick={() => setPaginaActual((prev) => Math.min(totalPaginas, prev + 1))}
-            className="rounded border border-slate-400 bg-white px-3 py-1 text-xs font-medium text-slate-700 shadow-2xs hover:bg-slate-100 disabled:opacity-40 disabled:pointer-events-none"
-          >
-            Next &gt;
-          </button>
-        </div>
+        <Pagination page={paginaActual} totalPages={totalPaginas} onChange={setPaginaActual} />
       </div>
     </div>
   );
