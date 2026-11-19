@@ -719,6 +719,34 @@ describe("verification codes and authentication", () => {
     ).not.toBeNull();
   });
 
+  it("rejects resending an expired login challenge without a new password check", async () => {
+    const context = await testContext();
+    const started = await login(context.app);
+    context.advanceSeconds(5 * 60 + 1);
+    const response = await request(context.app)
+      .post("/api/v1/auth/login-code/resend")
+      .send({ challengeId: started.body.challengeId });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error.code).toBe("LOGIN_CODE_INVALID_OR_EXPIRED");
+  });
+
+  it("rejects resending a challenge that was already replaced", async () => {
+    const context = await testContext();
+    const started = await login(context.app);
+    context.advanceSeconds(60);
+    await request(context.app)
+      .post("/api/v1/auth/login-code/resend")
+      .send({ challengeId: started.body.challengeId })
+      .expect(200);
+    context.advanceSeconds(60);
+    const reused = await request(context.app)
+      .post("/api/v1/auth/login-code/resend")
+      .send({ challengeId: started.body.challengeId });
+
+    expect(reused.status).toBe(400);
+  });
+
   it("allows at most three sends in a 15-minute window", async () => {
     const context = await testContext();
     const first = await login(context.app);

@@ -6,6 +6,7 @@ import {
 } from "express";
 import { readBearerToken } from "../../shared/auth/bearer.js";
 import { handle } from "../../shared/http/handler.js";
+import { createRateLimiter } from "../../shared/http/rate-limit.js";
 import {
   changeTemporaryPasswordSchema,
   loginSchema,
@@ -45,11 +46,26 @@ function readRefreshCookie(req: Request): string | undefined {
   return undefined;
 }
 
-export function createAuthRouter(service: AuthService) {
+const FIFTEEN_MINUTES = 15 * 60 * 1000;
+
+export function createAuthRouter(
+  service: AuthService,
+  options: { rateLimit?: boolean } = {},
+) {
   const router = Router();
+  const disabled = !(options.rateLimit ?? process.env.NODE_ENV !== "test");
+  const limit = (name: string, max: number) =>
+    createRateLimiter({ name, max, windowMs: FIFTEEN_MINUTES, disabled });
+  const loginLimit = limit("login", 20);
+  const codeLimit = limit("verify-code", 20);
+  const sendLimit = limit("send-email", 5);
+  const passwordLimit = limit("password", 20);
   const cookieBase: CookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    // También seguro si el frontend se sirve por HTTPS aunque NODE_ENV no sea "production".
+    secure:
+      process.env.NODE_ENV === "production" ||
+      (process.env.APP_ORIGIN ?? "").startsWith("https://"),
     sameSite: "lax",
     path: "/api/v1/auth",
   };
@@ -79,6 +95,7 @@ export function createAuthRouter(service: AuthService) {
 
   router.post(
     "/login",
+    loginLimit,
     handle(async (req, res) => {
       res.status(200).json(await service.login(loginSchema.parse(req.body)));
     }),
@@ -86,6 +103,7 @@ export function createAuthRouter(service: AuthService) {
 
   router.post(
     "/change-temporary-password",
+    passwordLimit,
     handle(async (req, res) => {
       const input = changeTemporaryPasswordSchema.parse(req.body);
       res.status(200).json(
@@ -99,6 +117,7 @@ export function createAuthRouter(service: AuthService) {
 
   router.post(
     "/verify-code",
+    codeLimit,
     handle(async (req, res) => {
       const input = verifyLoginCodeSchema.parse(req.body);
       sendSession(
@@ -133,6 +152,7 @@ export function createAuthRouter(service: AuthService) {
 
   router.post(
     "/login-code/resend",
+    sendLimit,
     handle(async (req, res) => {
       const input = resendLoginCodeSchema.parse(req.body);
       res.status(200).json(await service.resendLoginCode(input.challengeId));
@@ -141,6 +161,7 @@ export function createAuthRouter(service: AuthService) {
 
   router.post(
     "/forgot-password",
+    sendLimit,
     handle(async (req, res) => {
       const input = requestPasswordRecoverySchema.parse(req.body);
       res.status(202).json(await service.requestPasswordRecovery(input.correo));
@@ -159,6 +180,7 @@ export function createAuthRouter(service: AuthService) {
 
   router.get(
     "/reset-password/validate",
+    passwordLimit,
     handle(async (req, res) => {
       res.status(200).json(
         await service.validatePasswordRecoveryToken(
@@ -170,6 +192,7 @@ export function createAuthRouter(service: AuthService) {
 
   router.post(
     "/reset-password",
+    passwordLimit,
     handle(async (req, res) => {
       const input = resetPasswordSchema.parse(req.body);
       const result = await service.resetPassword(

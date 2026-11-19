@@ -63,7 +63,7 @@ export const createNotebookSchema = z.object({
   nombre: z.string().trim().min(1).max(150),
   descripcion: z.string().trim().max(5000).optional(),
   icono: z.string().trim().max(80).optional(),
-  paletaColores: z.record(z.string()).optional(),
+  paletaColores: z.record(z.string(), z.string()).optional(),
 });
 
 export const notebookDocumentsQuerySchema = z.object({

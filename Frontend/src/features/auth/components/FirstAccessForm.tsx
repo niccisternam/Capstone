@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useId, useSyncExternalStore } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   validateNewPasswordField,
   validateConfirmPasswordField,
@@ -14,23 +14,19 @@ import { PasswordField } from "@/components/ui/PasswordField";
 import { RequirementList } from "@/components/ui/RequirementList";
 
 export function FirstAccessForm() {
-  const searchParams = useSearchParams();
   const router = useRouter();
-
-  const queryCorreo = searchParams.get("correo") ?? "";
-  const queryToken = searchParams.get("token") ?? "";
 
   const emptySubscribe = () => () => {};
 
-  const storedCorreo = useSyncExternalStore(
+  // El token y el correo viajan solo por sessionStorage: en la URL quedarían en el
+  // historial del navegador, en logs de servidores intermedios y en el encabezado Referer.
+  const correo = useSyncExternalStore(
     emptySubscribe,
-    () => (typeof window !== "undefined" ? sessionStorage.getItem("capstone_first_access_correo") : null) ?? "carlos.soto@panaderia.cl",
-    () => "carlos.soto@panaderia.cl"
+    () => (typeof window !== "undefined" ? sessionStorage.getItem("capstone_first_access_correo") : null) ?? "",
+    () => ""
   );
-  const correo = queryCorreo || storedCorreo;
 
   const getActiveToken = (): string => {
-    if (queryToken) return queryToken;
     if (typeof window !== "undefined") {
       return sessionStorage.getItem("capstone_password_change_token") ?? "";
     }

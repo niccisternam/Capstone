@@ -1,6 +1,7 @@
 import { Router, type RequestHandler } from 'express';
 import type { AdminIdentity, AdminResolver } from '../../shared/auth/admin-resolver.js';
 import { AppError } from '../../shared/errors/app-error.js';
+import { createRateLimiter } from '../../shared/http/rate-limit.js';
 import {
   approveAccountRequestSchema,
   createAccountRequestSchema,
@@ -13,8 +14,15 @@ import type { AccountRequestService } from './account-request.service.js';
 export function createAccountRequestRouter(
   service: AccountRequestService,
   resolveAdmin: AdminResolver,
+  options: { rateLimit?: boolean } = {},
 ) {
   const router = Router();
+  const submitLimit = createRateLimiter({
+    name: 'account-request',
+    max: 5,
+    windowMs: 60 * 60 * 1000,
+    disabled: !(options.rateLimit ?? process.env.NODE_ENV !== 'test'),
+  });
   const requireAdmin: RequestHandler = async (req, res, next) => {
     try {
       const identity = await resolveAdmin(req);
@@ -28,7 +36,7 @@ export function createAccountRequestRouter(
     }
   };
 
-  router.post('/', async (req, res, next) => {
+  router.post('/', submitLimit, async (req, res, next) => {
     try {
       const input = createAccountRequestSchema.parse(req.body);
       const request = await service.submit(input);

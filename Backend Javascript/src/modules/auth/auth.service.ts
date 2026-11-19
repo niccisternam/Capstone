@@ -1,5 +1,6 @@
 import type { VerificationEmailSender } from "../../shared/email/verification-email.sender.js";
 import { AppError } from "../../shared/errors/app-error.js";
+import { randomBytes } from "node:crypto";
 import { hashPassword, verifyPassword } from "../account-requests/password.js";
 import type { AuthRepository } from "./auth.repository.js";
 import type { LoginInput } from "./auth.schemas.js";
@@ -13,6 +14,10 @@ import { AuthSessionService } from "./auth-session.service.js";
 import { JwtService } from "./jwt.service.js";
 
 export type { AuthServiceOptions } from "./auth.config.js";
+
+// Hash válido de una contraseña aleatoria descartada: se verifica cuando el correo no existe
+// para que la respuesta tarde lo mismo y no revele qué correos están registrados.
+const DUMMY_PASSWORD_HASH = hashPassword(randomBytes(32).toString("hex"));
 export { generateVerificationCode } from "./auth.tokens.js";
 
 export class AuthService {
@@ -57,9 +62,12 @@ export class AuthService {
         "La cuenta está temporalmente bloqueada",
       );
     }
-    const validPassword = user
-      ? await verifyPassword(input.password, user.passwordHash)
-      : false;
+    let validPassword = false;
+    if (user) {
+      validPassword = await verifyPassword(input.password, user.passwordHash);
+    } else {
+      await verifyPassword(input.password, await DUMMY_PASSWORD_HASH);
+    }
     if (!user || !validPassword) {
       if (user && !currentlyBlocked) {
         const blocked = await this.repository.registerFailedLogin(
@@ -129,11 +137,19 @@ export class AuthService {
       challengeId,
       "CODIGO_INICIO_SESION",
     );
-    if (!challenge || challenge.usedAt) {
+    // Un challenge vencido, revocado o con intentos agotados no puede reactivarse:
+    // si no, un challengeId antiguo permitiría pedir códigos sin volver a validar la contraseña.
+    if (
+      !challenge ||
+      challenge.usedAt ||
+      challenge.revokedAt ||
+      challenge.expiresAt.getTime() <= this.config.now().getTime() ||
+      challenge.cantidadIntentos >= this.config.maxCodeAttempts
+    ) {
       throw new AppError(
         400,
         "LOGIN_CODE_INVALID_OR_EXPIRED",
-        "Código inválido o vencido",
+        "El código venció. Vuelve a iniciar sesión para recibir uno nuevo.",
       );
     }
     assertCanLogin(

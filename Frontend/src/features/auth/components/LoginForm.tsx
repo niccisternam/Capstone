@@ -129,9 +129,7 @@ export function LoginForm() {
             sessionStorage.setItem("capstone_password_change_token", data.passwordChangeToken);
             sessionStorage.setItem("capstone_first_access_correo", correoNormalizado);
           }
-          router.push(
-            `/primer-ingreso?token=${encodeURIComponent(data.passwordChangeToken)}&correo=${encodeURIComponent(correoNormalizado)}`
-          );
+          router.push("/primer-ingreso");
           return;
         }
 

@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { createHmac, randomUUID } from "node:crypto";
 import { checkDatabaseConnection, prisma } from "./database.js";
 import { env } from "./env.js";
 import { AccountRequestService } from "../modules/account-requests/account-request.service.js";
@@ -71,7 +71,10 @@ export function createServices(
         : new UnavailableVerificationEmailSender(),
       {
         createId: randomUUID,
-        codeSecret: env.JWT_SECRET,
+        // Clave derivada: los códigos 2FA no usan la misma clave que firma los JWT.
+        codeSecret: createHmac("sha256", env.JWT_SECRET)
+          .update("capstone:auth-codes:v1")
+          .digest("hex"),
         regularSessionDays: env.SESSION_DEFAULT_DAYS,
         rememberedSessionDays: env.SESSION_REMEMBER_DAYS,
         idleTimeoutMinutes: env.SESSION_IDLE_TIMEOUT_MINUTES,

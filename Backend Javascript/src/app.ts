@@ -20,6 +20,7 @@ export function createApp(dependencies: AppDependencies = {}) {
   const app = express();
   const services = createServices(dependencies);
 
+  if (env.TRUST_PROXY !== undefined) app.set("trust proxy", env.TRUST_PROXY);
   app.use(helmet());
   app.use((req, res, next) => {
     const origin = req.headers.origin;
@@ -42,7 +43,11 @@ export function createApp(dependencies: AppDependencies = {}) {
   app.use(express.json({ limit: "2mb" }));
   app.use(
     pinoHttp({
-      redact: ["req.headers.authorization"],
+      redact: [
+        "req.headers.authorization",
+        "req.headers.cookie",
+        'res.headers["set-cookie"]',
+      ],
     }),
   );
 

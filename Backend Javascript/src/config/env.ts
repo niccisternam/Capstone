@@ -11,6 +11,9 @@ const schema = z.object({
     .default("development"),
   PORT: z.coerce.number().int().positive().default(3000),
   LOG_LEVEL: z.string().default("info"),
+  // Número de proxies de confianza delante del backend (p. ej. 1 detrás de un balanceador).
+  // Necesario para que el rate limit por IP use la IP real del cliente.
+  TRUST_PROXY: z.coerce.number().int().min(0).optional(),
   DATABASE_URL: z.string().url(),
   FASTAPI_BASE_URL: z.string().url(),
   JWT_SECRET: z.string().min(16),
@@ -21,7 +24,7 @@ const schema = z.object({
   AUTH_TEST_ADMIN_EMAIL: z.string().email().optional(),
   SMTP_HOST: z.string().min(1).default("smtp.gmail.com"),
   SMTP_PORT: z.coerce.number().int().positive().default(465),
-  SMTP_SECURE: booleanString.default("true"),
+  SMTP_SECURE: booleanString.default(true),
   SMTP_USER: z.string().min(1).optional(),
   SMTP_PASS: z.string().min(1).optional(),
   MAIL_FROM: z.string().min(1).optional(),
@@ -36,7 +39,7 @@ const schema = z.object({
   GEMINI_API_KEY: z.string().min(1).optional(),
   GEMINI_MODEL: z.string().default("gemini-3.5-flash"),
   GEMINI_TIMEOUT_MS: z.coerce.number().int().positive().default(15_000),
-  GEMINI_LIVE_TESTS: booleanString.default("false"),
+  GEMINI_LIVE_TESTS: booleanString.default(false),
   DOCUMENT_STORAGE_PATH: z.string().default("./storage/documents"),
 });
 
