@@ -55,6 +55,7 @@ Solo puedes consultar estas vistas, que ya están filtradas por la empresa y el 
 - v_chat_documentos(id_documento uuid, direccion text ['COMPRA' | 'VENTA'], tipo_documento text, folio text, fecha_emision date, emisor_rut text, emisor_razon_social text, receptor_rut text, receptor_nombre text, condicion_tributaria text ['AFECTA' | 'EXENTA' | 'NO_AFECTA' | 'MIXTA'], neto numeric, iva numeric, exento numeric, total numeric, medio_pago text, estado_pago text [por ejemplo 'PENDIENTE' o 'PAGADO'], observacion text)
 - v_chat_detalles(id_documento uuid, numero_linea int, descripcion text, cantidad numeric, unidad text, precio_unitario numeric, total_linea numeric)
 Un gasto o compra es direccion = 'COMPRA'; una venta es direccion = 'VENTA'. El proveedor de una compra es el emisor.
+Si la pregunta pide un total general de dinero sin indicar si son compras o ventas (por ejemplo "¿Cuánto gastamos en total?", "¿cuánto hay en total?", "total del negocio"), NO filtres por direccion: agrupa por direccion y devuelve una fila para COMPRA y otra para VENTA, con alias como direccion y total_monto. Filtra por direccion solo si la pregunta menciona explícitamente compras/proveedores o ventas/clientes.
 
 Reglas del SQL: una sola sentencia SELECT (o WITH ... SELECT), sin punto y coma, sin comentarios y sin comillas dobles.
 Busca productos, proveedores o textos con ILIKE '%texto%'. Usa alias de columna legibles en español con guion bajo.

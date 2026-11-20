@@ -87,9 +87,10 @@ export async function ejecutarMetrica(
         ORDER BY 1
       `;
     case "compras_por_proveedor":
+      // En una compra la contraparte es el emisor (proveedor); en una venta, el receptor (cliente).
       return prisma.$queryRaw<Record<string, unknown>[]>`
-        SELECT COALESCE(r."emisor_razon_social", 'Sin proveedor') AS proveedor,
-               COALESCE(r."emisor_rut", '') AS rut,
+        SELECT COALESCE(CASE WHEN d."direccion"::text = 'VENTA' THEN r."receptor_nombre" ELSE r."emisor_razon_social" END, 'Sin contraparte') AS proveedor,
+               COALESCE(CASE WHEN d."direccion"::text = 'VENTA' THEN r."receptor_rut" ELSE r."emisor_rut" END, '') AS rut,
                COALESCE(SUM(r."total"), 0)::text AS total,
                COUNT(*)::int AS documentos
         ${base(idEmpresa, idNotebook, filtros)}

@@ -6,6 +6,8 @@ const MAX_COLUMNAS_LOCAL = 6;
 const MAX_LARGO_LOCAL = 400;
 
 const COLUMNA_MONETARIA = /(total|monto|neto|iva|exento|precio|gasto|compra|venta|ingreso|costo|saldo|pago|valor)/i;
+// Conteos como "total_documentos" o "cantidad_lineas" llevan una palabra monetaria, pero son enteros.
+const COLUMNA_CONTEO = /(documento|cantidad|count|numero|lineas?|registros?|cuenta|folios?)/i;
 const COLUMNA_NUMERICA = /(total|cantidad|monto|suma|precio|numero|count|promedio|neto|iva|exento|gasto|compra|venta|saldo|pago|valor|dias)/i;
 const TEXTO_NUMERICO = /^-?\d+(?:\.\d+)?$/;
 const FECHA_ISO = /^(\d{4})-(\d{2})-(\d{2})(?:[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?)?$/;
@@ -29,7 +31,7 @@ function formatearMoneda(valor: number): string {
  */
 function formatearValor(columna: string, valor: unknown): string {
   if (valor === null || valor === undefined) return "sin dato";
-  const esMonetaria = COLUMNA_MONETARIA.test(columna);
+  const esMonetaria = COLUMNA_MONETARIA.test(columna) && !COLUMNA_CONTEO.test(columna);
   const esNumerica = esMonetaria || COLUMNA_NUMERICA.test(columna);
 
   if (typeof valor === "boolean") return valor ? "sí" : "no";
