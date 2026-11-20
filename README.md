@@ -10,7 +10,7 @@ Plataforma web interna orientada a la centralización, digitalización y procesa
 
 ---
 
-## 👥 Equipo de Trabajo
+## 👥 Equipo de Trabajo Grupo 5
 * **Nicolás Cisterna Mena** – Jefe de Proyecto / Desarrollador Full-Stack 
 * **Marcelo Vásquez** – Desarrollador Full-Stack  
 * **Martín Godoy** – Desarrollador Full-Stack 
