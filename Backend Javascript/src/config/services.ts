@@ -11,7 +11,6 @@ import { PrismaAuthRepository } from "../modules/auth/prisma-auth.repository.js"
 import { ChatService } from "../modules/module4/chat.service.js";
 import { GeminiChatAssistant, UnavailableChatAssistant } from "../modules/module4/gemini.chat.js";
 import { DashboardService } from "../modules/dashboard/dashboard.service.js";
-import { GeminiWidgetPlanner, UnavailableWidgetPlanner } from "../modules/dashboard/dashboard.ai.js";
 import { GeminiExtractor, UnavailableExtractor } from "../modules/module1/gemini.extractor.js";
 import { Module1Service } from "../modules/module1/module1.service.js";
 import type { AdminResolver } from "../shared/auth/admin-resolver.js";
@@ -117,12 +116,7 @@ export function createServices(
 
   const dashboardService =
     dependencies.dashboardService ??
-    new DashboardService(
-      prisma,
-      env.GEMINI_API_KEY
-        ? new GeminiWidgetPlanner(env.GEMINI_API_KEY, env.GEMINI_MODEL)
-        : new UnavailableWidgetPlanner(),
-    );
+    new DashboardService(prisma);
 
   return {
     authService,

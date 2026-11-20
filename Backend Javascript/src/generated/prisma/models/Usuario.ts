@@ -314,7 +314,6 @@ export type UsuarioWhereInput = {
   documentosCargados?: Prisma.DocumentoListRelationFilter
   revisionesDocumentos?: Prisma.RevisionDocumentoListRelationFilter
   conversacionesChat?: Prisma.ConversacionChatListRelationFilter
-  widgetsCreados?: Prisma.DashboardWidgetListRelationFilter
 }
 
 export type UsuarioOrderByWithRelationInput = {
@@ -344,7 +343,6 @@ export type UsuarioOrderByWithRelationInput = {
   documentosCargados?: Prisma.DocumentoOrderByRelationAggregateInput
   revisionesDocumentos?: Prisma.RevisionDocumentoOrderByRelationAggregateInput
   conversacionesChat?: Prisma.ConversacionChatOrderByRelationAggregateInput
-  widgetsCreados?: Prisma.DashboardWidgetOrderByRelationAggregateInput
 }
 
 export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
@@ -377,7 +375,6 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   documentosCargados?: Prisma.DocumentoListRelationFilter
   revisionesDocumentos?: Prisma.RevisionDocumentoListRelationFilter
   conversacionesChat?: Prisma.ConversacionChatListRelationFilter
-  widgetsCreados?: Prisma.DashboardWidgetListRelationFilter
 }, "idUsuario" | "idEmpresa" | "rutUsuario">
 
 export type UsuarioOrderByWithAggregationInput = {
@@ -452,7 +449,6 @@ export type UsuarioCreateInput = {
   documentosCargados?: Prisma.DocumentoCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioUncheckedCreateInput = {
@@ -481,7 +477,6 @@ export type UsuarioUncheckedCreateInput = {
   documentosCargados?: Prisma.DocumentoUncheckedCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioUpdateInput = {
@@ -510,7 +505,6 @@ export type UsuarioUpdateInput = {
   documentosCargados?: Prisma.DocumentoUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioUncheckedUpdateInput = {
@@ -539,7 +533,6 @@ export type UsuarioUncheckedUpdateInput = {
   documentosCargados?: Prisma.DocumentoUncheckedUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioCreateManyInput = {
@@ -855,20 +848,6 @@ export type UsuarioUpdateOneRequiredWithoutConversacionesChatNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutConversacionesChatInput, Prisma.UsuarioUpdateWithoutConversacionesChatInput>, Prisma.UsuarioUncheckedUpdateWithoutConversacionesChatInput>
 }
 
-export type UsuarioCreateNestedOneWithoutWidgetsCreadosInput = {
-  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutWidgetsCreadosInput, Prisma.UsuarioUncheckedCreateWithoutWidgetsCreadosInput>
-  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutWidgetsCreadosInput
-  connect?: Prisma.UsuarioWhereUniqueInput
-}
-
-export type UsuarioUpdateOneRequiredWithoutWidgetsCreadosNestedInput = {
-  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutWidgetsCreadosInput, Prisma.UsuarioUncheckedCreateWithoutWidgetsCreadosInput>
-  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutWidgetsCreadosInput
-  upsert?: Prisma.UsuarioUpsertWithoutWidgetsCreadosInput
-  connect?: Prisma.UsuarioWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutWidgetsCreadosInput, Prisma.UsuarioUpdateWithoutWidgetsCreadosInput>, Prisma.UsuarioUncheckedUpdateWithoutWidgetsCreadosInput>
-}
-
 export type UsuarioCreateWithoutEmpresaInput = {
   idUsuario?: string
   rutUsuario: string
@@ -894,7 +873,6 @@ export type UsuarioCreateWithoutEmpresaInput = {
   documentosCargados?: Prisma.DocumentoCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioUncheckedCreateWithoutEmpresaInput = {
@@ -922,7 +900,6 @@ export type UsuarioUncheckedCreateWithoutEmpresaInput = {
   documentosCargados?: Prisma.DocumentoUncheckedCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioCreateOrConnectWithoutEmpresaInput = {
@@ -966,7 +943,6 @@ export type UsuarioUpdateWithoutEmpresaInput = {
   documentosCargados?: Prisma.DocumentoUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutEmpresaInput = {
@@ -994,7 +970,6 @@ export type UsuarioUncheckedUpdateWithoutEmpresaInput = {
   documentosCargados?: Prisma.DocumentoUncheckedUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioCreateWithoutSolicitudesRevisadasInput = {
@@ -1022,7 +997,6 @@ export type UsuarioCreateWithoutSolicitudesRevisadasInput = {
   documentosCargados?: Prisma.DocumentoCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioUncheckedCreateWithoutSolicitudesRevisadasInput = {
@@ -1050,7 +1024,6 @@ export type UsuarioUncheckedCreateWithoutSolicitudesRevisadasInput = {
   documentosCargados?: Prisma.DocumentoUncheckedCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioCreateOrConnectWithoutSolicitudesRevisadasInput = {
@@ -1094,7 +1067,6 @@ export type UsuarioUpdateWithoutSolicitudesRevisadasInput = {
   documentosCargados?: Prisma.DocumentoUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutSolicitudesRevisadasInput = {
@@ -1122,7 +1094,6 @@ export type UsuarioUncheckedUpdateWithoutSolicitudesRevisadasInput = {
   documentosCargados?: Prisma.DocumentoUncheckedUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioCreateWithoutSesionesInput = {
@@ -1150,7 +1121,6 @@ export type UsuarioCreateWithoutSesionesInput = {
   documentosCargados?: Prisma.DocumentoCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioUncheckedCreateWithoutSesionesInput = {
@@ -1178,7 +1148,6 @@ export type UsuarioUncheckedCreateWithoutSesionesInput = {
   documentosCargados?: Prisma.DocumentoUncheckedCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioCreateOrConnectWithoutSesionesInput = {
@@ -1222,7 +1191,6 @@ export type UsuarioUpdateWithoutSesionesInput = {
   documentosCargados?: Prisma.DocumentoUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutSesionesInput = {
@@ -1250,7 +1218,6 @@ export type UsuarioUncheckedUpdateWithoutSesionesInput = {
   documentosCargados?: Prisma.DocumentoUncheckedUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioCreateWithoutTokensSeguridadInput = {
@@ -1278,7 +1245,6 @@ export type UsuarioCreateWithoutTokensSeguridadInput = {
   documentosCargados?: Prisma.DocumentoCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioUncheckedCreateWithoutTokensSeguridadInput = {
@@ -1306,7 +1272,6 @@ export type UsuarioUncheckedCreateWithoutTokensSeguridadInput = {
   documentosCargados?: Prisma.DocumentoUncheckedCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioCreateOrConnectWithoutTokensSeguridadInput = {
@@ -1350,7 +1315,6 @@ export type UsuarioUpdateWithoutTokensSeguridadInput = {
   documentosCargados?: Prisma.DocumentoUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutTokensSeguridadInput = {
@@ -1378,7 +1342,6 @@ export type UsuarioUncheckedUpdateWithoutTokensSeguridadInput = {
   documentosCargados?: Prisma.DocumentoUncheckedUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioCreateWithoutEventosSeguridadInput = {
@@ -1406,7 +1369,6 @@ export type UsuarioCreateWithoutEventosSeguridadInput = {
   documentosCargados?: Prisma.DocumentoCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioUncheckedCreateWithoutEventosSeguridadInput = {
@@ -1434,7 +1396,6 @@ export type UsuarioUncheckedCreateWithoutEventosSeguridadInput = {
   documentosCargados?: Prisma.DocumentoUncheckedCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioCreateOrConnectWithoutEventosSeguridadInput = {
@@ -1478,7 +1439,6 @@ export type UsuarioUpdateWithoutEventosSeguridadInput = {
   documentosCargados?: Prisma.DocumentoUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutEventosSeguridadInput = {
@@ -1506,7 +1466,6 @@ export type UsuarioUncheckedUpdateWithoutEventosSeguridadInput = {
   documentosCargados?: Prisma.DocumentoUncheckedUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioCreateWithoutNotebooksCreadosInput = {
@@ -1534,7 +1493,6 @@ export type UsuarioCreateWithoutNotebooksCreadosInput = {
   documentosCargados?: Prisma.DocumentoCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioUncheckedCreateWithoutNotebooksCreadosInput = {
@@ -1562,7 +1520,6 @@ export type UsuarioUncheckedCreateWithoutNotebooksCreadosInput = {
   documentosCargados?: Prisma.DocumentoUncheckedCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioCreateOrConnectWithoutNotebooksCreadosInput = {
@@ -1606,7 +1563,6 @@ export type UsuarioUpdateWithoutNotebooksCreadosInput = {
   documentosCargados?: Prisma.DocumentoUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutNotebooksCreadosInput = {
@@ -1634,7 +1590,6 @@ export type UsuarioUncheckedUpdateWithoutNotebooksCreadosInput = {
   documentosCargados?: Prisma.DocumentoUncheckedUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioCreateWithoutLotesCreadosInput = {
@@ -1662,7 +1617,6 @@ export type UsuarioCreateWithoutLotesCreadosInput = {
   documentosCargados?: Prisma.DocumentoCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioUncheckedCreateWithoutLotesCreadosInput = {
@@ -1690,7 +1644,6 @@ export type UsuarioUncheckedCreateWithoutLotesCreadosInput = {
   documentosCargados?: Prisma.DocumentoUncheckedCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioCreateOrConnectWithoutLotesCreadosInput = {
@@ -1734,7 +1687,6 @@ export type UsuarioUpdateWithoutLotesCreadosInput = {
   documentosCargados?: Prisma.DocumentoUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutLotesCreadosInput = {
@@ -1762,7 +1714,6 @@ export type UsuarioUncheckedUpdateWithoutLotesCreadosInput = {
   documentosCargados?: Prisma.DocumentoUncheckedUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioCreateWithoutDocumentosCargadosInput = {
@@ -1790,7 +1741,6 @@ export type UsuarioCreateWithoutDocumentosCargadosInput = {
   lotesCreados?: Prisma.LoteProcesamientoCreateNestedManyWithoutCreadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioUncheckedCreateWithoutDocumentosCargadosInput = {
@@ -1818,7 +1768,6 @@ export type UsuarioUncheckedCreateWithoutDocumentosCargadosInput = {
   lotesCreados?: Prisma.LoteProcesamientoUncheckedCreateNestedManyWithoutCreadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedCreateNestedManyWithoutRevisorInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioCreateOrConnectWithoutDocumentosCargadosInput = {
@@ -1862,7 +1811,6 @@ export type UsuarioUpdateWithoutDocumentosCargadosInput = {
   lotesCreados?: Prisma.LoteProcesamientoUpdateManyWithoutCreadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutDocumentosCargadosInput = {
@@ -1890,7 +1838,6 @@ export type UsuarioUncheckedUpdateWithoutDocumentosCargadosInput = {
   lotesCreados?: Prisma.LoteProcesamientoUncheckedUpdateManyWithoutCreadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedUpdateManyWithoutRevisorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioCreateWithoutRevisionesDocumentosInput = {
@@ -1918,7 +1865,6 @@ export type UsuarioCreateWithoutRevisionesDocumentosInput = {
   lotesCreados?: Prisma.LoteProcesamientoCreateNestedManyWithoutCreadorInput
   documentosCargados?: Prisma.DocumentoCreateNestedManyWithoutCargadorInput
   conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioUncheckedCreateWithoutRevisionesDocumentosInput = {
@@ -1946,7 +1892,6 @@ export type UsuarioUncheckedCreateWithoutRevisionesDocumentosInput = {
   lotesCreados?: Prisma.LoteProcesamientoUncheckedCreateNestedManyWithoutCreadorInput
   documentosCargados?: Prisma.DocumentoUncheckedCreateNestedManyWithoutCargadorInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutUsuarioInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioCreateOrConnectWithoutRevisionesDocumentosInput = {
@@ -1990,7 +1935,6 @@ export type UsuarioUpdateWithoutRevisionesDocumentosInput = {
   lotesCreados?: Prisma.LoteProcesamientoUpdateManyWithoutCreadorNestedInput
   documentosCargados?: Prisma.DocumentoUpdateManyWithoutCargadorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutRevisionesDocumentosInput = {
@@ -2018,7 +1962,6 @@ export type UsuarioUncheckedUpdateWithoutRevisionesDocumentosInput = {
   lotesCreados?: Prisma.LoteProcesamientoUncheckedUpdateManyWithoutCreadorNestedInput
   documentosCargados?: Prisma.DocumentoUncheckedUpdateManyWithoutCargadorNestedInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutUsuarioNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioCreateWithoutConversacionesChatInput = {
@@ -2046,7 +1989,6 @@ export type UsuarioCreateWithoutConversacionesChatInput = {
   lotesCreados?: Prisma.LoteProcesamientoCreateNestedManyWithoutCreadorInput
   documentosCargados?: Prisma.DocumentoCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoCreateNestedManyWithoutRevisorInput
-  widgetsCreados?: Prisma.DashboardWidgetCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioUncheckedCreateWithoutConversacionesChatInput = {
@@ -2074,7 +2016,6 @@ export type UsuarioUncheckedCreateWithoutConversacionesChatInput = {
   lotesCreados?: Prisma.LoteProcesamientoUncheckedCreateNestedManyWithoutCreadorInput
   documentosCargados?: Prisma.DocumentoUncheckedCreateNestedManyWithoutCargadorInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedCreateNestedManyWithoutRevisorInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutCreadorInput
 }
 
 export type UsuarioCreateOrConnectWithoutConversacionesChatInput = {
@@ -2118,7 +2059,6 @@ export type UsuarioUpdateWithoutConversacionesChatInput = {
   lotesCreados?: Prisma.LoteProcesamientoUpdateManyWithoutCreadorNestedInput
   documentosCargados?: Prisma.DocumentoUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUpdateManyWithoutRevisorNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUpdateManyWithoutCreadorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutConversacionesChatInput = {
@@ -2146,135 +2086,6 @@ export type UsuarioUncheckedUpdateWithoutConversacionesChatInput = {
   lotesCreados?: Prisma.LoteProcesamientoUncheckedUpdateManyWithoutCreadorNestedInput
   documentosCargados?: Prisma.DocumentoUncheckedUpdateManyWithoutCargadorNestedInput
   revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedUpdateManyWithoutRevisorNestedInput
-  widgetsCreados?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutCreadorNestedInput
-}
-
-export type UsuarioCreateWithoutWidgetsCreadosInput = {
-  idUsuario?: string
-  rutUsuario: string
-  nombre: string
-  apellido: string
-  correo: string
-  passwordHash: string
-  rol?: $Enums.RolUsuario
-  estado?: $Enums.EstadoUsuario
-  debeCambiarPassword?: boolean
-  intentosFallidos?: number
-  bloqueadoHasta?: Date | string | null
-  passwordChangedAt?: Date | string | null
-  correoVerificadoAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  empresa: Prisma.EmpresaCreateNestedOneWithoutUsuarioInput
-  solicitudesRevisadas?: Prisma.SolicitudCuentaCreateNestedManyWithoutRevisorInput
-  sesiones?: Prisma.SesionUsuarioCreateNestedManyWithoutUsuarioInput
-  tokensSeguridad?: Prisma.TokenSeguridadCreateNestedManyWithoutUsuarioInput
-  eventosSeguridad?: Prisma.EventoSeguridadCreateNestedManyWithoutUsuarioInput
-  notebooksCreados?: Prisma.NotebookCreateNestedManyWithoutCreadorInput
-  lotesCreados?: Prisma.LoteProcesamientoCreateNestedManyWithoutCreadorInput
-  documentosCargados?: Prisma.DocumentoCreateNestedManyWithoutCargadorInput
-  revisionesDocumentos?: Prisma.RevisionDocumentoCreateNestedManyWithoutRevisorInput
-  conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutUsuarioInput
-}
-
-export type UsuarioUncheckedCreateWithoutWidgetsCreadosInput = {
-  idUsuario?: string
-  idEmpresa: string
-  rutUsuario: string
-  nombre: string
-  apellido: string
-  correo: string
-  passwordHash: string
-  rol?: $Enums.RolUsuario
-  estado?: $Enums.EstadoUsuario
-  debeCambiarPassword?: boolean
-  intentosFallidos?: number
-  bloqueadoHasta?: Date | string | null
-  passwordChangedAt?: Date | string | null
-  correoVerificadoAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  solicitudesRevisadas?: Prisma.SolicitudCuentaUncheckedCreateNestedManyWithoutRevisorInput
-  sesiones?: Prisma.SesionUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
-  tokensSeguridad?: Prisma.TokenSeguridadUncheckedCreateNestedManyWithoutUsuarioInput
-  eventosSeguridad?: Prisma.EventoSeguridadUncheckedCreateNestedManyWithoutUsuarioInput
-  notebooksCreados?: Prisma.NotebookUncheckedCreateNestedManyWithoutCreadorInput
-  lotesCreados?: Prisma.LoteProcesamientoUncheckedCreateNestedManyWithoutCreadorInput
-  documentosCargados?: Prisma.DocumentoUncheckedCreateNestedManyWithoutCargadorInput
-  revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedCreateNestedManyWithoutRevisorInput
-  conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutUsuarioInput
-}
-
-export type UsuarioCreateOrConnectWithoutWidgetsCreadosInput = {
-  where: Prisma.UsuarioWhereUniqueInput
-  create: Prisma.XOR<Prisma.UsuarioCreateWithoutWidgetsCreadosInput, Prisma.UsuarioUncheckedCreateWithoutWidgetsCreadosInput>
-}
-
-export type UsuarioUpsertWithoutWidgetsCreadosInput = {
-  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutWidgetsCreadosInput, Prisma.UsuarioUncheckedUpdateWithoutWidgetsCreadosInput>
-  create: Prisma.XOR<Prisma.UsuarioCreateWithoutWidgetsCreadosInput, Prisma.UsuarioUncheckedCreateWithoutWidgetsCreadosInput>
-  where?: Prisma.UsuarioWhereInput
-}
-
-export type UsuarioUpdateToOneWithWhereWithoutWidgetsCreadosInput = {
-  where?: Prisma.UsuarioWhereInput
-  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutWidgetsCreadosInput, Prisma.UsuarioUncheckedUpdateWithoutWidgetsCreadosInput>
-}
-
-export type UsuarioUpdateWithoutWidgetsCreadosInput = {
-  idUsuario?: Prisma.StringFieldUpdateOperationsInput | string
-  rutUsuario?: Prisma.StringFieldUpdateOperationsInput | string
-  nombre?: Prisma.StringFieldUpdateOperationsInput | string
-  apellido?: Prisma.StringFieldUpdateOperationsInput | string
-  correo?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
-  estado?: Prisma.EnumEstadoUsuarioFieldUpdateOperationsInput | $Enums.EstadoUsuario
-  debeCambiarPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
-  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  passwordChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  correoVerificadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  empresa?: Prisma.EmpresaUpdateOneRequiredWithoutUsuarioNestedInput
-  solicitudesRevisadas?: Prisma.SolicitudCuentaUpdateManyWithoutRevisorNestedInput
-  sesiones?: Prisma.SesionUsuarioUpdateManyWithoutUsuarioNestedInput
-  tokensSeguridad?: Prisma.TokenSeguridadUpdateManyWithoutUsuarioNestedInput
-  eventosSeguridad?: Prisma.EventoSeguridadUpdateManyWithoutUsuarioNestedInput
-  notebooksCreados?: Prisma.NotebookUpdateManyWithoutCreadorNestedInput
-  lotesCreados?: Prisma.LoteProcesamientoUpdateManyWithoutCreadorNestedInput
-  documentosCargados?: Prisma.DocumentoUpdateManyWithoutCargadorNestedInput
-  revisionesDocumentos?: Prisma.RevisionDocumentoUpdateManyWithoutRevisorNestedInput
-  conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutUsuarioNestedInput
-}
-
-export type UsuarioUncheckedUpdateWithoutWidgetsCreadosInput = {
-  idUsuario?: Prisma.StringFieldUpdateOperationsInput | string
-  idEmpresa?: Prisma.StringFieldUpdateOperationsInput | string
-  rutUsuario?: Prisma.StringFieldUpdateOperationsInput | string
-  nombre?: Prisma.StringFieldUpdateOperationsInput | string
-  apellido?: Prisma.StringFieldUpdateOperationsInput | string
-  correo?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
-  estado?: Prisma.EnumEstadoUsuarioFieldUpdateOperationsInput | $Enums.EstadoUsuario
-  debeCambiarPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
-  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  passwordChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  correoVerificadoAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  solicitudesRevisadas?: Prisma.SolicitudCuentaUncheckedUpdateManyWithoutRevisorNestedInput
-  sesiones?: Prisma.SesionUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
-  tokensSeguridad?: Prisma.TokenSeguridadUncheckedUpdateManyWithoutUsuarioNestedInput
-  eventosSeguridad?: Prisma.EventoSeguridadUncheckedUpdateManyWithoutUsuarioNestedInput
-  notebooksCreados?: Prisma.NotebookUncheckedUpdateManyWithoutCreadorNestedInput
-  lotesCreados?: Prisma.LoteProcesamientoUncheckedUpdateManyWithoutCreadorNestedInput
-  documentosCargados?: Prisma.DocumentoUncheckedUpdateManyWithoutCargadorNestedInput
-  revisionesDocumentos?: Prisma.RevisionDocumentoUncheckedUpdateManyWithoutRevisorNestedInput
-  conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 
@@ -2292,7 +2103,6 @@ export type UsuarioCountOutputType = {
   documentosCargados: number
   revisionesDocumentos: number
   conversacionesChat: number
-  widgetsCreados: number
 }
 
 export type UsuarioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2305,7 +2115,6 @@ export type UsuarioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   documentosCargados?: boolean | UsuarioCountOutputTypeCountDocumentosCargadosArgs
   revisionesDocumentos?: boolean | UsuarioCountOutputTypeCountRevisionesDocumentosArgs
   conversacionesChat?: boolean | UsuarioCountOutputTypeCountConversacionesChatArgs
-  widgetsCreados?: boolean | UsuarioCountOutputTypeCountWidgetsCreadosArgs
 }
 
 /**
@@ -2381,13 +2190,6 @@ export type UsuarioCountOutputTypeCountConversacionesChatArgs<ExtArgs extends ru
   where?: Prisma.ConversacionChatWhereInput
 }
 
-/**
- * UsuarioCountOutputType without action
- */
-export type UsuarioCountOutputTypeCountWidgetsCreadosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.DashboardWidgetWhereInput
-}
-
 
 export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   idUsuario?: boolean
@@ -2416,7 +2218,6 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   documentosCargados?: boolean | Prisma.Usuario$documentosCargadosArgs<ExtArgs>
   revisionesDocumentos?: boolean | Prisma.Usuario$revisionesDocumentosArgs<ExtArgs>
   conversacionesChat?: boolean | Prisma.Usuario$conversacionesChatArgs<ExtArgs>
-  widgetsCreados?: boolean | Prisma.Usuario$widgetsCreadosArgs<ExtArgs>
   _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["usuario"]>
 
@@ -2491,7 +2292,6 @@ export type UsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   documentosCargados?: boolean | Prisma.Usuario$documentosCargadosArgs<ExtArgs>
   revisionesDocumentos?: boolean | Prisma.Usuario$revisionesDocumentosArgs<ExtArgs>
   conversacionesChat?: boolean | Prisma.Usuario$conversacionesChatArgs<ExtArgs>
-  widgetsCreados?: boolean | Prisma.Usuario$widgetsCreadosArgs<ExtArgs>
   _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UsuarioIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2514,7 +2314,6 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     documentosCargados: Prisma.$DocumentoPayload<ExtArgs>[]
     revisionesDocumentos: Prisma.$RevisionDocumentoPayload<ExtArgs>[]
     conversacionesChat: Prisma.$ConversacionChatPayload<ExtArgs>[]
-    widgetsCreados: Prisma.$DashboardWidgetPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     idUsuario: string
@@ -2937,7 +2736,6 @@ export interface Prisma__UsuarioClient<T, Null = never, ExtArgs extends runtime.
   documentosCargados<T extends Prisma.Usuario$documentosCargadosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$documentosCargadosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   revisionesDocumentos<T extends Prisma.Usuario$revisionesDocumentosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$revisionesDocumentosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RevisionDocumentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   conversacionesChat<T extends Prisma.Usuario$conversacionesChatArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$conversacionesChatArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversacionChatPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  widgetsCreados<T extends Prisma.Usuario$widgetsCreadosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$widgetsCreadosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DashboardWidgetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3597,30 +3395,6 @@ export type Usuario$conversacionesChatArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.ConversacionChatScalarFieldEnum | Prisma.ConversacionChatScalarFieldEnum[]
-}
-
-/**
- * Usuario.widgetsCreados
- */
-export type Usuario$widgetsCreadosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the DashboardWidget
-   */
-  select?: Prisma.DashboardWidgetSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the DashboardWidget
-   */
-  omit?: Prisma.DashboardWidgetOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.DashboardWidgetInclude<ExtArgs> | null
-  where?: Prisma.DashboardWidgetWhereInput
-  orderBy?: Prisma.DashboardWidgetOrderByWithRelationInput | Prisma.DashboardWidgetOrderByWithRelationInput[]
-  cursor?: Prisma.DashboardWidgetWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.DashboardWidgetScalarFieldEnum | Prisma.DashboardWidgetScalarFieldEnum[]
 }
 
 /**

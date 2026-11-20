@@ -127,7 +127,6 @@ model Empresa {
   notebooks   Notebook[]
   lotes       LoteProcesamiento[]
   documentos  Documento[]
-  widgets     DashboardWidget[]
 
   @@map("empresa")
 }
@@ -159,7 +158,6 @@ model Usuario {
   documentosCargados   Documento[]         @relation("DocumentoCargador")
   revisionesDocumentos RevisionDocumento[] @relation("RevisionRevisor")
   conversacionesChat   ConversacionChat[]
-  widgetsCreados       DashboardWidget[]   @relation("WidgetCreador")
 
   @@index([estado], map: "idx_usuario_estado")
   @@map("usuario")
@@ -249,7 +247,6 @@ model Notebook {
   lotes              LoteProcesamiento[]
   documentos         Documento[]
   conversacionesChat ConversacionChat[]
-  widgets            DashboardWidget[]
 
   @@unique([idEmpresa, idNotebook], map: "uq_notebook_empresa_id")
   @@index([idEmpresa], map: "idx_notebook_empresa")
@@ -529,24 +526,4 @@ model MensajeChat {
 
   @@index([idConversacion, createdAt], map: "idx_mensaje_chat_conversacion_fecha")
   @@map("mensaje_chat")
-}
-
-model DashboardWidget {
-  idWidget      String   @id @default(dbgenerated("gen_random_uuid()")) @map("id_widget") @db.Uuid
-  idEmpresa     String   @map("id_empresa") @db.Uuid
-  idNotebook    String   @map("id_notebook") @db.Uuid
-  creadoPorId   String   @map("creado_por") @db.Uuid
-  titulo        String   @db.VarChar(150)
-  metrica       String   @db.VarChar(40)
-  filtros       Json     @default("{}") @db.JsonB
-  visualizacion String   @default("bar") @db.VarChar(20)
-  orden         Int      @default(0)
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  empresa       Empresa  @relation(fields: [idEmpresa], references: [idEmpresa], onDelete: Cascade, map: "fk_widget_empresa")
-  notebook      Notebook @relation(fields: [idEmpresa, idNotebook], references: [idEmpresa, idNotebook], onDelete: Cascade, map: "fk_widget_empresa_notebook")
-  creador       Usuario  @relation("WidgetCreador", fields: [creadoPorId], references: [idUsuario], onDelete: Cascade, map: "fk_widget_creador")
-
-  @@index([idEmpresa, idNotebook, orden], map: "idx_widget_empresa_notebook")
-  @@map("dashboard_widget")
 }

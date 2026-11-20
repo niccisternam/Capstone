@@ -215,7 +215,6 @@ export type NotebookWhereInput = {
   lotes?: Prisma.LoteProcesamientoListRelationFilter
   documentos?: Prisma.DocumentoListRelationFilter
   conversacionesChat?: Prisma.ConversacionChatListRelationFilter
-  widgets?: Prisma.DashboardWidgetListRelationFilter
 }
 
 export type NotebookOrderByWithRelationInput = {
@@ -233,7 +232,6 @@ export type NotebookOrderByWithRelationInput = {
   lotes?: Prisma.LoteProcesamientoOrderByRelationAggregateInput
   documentos?: Prisma.DocumentoOrderByRelationAggregateInput
   conversacionesChat?: Prisma.ConversacionChatOrderByRelationAggregateInput
-  widgets?: Prisma.DashboardWidgetOrderByRelationAggregateInput
 }
 
 export type NotebookWhereUniqueInput = Prisma.AtLeast<{
@@ -255,7 +253,6 @@ export type NotebookWhereUniqueInput = Prisma.AtLeast<{
   lotes?: Prisma.LoteProcesamientoListRelationFilter
   documentos?: Prisma.DocumentoListRelationFilter
   conversacionesChat?: Prisma.ConversacionChatListRelationFilter
-  widgets?: Prisma.DashboardWidgetListRelationFilter
 }, "idNotebook" | "idEmpresa_idNotebook">
 
 export type NotebookOrderByWithAggregationInput = {
@@ -301,7 +298,6 @@ export type NotebookCreateInput = {
   lotes?: Prisma.LoteProcesamientoCreateNestedManyWithoutNotebookInput
   documentos?: Prisma.DocumentoCreateNestedManyWithoutNotebookInput
   conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutNotebookInput
-  widgets?: Prisma.DashboardWidgetCreateNestedManyWithoutNotebookInput
 }
 
 export type NotebookUncheckedCreateInput = {
@@ -317,7 +313,6 @@ export type NotebookUncheckedCreateInput = {
   lotes?: Prisma.LoteProcesamientoUncheckedCreateNestedManyWithoutNotebookInput
   documentos?: Prisma.DocumentoUncheckedCreateNestedManyWithoutNotebookInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutNotebookInput
-  widgets?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutNotebookInput
 }
 
 export type NotebookUpdateInput = {
@@ -333,7 +328,6 @@ export type NotebookUpdateInput = {
   lotes?: Prisma.LoteProcesamientoUpdateManyWithoutNotebookNestedInput
   documentos?: Prisma.DocumentoUpdateManyWithoutNotebookNestedInput
   conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutNotebookNestedInput
-  widgets?: Prisma.DashboardWidgetUpdateManyWithoutNotebookNestedInput
 }
 
 export type NotebookUncheckedUpdateInput = {
@@ -349,7 +343,6 @@ export type NotebookUncheckedUpdateInput = {
   lotes?: Prisma.LoteProcesamientoUncheckedUpdateManyWithoutNotebookNestedInput
   documentos?: Prisma.DocumentoUncheckedUpdateManyWithoutNotebookNestedInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutNotebookNestedInput
-  widgets?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutNotebookNestedInput
 }
 
 export type NotebookCreateManyInput = {
@@ -566,20 +559,6 @@ export type NotebookUpdateOneRequiredWithoutConversacionesChatNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.NotebookUpdateToOneWithWhereWithoutConversacionesChatInput, Prisma.NotebookUpdateWithoutConversacionesChatInput>, Prisma.NotebookUncheckedUpdateWithoutConversacionesChatInput>
 }
 
-export type NotebookCreateNestedOneWithoutWidgetsInput = {
-  create?: Prisma.XOR<Prisma.NotebookCreateWithoutWidgetsInput, Prisma.NotebookUncheckedCreateWithoutWidgetsInput>
-  connectOrCreate?: Prisma.NotebookCreateOrConnectWithoutWidgetsInput
-  connect?: Prisma.NotebookWhereUniqueInput
-}
-
-export type NotebookUpdateOneRequiredWithoutWidgetsNestedInput = {
-  create?: Prisma.XOR<Prisma.NotebookCreateWithoutWidgetsInput, Prisma.NotebookUncheckedCreateWithoutWidgetsInput>
-  connectOrCreate?: Prisma.NotebookCreateOrConnectWithoutWidgetsInput
-  upsert?: Prisma.NotebookUpsertWithoutWidgetsInput
-  connect?: Prisma.NotebookWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.NotebookUpdateToOneWithWhereWithoutWidgetsInput, Prisma.NotebookUpdateWithoutWidgetsInput>, Prisma.NotebookUncheckedUpdateWithoutWidgetsInput>
-}
-
 export type NotebookCreateWithoutEmpresaInput = {
   idNotebook?: string
   nombre: string
@@ -592,7 +571,6 @@ export type NotebookCreateWithoutEmpresaInput = {
   lotes?: Prisma.LoteProcesamientoCreateNestedManyWithoutNotebookInput
   documentos?: Prisma.DocumentoCreateNestedManyWithoutNotebookInput
   conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutNotebookInput
-  widgets?: Prisma.DashboardWidgetCreateNestedManyWithoutNotebookInput
 }
 
 export type NotebookUncheckedCreateWithoutEmpresaInput = {
@@ -607,7 +585,6 @@ export type NotebookUncheckedCreateWithoutEmpresaInput = {
   lotes?: Prisma.LoteProcesamientoUncheckedCreateNestedManyWithoutNotebookInput
   documentos?: Prisma.DocumentoUncheckedCreateNestedManyWithoutNotebookInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutNotebookInput
-  widgets?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutNotebookInput
 }
 
 export type NotebookCreateOrConnectWithoutEmpresaInput = {
@@ -663,7 +640,6 @@ export type NotebookCreateWithoutCreadorInput = {
   lotes?: Prisma.LoteProcesamientoCreateNestedManyWithoutNotebookInput
   documentos?: Prisma.DocumentoCreateNestedManyWithoutNotebookInput
   conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutNotebookInput
-  widgets?: Prisma.DashboardWidgetCreateNestedManyWithoutNotebookInput
 }
 
 export type NotebookUncheckedCreateWithoutCreadorInput = {
@@ -678,7 +654,6 @@ export type NotebookUncheckedCreateWithoutCreadorInput = {
   lotes?: Prisma.LoteProcesamientoUncheckedCreateNestedManyWithoutNotebookInput
   documentos?: Prisma.DocumentoUncheckedCreateNestedManyWithoutNotebookInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutNotebookInput
-  widgets?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutNotebookInput
 }
 
 export type NotebookCreateOrConnectWithoutCreadorInput = {
@@ -719,7 +694,6 @@ export type NotebookCreateWithoutLotesInput = {
   creador: Prisma.UsuarioCreateNestedOneWithoutNotebooksCreadosInput
   documentos?: Prisma.DocumentoCreateNestedManyWithoutNotebookInput
   conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutNotebookInput
-  widgets?: Prisma.DashboardWidgetCreateNestedManyWithoutNotebookInput
 }
 
 export type NotebookUncheckedCreateWithoutLotesInput = {
@@ -734,7 +708,6 @@ export type NotebookUncheckedCreateWithoutLotesInput = {
   updatedAt?: Date | string
   documentos?: Prisma.DocumentoUncheckedCreateNestedManyWithoutNotebookInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutNotebookInput
-  widgets?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutNotebookInput
 }
 
 export type NotebookCreateOrConnectWithoutLotesInput = {
@@ -765,7 +738,6 @@ export type NotebookUpdateWithoutLotesInput = {
   creador?: Prisma.UsuarioUpdateOneRequiredWithoutNotebooksCreadosNestedInput
   documentos?: Prisma.DocumentoUpdateManyWithoutNotebookNestedInput
   conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutNotebookNestedInput
-  widgets?: Prisma.DashboardWidgetUpdateManyWithoutNotebookNestedInput
 }
 
 export type NotebookUncheckedUpdateWithoutLotesInput = {
@@ -780,7 +752,6 @@ export type NotebookUncheckedUpdateWithoutLotesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documentos?: Prisma.DocumentoUncheckedUpdateManyWithoutNotebookNestedInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutNotebookNestedInput
-  widgets?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutNotebookNestedInput
 }
 
 export type NotebookCreateWithoutDocumentosInput = {
@@ -795,7 +766,6 @@ export type NotebookCreateWithoutDocumentosInput = {
   creador: Prisma.UsuarioCreateNestedOneWithoutNotebooksCreadosInput
   lotes?: Prisma.LoteProcesamientoCreateNestedManyWithoutNotebookInput
   conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutNotebookInput
-  widgets?: Prisma.DashboardWidgetCreateNestedManyWithoutNotebookInput
 }
 
 export type NotebookUncheckedCreateWithoutDocumentosInput = {
@@ -810,7 +780,6 @@ export type NotebookUncheckedCreateWithoutDocumentosInput = {
   updatedAt?: Date | string
   lotes?: Prisma.LoteProcesamientoUncheckedCreateNestedManyWithoutNotebookInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutNotebookInput
-  widgets?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutNotebookInput
 }
 
 export type NotebookCreateOrConnectWithoutDocumentosInput = {
@@ -841,7 +810,6 @@ export type NotebookUpdateWithoutDocumentosInput = {
   creador?: Prisma.UsuarioUpdateOneRequiredWithoutNotebooksCreadosNestedInput
   lotes?: Prisma.LoteProcesamientoUpdateManyWithoutNotebookNestedInput
   conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutNotebookNestedInput
-  widgets?: Prisma.DashboardWidgetUpdateManyWithoutNotebookNestedInput
 }
 
 export type NotebookUncheckedUpdateWithoutDocumentosInput = {
@@ -856,7 +824,6 @@ export type NotebookUncheckedUpdateWithoutDocumentosInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lotes?: Prisma.LoteProcesamientoUncheckedUpdateManyWithoutNotebookNestedInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutNotebookNestedInput
-  widgets?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutNotebookNestedInput
 }
 
 export type NotebookCreateWithoutConversacionesChatInput = {
@@ -871,7 +838,6 @@ export type NotebookCreateWithoutConversacionesChatInput = {
   creador: Prisma.UsuarioCreateNestedOneWithoutNotebooksCreadosInput
   lotes?: Prisma.LoteProcesamientoCreateNestedManyWithoutNotebookInput
   documentos?: Prisma.DocumentoCreateNestedManyWithoutNotebookInput
-  widgets?: Prisma.DashboardWidgetCreateNestedManyWithoutNotebookInput
 }
 
 export type NotebookUncheckedCreateWithoutConversacionesChatInput = {
@@ -886,7 +852,6 @@ export type NotebookUncheckedCreateWithoutConversacionesChatInput = {
   updatedAt?: Date | string
   lotes?: Prisma.LoteProcesamientoUncheckedCreateNestedManyWithoutNotebookInput
   documentos?: Prisma.DocumentoUncheckedCreateNestedManyWithoutNotebookInput
-  widgets?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutNotebookInput
 }
 
 export type NotebookCreateOrConnectWithoutConversacionesChatInput = {
@@ -917,7 +882,6 @@ export type NotebookUpdateWithoutConversacionesChatInput = {
   creador?: Prisma.UsuarioUpdateOneRequiredWithoutNotebooksCreadosNestedInput
   lotes?: Prisma.LoteProcesamientoUpdateManyWithoutNotebookNestedInput
   documentos?: Prisma.DocumentoUpdateManyWithoutNotebookNestedInput
-  widgets?: Prisma.DashboardWidgetUpdateManyWithoutNotebookNestedInput
 }
 
 export type NotebookUncheckedUpdateWithoutConversacionesChatInput = {
@@ -932,83 +896,6 @@ export type NotebookUncheckedUpdateWithoutConversacionesChatInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lotes?: Prisma.LoteProcesamientoUncheckedUpdateManyWithoutNotebookNestedInput
   documentos?: Prisma.DocumentoUncheckedUpdateManyWithoutNotebookNestedInput
-  widgets?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutNotebookNestedInput
-}
-
-export type NotebookCreateWithoutWidgetsInput = {
-  idNotebook?: string
-  nombre: string
-  descripcion?: string | null
-  icono?: string | null
-  paletaColores?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  empresa: Prisma.EmpresaCreateNestedOneWithoutNotebooksInput
-  creador: Prisma.UsuarioCreateNestedOneWithoutNotebooksCreadosInput
-  lotes?: Prisma.LoteProcesamientoCreateNestedManyWithoutNotebookInput
-  documentos?: Prisma.DocumentoCreateNestedManyWithoutNotebookInput
-  conversacionesChat?: Prisma.ConversacionChatCreateNestedManyWithoutNotebookInput
-}
-
-export type NotebookUncheckedCreateWithoutWidgetsInput = {
-  idNotebook?: string
-  idEmpresa: string
-  creadoPorId: string
-  nombre: string
-  descripcion?: string | null
-  icono?: string | null
-  paletaColores?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  lotes?: Prisma.LoteProcesamientoUncheckedCreateNestedManyWithoutNotebookInput
-  documentos?: Prisma.DocumentoUncheckedCreateNestedManyWithoutNotebookInput
-  conversacionesChat?: Prisma.ConversacionChatUncheckedCreateNestedManyWithoutNotebookInput
-}
-
-export type NotebookCreateOrConnectWithoutWidgetsInput = {
-  where: Prisma.NotebookWhereUniqueInput
-  create: Prisma.XOR<Prisma.NotebookCreateWithoutWidgetsInput, Prisma.NotebookUncheckedCreateWithoutWidgetsInput>
-}
-
-export type NotebookUpsertWithoutWidgetsInput = {
-  update: Prisma.XOR<Prisma.NotebookUpdateWithoutWidgetsInput, Prisma.NotebookUncheckedUpdateWithoutWidgetsInput>
-  create: Prisma.XOR<Prisma.NotebookCreateWithoutWidgetsInput, Prisma.NotebookUncheckedCreateWithoutWidgetsInput>
-  where?: Prisma.NotebookWhereInput
-}
-
-export type NotebookUpdateToOneWithWhereWithoutWidgetsInput = {
-  where?: Prisma.NotebookWhereInput
-  data: Prisma.XOR<Prisma.NotebookUpdateWithoutWidgetsInput, Prisma.NotebookUncheckedUpdateWithoutWidgetsInput>
-}
-
-export type NotebookUpdateWithoutWidgetsInput = {
-  idNotebook?: Prisma.StringFieldUpdateOperationsInput | string
-  nombre?: Prisma.StringFieldUpdateOperationsInput | string
-  descripcion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  icono?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paletaColores?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  empresa?: Prisma.EmpresaUpdateOneRequiredWithoutNotebooksNestedInput
-  creador?: Prisma.UsuarioUpdateOneRequiredWithoutNotebooksCreadosNestedInput
-  lotes?: Prisma.LoteProcesamientoUpdateManyWithoutNotebookNestedInput
-  documentos?: Prisma.DocumentoUpdateManyWithoutNotebookNestedInput
-  conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutNotebookNestedInput
-}
-
-export type NotebookUncheckedUpdateWithoutWidgetsInput = {
-  idNotebook?: Prisma.StringFieldUpdateOperationsInput | string
-  idEmpresa?: Prisma.StringFieldUpdateOperationsInput | string
-  creadoPorId?: Prisma.StringFieldUpdateOperationsInput | string
-  nombre?: Prisma.StringFieldUpdateOperationsInput | string
-  descripcion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  icono?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paletaColores?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  lotes?: Prisma.LoteProcesamientoUncheckedUpdateManyWithoutNotebookNestedInput
-  documentos?: Prisma.DocumentoUncheckedUpdateManyWithoutNotebookNestedInput
-  conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutNotebookNestedInput
 }
 
 export type NotebookCreateManyEmpresaInput = {
@@ -1034,7 +921,6 @@ export type NotebookUpdateWithoutEmpresaInput = {
   lotes?: Prisma.LoteProcesamientoUpdateManyWithoutNotebookNestedInput
   documentos?: Prisma.DocumentoUpdateManyWithoutNotebookNestedInput
   conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutNotebookNestedInput
-  widgets?: Prisma.DashboardWidgetUpdateManyWithoutNotebookNestedInput
 }
 
 export type NotebookUncheckedUpdateWithoutEmpresaInput = {
@@ -1049,7 +935,6 @@ export type NotebookUncheckedUpdateWithoutEmpresaInput = {
   lotes?: Prisma.LoteProcesamientoUncheckedUpdateManyWithoutNotebookNestedInput
   documentos?: Prisma.DocumentoUncheckedUpdateManyWithoutNotebookNestedInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutNotebookNestedInput
-  widgets?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutNotebookNestedInput
 }
 
 export type NotebookUncheckedUpdateManyWithoutEmpresaInput = {
@@ -1086,7 +971,6 @@ export type NotebookUpdateWithoutCreadorInput = {
   lotes?: Prisma.LoteProcesamientoUpdateManyWithoutNotebookNestedInput
   documentos?: Prisma.DocumentoUpdateManyWithoutNotebookNestedInput
   conversacionesChat?: Prisma.ConversacionChatUpdateManyWithoutNotebookNestedInput
-  widgets?: Prisma.DashboardWidgetUpdateManyWithoutNotebookNestedInput
 }
 
 export type NotebookUncheckedUpdateWithoutCreadorInput = {
@@ -1101,7 +985,6 @@ export type NotebookUncheckedUpdateWithoutCreadorInput = {
   lotes?: Prisma.LoteProcesamientoUncheckedUpdateManyWithoutNotebookNestedInput
   documentos?: Prisma.DocumentoUncheckedUpdateManyWithoutNotebookNestedInput
   conversacionesChat?: Prisma.ConversacionChatUncheckedUpdateManyWithoutNotebookNestedInput
-  widgets?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutNotebookNestedInput
 }
 
 export type NotebookUncheckedUpdateManyWithoutCreadorInput = {
@@ -1124,14 +1007,12 @@ export type NotebookCountOutputType = {
   lotes: number
   documentos: number
   conversacionesChat: number
-  widgets: number
 }
 
 export type NotebookCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   lotes?: boolean | NotebookCountOutputTypeCountLotesArgs
   documentos?: boolean | NotebookCountOutputTypeCountDocumentosArgs
   conversacionesChat?: boolean | NotebookCountOutputTypeCountConversacionesChatArgs
-  widgets?: boolean | NotebookCountOutputTypeCountWidgetsArgs
 }
 
 /**
@@ -1165,13 +1046,6 @@ export type NotebookCountOutputTypeCountConversacionesChatArgs<ExtArgs extends r
   where?: Prisma.ConversacionChatWhereInput
 }
 
-/**
- * NotebookCountOutputType without action
- */
-export type NotebookCountOutputTypeCountWidgetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.DashboardWidgetWhereInput
-}
-
 
 export type NotebookSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   idNotebook?: boolean
@@ -1188,7 +1062,6 @@ export type NotebookSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   lotes?: boolean | Prisma.Notebook$lotesArgs<ExtArgs>
   documentos?: boolean | Prisma.Notebook$documentosArgs<ExtArgs>
   conversacionesChat?: boolean | Prisma.Notebook$conversacionesChatArgs<ExtArgs>
-  widgets?: boolean | Prisma.Notebook$widgetsArgs<ExtArgs>
   _count?: boolean | Prisma.NotebookCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["notebook"]>
 
@@ -1239,7 +1112,6 @@ export type NotebookInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   lotes?: boolean | Prisma.Notebook$lotesArgs<ExtArgs>
   documentos?: boolean | Prisma.Notebook$documentosArgs<ExtArgs>
   conversacionesChat?: boolean | Prisma.Notebook$conversacionesChatArgs<ExtArgs>
-  widgets?: boolean | Prisma.Notebook$widgetsArgs<ExtArgs>
   _count?: boolean | Prisma.NotebookCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type NotebookIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1259,7 +1131,6 @@ export type $NotebookPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     lotes: Prisma.$LoteProcesamientoPayload<ExtArgs>[]
     documentos: Prisma.$DocumentoPayload<ExtArgs>[]
     conversacionesChat: Prisma.$ConversacionChatPayload<ExtArgs>[]
-    widgets: Prisma.$DashboardWidgetPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     idNotebook: string
@@ -1670,7 +1541,6 @@ export interface Prisma__NotebookClient<T, Null = never, ExtArgs extends runtime
   lotes<T extends Prisma.Notebook$lotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Notebook$lotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoteProcesamientoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   documentos<T extends Prisma.Notebook$documentosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Notebook$documentosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   conversacionesChat<T extends Prisma.Notebook$conversacionesChatArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Notebook$conversacionesChatArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversacionChatPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  widgets<T extends Prisma.Notebook$widgetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Notebook$widgetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DashboardWidgetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2179,30 +2049,6 @@ export type Notebook$conversacionesChatArgs<ExtArgs extends runtime.Types.Extens
   take?: number
   skip?: number
   distinct?: Prisma.ConversacionChatScalarFieldEnum | Prisma.ConversacionChatScalarFieldEnum[]
-}
-
-/**
- * Notebook.widgets
- */
-export type Notebook$widgetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the DashboardWidget
-   */
-  select?: Prisma.DashboardWidgetSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the DashboardWidget
-   */
-  omit?: Prisma.DashboardWidgetOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.DashboardWidgetInclude<ExtArgs> | null
-  where?: Prisma.DashboardWidgetWhereInput
-  orderBy?: Prisma.DashboardWidgetOrderByWithRelationInput | Prisma.DashboardWidgetOrderByWithRelationInput[]
-  cursor?: Prisma.DashboardWidgetWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.DashboardWidgetScalarFieldEnum | Prisma.DashboardWidgetScalarFieldEnum[]
 }
 
 /**

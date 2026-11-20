@@ -194,7 +194,6 @@ export type EmpresaWhereInput = {
   notebooks?: Prisma.NotebookListRelationFilter
   lotes?: Prisma.LoteProcesamientoListRelationFilter
   documentos?: Prisma.DocumentoListRelationFilter
-  widgets?: Prisma.DashboardWidgetListRelationFilter
 }
 
 export type EmpresaOrderByWithRelationInput = {
@@ -208,7 +207,6 @@ export type EmpresaOrderByWithRelationInput = {
   notebooks?: Prisma.NotebookOrderByRelationAggregateInput
   lotes?: Prisma.LoteProcesamientoOrderByRelationAggregateInput
   documentos?: Prisma.DocumentoOrderByRelationAggregateInput
-  widgets?: Prisma.DashboardWidgetOrderByRelationAggregateInput
 }
 
 export type EmpresaWhereUniqueInput = Prisma.AtLeast<{
@@ -225,7 +223,6 @@ export type EmpresaWhereUniqueInput = Prisma.AtLeast<{
   notebooks?: Prisma.NotebookListRelationFilter
   lotes?: Prisma.LoteProcesamientoListRelationFilter
   documentos?: Prisma.DocumentoListRelationFilter
-  widgets?: Prisma.DashboardWidgetListRelationFilter
 }, "idEmpresa" | "rutEmpresa">
 
 export type EmpresaOrderByWithAggregationInput = {
@@ -263,7 +260,6 @@ export type EmpresaCreateInput = {
   notebooks?: Prisma.NotebookCreateNestedManyWithoutEmpresaInput
   lotes?: Prisma.LoteProcesamientoCreateNestedManyWithoutEmpresaInput
   documentos?: Prisma.DocumentoCreateNestedManyWithoutEmpresaInput
-  widgets?: Prisma.DashboardWidgetCreateNestedManyWithoutEmpresaInput
 }
 
 export type EmpresaUncheckedCreateInput = {
@@ -277,7 +273,6 @@ export type EmpresaUncheckedCreateInput = {
   notebooks?: Prisma.NotebookUncheckedCreateNestedManyWithoutEmpresaInput
   lotes?: Prisma.LoteProcesamientoUncheckedCreateNestedManyWithoutEmpresaInput
   documentos?: Prisma.DocumentoUncheckedCreateNestedManyWithoutEmpresaInput
-  widgets?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutEmpresaInput
 }
 
 export type EmpresaUpdateInput = {
@@ -291,7 +286,6 @@ export type EmpresaUpdateInput = {
   notebooks?: Prisma.NotebookUpdateManyWithoutEmpresaNestedInput
   lotes?: Prisma.LoteProcesamientoUpdateManyWithoutEmpresaNestedInput
   documentos?: Prisma.DocumentoUpdateManyWithoutEmpresaNestedInput
-  widgets?: Prisma.DashboardWidgetUpdateManyWithoutEmpresaNestedInput
 }
 
 export type EmpresaUncheckedUpdateInput = {
@@ -305,7 +299,6 @@ export type EmpresaUncheckedUpdateInput = {
   notebooks?: Prisma.NotebookUncheckedUpdateManyWithoutEmpresaNestedInput
   lotes?: Prisma.LoteProcesamientoUncheckedUpdateManyWithoutEmpresaNestedInput
   documentos?: Prisma.DocumentoUncheckedUpdateManyWithoutEmpresaNestedInput
-  widgets?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutEmpresaNestedInput
 }
 
 export type EmpresaCreateManyInput = {
@@ -435,20 +428,6 @@ export type EmpresaUpdateOneRequiredWithoutDocumentosNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmpresaUpdateToOneWithWhereWithoutDocumentosInput, Prisma.EmpresaUpdateWithoutDocumentosInput>, Prisma.EmpresaUncheckedUpdateWithoutDocumentosInput>
 }
 
-export type EmpresaCreateNestedOneWithoutWidgetsInput = {
-  create?: Prisma.XOR<Prisma.EmpresaCreateWithoutWidgetsInput, Prisma.EmpresaUncheckedCreateWithoutWidgetsInput>
-  connectOrCreate?: Prisma.EmpresaCreateOrConnectWithoutWidgetsInput
-  connect?: Prisma.EmpresaWhereUniqueInput
-}
-
-export type EmpresaUpdateOneRequiredWithoutWidgetsNestedInput = {
-  create?: Prisma.XOR<Prisma.EmpresaCreateWithoutWidgetsInput, Prisma.EmpresaUncheckedCreateWithoutWidgetsInput>
-  connectOrCreate?: Prisma.EmpresaCreateOrConnectWithoutWidgetsInput
-  upsert?: Prisma.EmpresaUpsertWithoutWidgetsInput
-  connect?: Prisma.EmpresaWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.EmpresaUpdateToOneWithWhereWithoutWidgetsInput, Prisma.EmpresaUpdateWithoutWidgetsInput>, Prisma.EmpresaUncheckedUpdateWithoutWidgetsInput>
-}
-
 export type EmpresaCreateWithoutUsuarioInput = {
   idEmpresa?: string
   rutEmpresa: string
@@ -459,7 +438,6 @@ export type EmpresaCreateWithoutUsuarioInput = {
   notebooks?: Prisma.NotebookCreateNestedManyWithoutEmpresaInput
   lotes?: Prisma.LoteProcesamientoCreateNestedManyWithoutEmpresaInput
   documentos?: Prisma.DocumentoCreateNestedManyWithoutEmpresaInput
-  widgets?: Prisma.DashboardWidgetCreateNestedManyWithoutEmpresaInput
 }
 
 export type EmpresaUncheckedCreateWithoutUsuarioInput = {
@@ -472,7 +450,6 @@ export type EmpresaUncheckedCreateWithoutUsuarioInput = {
   notebooks?: Prisma.NotebookUncheckedCreateNestedManyWithoutEmpresaInput
   lotes?: Prisma.LoteProcesamientoUncheckedCreateNestedManyWithoutEmpresaInput
   documentos?: Prisma.DocumentoUncheckedCreateNestedManyWithoutEmpresaInput
-  widgets?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutEmpresaInput
 }
 
 export type EmpresaCreateOrConnectWithoutUsuarioInput = {
@@ -501,7 +478,6 @@ export type EmpresaUpdateWithoutUsuarioInput = {
   notebooks?: Prisma.NotebookUpdateManyWithoutEmpresaNestedInput
   lotes?: Prisma.LoteProcesamientoUpdateManyWithoutEmpresaNestedInput
   documentos?: Prisma.DocumentoUpdateManyWithoutEmpresaNestedInput
-  widgets?: Prisma.DashboardWidgetUpdateManyWithoutEmpresaNestedInput
 }
 
 export type EmpresaUncheckedUpdateWithoutUsuarioInput = {
@@ -514,7 +490,6 @@ export type EmpresaUncheckedUpdateWithoutUsuarioInput = {
   notebooks?: Prisma.NotebookUncheckedUpdateManyWithoutEmpresaNestedInput
   lotes?: Prisma.LoteProcesamientoUncheckedUpdateManyWithoutEmpresaNestedInput
   documentos?: Prisma.DocumentoUncheckedUpdateManyWithoutEmpresaNestedInput
-  widgets?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutEmpresaNestedInput
 }
 
 export type EmpresaCreateWithoutNotebooksInput = {
@@ -527,7 +502,6 @@ export type EmpresaCreateWithoutNotebooksInput = {
   usuario?: Prisma.UsuarioCreateNestedOneWithoutEmpresaInput
   lotes?: Prisma.LoteProcesamientoCreateNestedManyWithoutEmpresaInput
   documentos?: Prisma.DocumentoCreateNestedManyWithoutEmpresaInput
-  widgets?: Prisma.DashboardWidgetCreateNestedManyWithoutEmpresaInput
 }
 
 export type EmpresaUncheckedCreateWithoutNotebooksInput = {
@@ -540,7 +514,6 @@ export type EmpresaUncheckedCreateWithoutNotebooksInput = {
   usuario?: Prisma.UsuarioUncheckedCreateNestedOneWithoutEmpresaInput
   lotes?: Prisma.LoteProcesamientoUncheckedCreateNestedManyWithoutEmpresaInput
   documentos?: Prisma.DocumentoUncheckedCreateNestedManyWithoutEmpresaInput
-  widgets?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutEmpresaInput
 }
 
 export type EmpresaCreateOrConnectWithoutNotebooksInput = {
@@ -569,7 +542,6 @@ export type EmpresaUpdateWithoutNotebooksInput = {
   usuario?: Prisma.UsuarioUpdateOneWithoutEmpresaNestedInput
   lotes?: Prisma.LoteProcesamientoUpdateManyWithoutEmpresaNestedInput
   documentos?: Prisma.DocumentoUpdateManyWithoutEmpresaNestedInput
-  widgets?: Prisma.DashboardWidgetUpdateManyWithoutEmpresaNestedInput
 }
 
 export type EmpresaUncheckedUpdateWithoutNotebooksInput = {
@@ -582,7 +554,6 @@ export type EmpresaUncheckedUpdateWithoutNotebooksInput = {
   usuario?: Prisma.UsuarioUncheckedUpdateOneWithoutEmpresaNestedInput
   lotes?: Prisma.LoteProcesamientoUncheckedUpdateManyWithoutEmpresaNestedInput
   documentos?: Prisma.DocumentoUncheckedUpdateManyWithoutEmpresaNestedInput
-  widgets?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutEmpresaNestedInput
 }
 
 export type EmpresaCreateWithoutLotesInput = {
@@ -595,7 +566,6 @@ export type EmpresaCreateWithoutLotesInput = {
   usuario?: Prisma.UsuarioCreateNestedOneWithoutEmpresaInput
   notebooks?: Prisma.NotebookCreateNestedManyWithoutEmpresaInput
   documentos?: Prisma.DocumentoCreateNestedManyWithoutEmpresaInput
-  widgets?: Prisma.DashboardWidgetCreateNestedManyWithoutEmpresaInput
 }
 
 export type EmpresaUncheckedCreateWithoutLotesInput = {
@@ -608,7 +578,6 @@ export type EmpresaUncheckedCreateWithoutLotesInput = {
   usuario?: Prisma.UsuarioUncheckedCreateNestedOneWithoutEmpresaInput
   notebooks?: Prisma.NotebookUncheckedCreateNestedManyWithoutEmpresaInput
   documentos?: Prisma.DocumentoUncheckedCreateNestedManyWithoutEmpresaInput
-  widgets?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutEmpresaInput
 }
 
 export type EmpresaCreateOrConnectWithoutLotesInput = {
@@ -637,7 +606,6 @@ export type EmpresaUpdateWithoutLotesInput = {
   usuario?: Prisma.UsuarioUpdateOneWithoutEmpresaNestedInput
   notebooks?: Prisma.NotebookUpdateManyWithoutEmpresaNestedInput
   documentos?: Prisma.DocumentoUpdateManyWithoutEmpresaNestedInput
-  widgets?: Prisma.DashboardWidgetUpdateManyWithoutEmpresaNestedInput
 }
 
 export type EmpresaUncheckedUpdateWithoutLotesInput = {
@@ -650,7 +618,6 @@ export type EmpresaUncheckedUpdateWithoutLotesInput = {
   usuario?: Prisma.UsuarioUncheckedUpdateOneWithoutEmpresaNestedInput
   notebooks?: Prisma.NotebookUncheckedUpdateManyWithoutEmpresaNestedInput
   documentos?: Prisma.DocumentoUncheckedUpdateManyWithoutEmpresaNestedInput
-  widgets?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutEmpresaNestedInput
 }
 
 export type EmpresaCreateWithoutDocumentosInput = {
@@ -663,7 +630,6 @@ export type EmpresaCreateWithoutDocumentosInput = {
   usuario?: Prisma.UsuarioCreateNestedOneWithoutEmpresaInput
   notebooks?: Prisma.NotebookCreateNestedManyWithoutEmpresaInput
   lotes?: Prisma.LoteProcesamientoCreateNestedManyWithoutEmpresaInput
-  widgets?: Prisma.DashboardWidgetCreateNestedManyWithoutEmpresaInput
 }
 
 export type EmpresaUncheckedCreateWithoutDocumentosInput = {
@@ -676,7 +642,6 @@ export type EmpresaUncheckedCreateWithoutDocumentosInput = {
   usuario?: Prisma.UsuarioUncheckedCreateNestedOneWithoutEmpresaInput
   notebooks?: Prisma.NotebookUncheckedCreateNestedManyWithoutEmpresaInput
   lotes?: Prisma.LoteProcesamientoUncheckedCreateNestedManyWithoutEmpresaInput
-  widgets?: Prisma.DashboardWidgetUncheckedCreateNestedManyWithoutEmpresaInput
 }
 
 export type EmpresaCreateOrConnectWithoutDocumentosInput = {
@@ -705,7 +670,6 @@ export type EmpresaUpdateWithoutDocumentosInput = {
   usuario?: Prisma.UsuarioUpdateOneWithoutEmpresaNestedInput
   notebooks?: Prisma.NotebookUpdateManyWithoutEmpresaNestedInput
   lotes?: Prisma.LoteProcesamientoUpdateManyWithoutEmpresaNestedInput
-  widgets?: Prisma.DashboardWidgetUpdateManyWithoutEmpresaNestedInput
 }
 
 export type EmpresaUncheckedUpdateWithoutDocumentosInput = {
@@ -718,75 +682,6 @@ export type EmpresaUncheckedUpdateWithoutDocumentosInput = {
   usuario?: Prisma.UsuarioUncheckedUpdateOneWithoutEmpresaNestedInput
   notebooks?: Prisma.NotebookUncheckedUpdateManyWithoutEmpresaNestedInput
   lotes?: Prisma.LoteProcesamientoUncheckedUpdateManyWithoutEmpresaNestedInput
-  widgets?: Prisma.DashboardWidgetUncheckedUpdateManyWithoutEmpresaNestedInput
-}
-
-export type EmpresaCreateWithoutWidgetsInput = {
-  idEmpresa?: string
-  rutEmpresa: string
-  razonSocial: string
-  estado?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  usuario?: Prisma.UsuarioCreateNestedOneWithoutEmpresaInput
-  notebooks?: Prisma.NotebookCreateNestedManyWithoutEmpresaInput
-  lotes?: Prisma.LoteProcesamientoCreateNestedManyWithoutEmpresaInput
-  documentos?: Prisma.DocumentoCreateNestedManyWithoutEmpresaInput
-}
-
-export type EmpresaUncheckedCreateWithoutWidgetsInput = {
-  idEmpresa?: string
-  rutEmpresa: string
-  razonSocial: string
-  estado?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  usuario?: Prisma.UsuarioUncheckedCreateNestedOneWithoutEmpresaInput
-  notebooks?: Prisma.NotebookUncheckedCreateNestedManyWithoutEmpresaInput
-  lotes?: Prisma.LoteProcesamientoUncheckedCreateNestedManyWithoutEmpresaInput
-  documentos?: Prisma.DocumentoUncheckedCreateNestedManyWithoutEmpresaInput
-}
-
-export type EmpresaCreateOrConnectWithoutWidgetsInput = {
-  where: Prisma.EmpresaWhereUniqueInput
-  create: Prisma.XOR<Prisma.EmpresaCreateWithoutWidgetsInput, Prisma.EmpresaUncheckedCreateWithoutWidgetsInput>
-}
-
-export type EmpresaUpsertWithoutWidgetsInput = {
-  update: Prisma.XOR<Prisma.EmpresaUpdateWithoutWidgetsInput, Prisma.EmpresaUncheckedUpdateWithoutWidgetsInput>
-  create: Prisma.XOR<Prisma.EmpresaCreateWithoutWidgetsInput, Prisma.EmpresaUncheckedCreateWithoutWidgetsInput>
-  where?: Prisma.EmpresaWhereInput
-}
-
-export type EmpresaUpdateToOneWithWhereWithoutWidgetsInput = {
-  where?: Prisma.EmpresaWhereInput
-  data: Prisma.XOR<Prisma.EmpresaUpdateWithoutWidgetsInput, Prisma.EmpresaUncheckedUpdateWithoutWidgetsInput>
-}
-
-export type EmpresaUpdateWithoutWidgetsInput = {
-  idEmpresa?: Prisma.StringFieldUpdateOperationsInput | string
-  rutEmpresa?: Prisma.StringFieldUpdateOperationsInput | string
-  razonSocial?: Prisma.StringFieldUpdateOperationsInput | string
-  estado?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  usuario?: Prisma.UsuarioUpdateOneWithoutEmpresaNestedInput
-  notebooks?: Prisma.NotebookUpdateManyWithoutEmpresaNestedInput
-  lotes?: Prisma.LoteProcesamientoUpdateManyWithoutEmpresaNestedInput
-  documentos?: Prisma.DocumentoUpdateManyWithoutEmpresaNestedInput
-}
-
-export type EmpresaUncheckedUpdateWithoutWidgetsInput = {
-  idEmpresa?: Prisma.StringFieldUpdateOperationsInput | string
-  rutEmpresa?: Prisma.StringFieldUpdateOperationsInput | string
-  razonSocial?: Prisma.StringFieldUpdateOperationsInput | string
-  estado?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  usuario?: Prisma.UsuarioUncheckedUpdateOneWithoutEmpresaNestedInput
-  notebooks?: Prisma.NotebookUncheckedUpdateManyWithoutEmpresaNestedInput
-  lotes?: Prisma.LoteProcesamientoUncheckedUpdateManyWithoutEmpresaNestedInput
-  documentos?: Prisma.DocumentoUncheckedUpdateManyWithoutEmpresaNestedInput
 }
 
 
@@ -798,14 +693,12 @@ export type EmpresaCountOutputType = {
   notebooks: number
   lotes: number
   documentos: number
-  widgets: number
 }
 
 export type EmpresaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   notebooks?: boolean | EmpresaCountOutputTypeCountNotebooksArgs
   lotes?: boolean | EmpresaCountOutputTypeCountLotesArgs
   documentos?: boolean | EmpresaCountOutputTypeCountDocumentosArgs
-  widgets?: boolean | EmpresaCountOutputTypeCountWidgetsArgs
 }
 
 /**
@@ -839,13 +732,6 @@ export type EmpresaCountOutputTypeCountDocumentosArgs<ExtArgs extends runtime.Ty
   where?: Prisma.DocumentoWhereInput
 }
 
-/**
- * EmpresaCountOutputType without action
- */
-export type EmpresaCountOutputTypeCountWidgetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.DashboardWidgetWhereInput
-}
-
 
 export type EmpresaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   idEmpresa?: boolean
@@ -858,7 +744,6 @@ export type EmpresaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   notebooks?: boolean | Prisma.Empresa$notebooksArgs<ExtArgs>
   lotes?: boolean | Prisma.Empresa$lotesArgs<ExtArgs>
   documentos?: boolean | Prisma.Empresa$documentosArgs<ExtArgs>
-  widgets?: boolean | Prisma.Empresa$widgetsArgs<ExtArgs>
   _count?: boolean | Prisma.EmpresaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["empresa"]>
 
@@ -895,7 +780,6 @@ export type EmpresaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   notebooks?: boolean | Prisma.Empresa$notebooksArgs<ExtArgs>
   lotes?: boolean | Prisma.Empresa$lotesArgs<ExtArgs>
   documentos?: boolean | Prisma.Empresa$documentosArgs<ExtArgs>
-  widgets?: boolean | Prisma.Empresa$widgetsArgs<ExtArgs>
   _count?: boolean | Prisma.EmpresaCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EmpresaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -908,7 +792,6 @@ export type $EmpresaPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     notebooks: Prisma.$NotebookPayload<ExtArgs>[]
     lotes: Prisma.$LoteProcesamientoPayload<ExtArgs>[]
     documentos: Prisma.$DocumentoPayload<ExtArgs>[]
-    widgets: Prisma.$DashboardWidgetPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     idEmpresa: string
@@ -1315,7 +1198,6 @@ export interface Prisma__EmpresaClient<T, Null = never, ExtArgs extends runtime.
   notebooks<T extends Prisma.Empresa$notebooksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Empresa$notebooksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotebookPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   lotes<T extends Prisma.Empresa$lotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Empresa$lotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoteProcesamientoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   documentos<T extends Prisma.Empresa$documentosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Empresa$documentosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  widgets<T extends Prisma.Empresa$widgetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Empresa$widgetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DashboardWidgetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1832,30 +1714,6 @@ export type Empresa$documentosArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.DocumentoScalarFieldEnum | Prisma.DocumentoScalarFieldEnum[]
-}
-
-/**
- * Empresa.widgets
- */
-export type Empresa$widgetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the DashboardWidget
-   */
-  select?: Prisma.DashboardWidgetSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the DashboardWidget
-   */
-  omit?: Prisma.DashboardWidgetOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.DashboardWidgetInclude<ExtArgs> | null
-  where?: Prisma.DashboardWidgetWhereInput
-  orderBy?: Prisma.DashboardWidgetOrderByWithRelationInput | Prisma.DashboardWidgetOrderByWithRelationInput[]
-  cursor?: Prisma.DashboardWidgetWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.DashboardWidgetScalarFieldEnum | Prisma.DashboardWidgetScalarFieldEnum[]
 }
 
 /**

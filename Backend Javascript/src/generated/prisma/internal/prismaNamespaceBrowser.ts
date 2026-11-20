@@ -69,8 +69,7 @@ export const ModelName = {
   DetalleRevision: 'DetalleRevision',
   AjusteGlobalRevision: 'AjusteGlobalRevision',
   ConversacionChat: 'ConversacionChat',
-  MensajeChat: 'MensajeChat',
-  DashboardWidget: 'DashboardWidget'
+  MensajeChat: 'MensajeChat'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -429,23 +428,6 @@ export const MensajeChatScalarFieldEnum = {
 export type MensajeChatScalarFieldEnum = (typeof MensajeChatScalarFieldEnum)[keyof typeof MensajeChatScalarFieldEnum]
 
 
-export const DashboardWidgetScalarFieldEnum = {
-  idWidget: 'idWidget',
-  idEmpresa: 'idEmpresa',
-  idNotebook: 'idNotebook',
-  creadoPorId: 'creadoPorId',
-  titulo: 'titulo',
-  metrica: 'metrica',
-  filtros: 'filtros',
-  visualizacion: 'visualizacion',
-  orden: 'orden',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type DashboardWidgetScalarFieldEnum = (typeof DashboardWidgetScalarFieldEnum)[keyof typeof DashboardWidgetScalarFieldEnum]
-
-
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -460,13 +442,6 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
-
-
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

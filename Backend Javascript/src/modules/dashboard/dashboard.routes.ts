@@ -20,71 +20,11 @@ export function createDashboardRouter(
     ),
   );
 
-  router.get(
-    "/notebooks/:idNotebook/widgets",
-    handle(async (req, res) => {
-      res.json({
-        widgets: await service.list(
-          module1Identity(req),
-          req.params.idNotebook!,
-        ),
-      });
-    }),
-  );
-
-  router.post(
-    "/notebooks/:idNotebook/widgets",
-    handle(async (req, res) => {
-      res.status(201).json({
-        widget: await service.create(
-          module1Identity(req),
-          req.params.idNotebook!,
-          req.body,
-        ),
-      });
-    }),
-  );
-
-  router.patch(
-    "/widgets/:idWidget",
-    handle(async (req, res) => {
-      res.json({
-        widget: await service.update(
-          module1Identity(req),
-          req.params.idWidget!,
-          req.body,
-        ),
-      });
-    }),
-  );
-
-  router.delete(
-    "/widgets/:idWidget",
-    handle(async (req, res) => {
-      res.json(
-        await service.remove(module1Identity(req), req.params.idWidget!),
-      );
-    }),
-  );
-
   router.post(
     "/notebooks/:idNotebook/query",
     handle(async (req, res) => {
       res.json(
         await service.consultar(
-          module1Identity(req),
-          req.params.idNotebook!,
-          req.body,
-        ),
-      );
-    }),
-  );
-
-  router.post(
-    "/notebooks/:idNotebook/suggest",
-    handle(async (req, res) => {
-      res.json(
-        await service.sugerir(
           module1Identity(req),
           req.params.idNotebook!,
           req.body,

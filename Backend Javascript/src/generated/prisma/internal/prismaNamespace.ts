@@ -415,8 +415,7 @@ export const ModelName = {
   DetalleRevision: 'DetalleRevision',
   AjusteGlobalRevision: 'AjusteGlobalRevision',
   ConversacionChat: 'ConversacionChat',
-  MensajeChat: 'MensajeChat',
-  DashboardWidget: 'DashboardWidget'
+  MensajeChat: 'MensajeChat'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -432,7 +431,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "empresa" | "usuario" | "solicitudCuenta" | "sesionUsuario" | "tokenSeguridad" | "eventoSeguridad" | "notebook" | "loteProcesamiento" | "documento" | "archivoPDF" | "intentoProcesamiento" | "resultadoExtraccion" | "detalleExtraccion" | "ajusteGlobalExtraccion" | "revisionDocumento" | "detalleRevision" | "ajusteGlobalRevision" | "conversacionChat" | "mensajeChat" | "dashboardWidget"
+    modelProps: "empresa" | "usuario" | "solicitudCuenta" | "sesionUsuario" | "tokenSeguridad" | "eventoSeguridad" | "notebook" | "loteProcesamiento" | "documento" | "archivoPDF" | "intentoProcesamiento" | "resultadoExtraccion" | "detalleExtraccion" | "ajusteGlobalExtraccion" | "revisionDocumento" | "detalleRevision" | "ajusteGlobalRevision" | "conversacionChat" | "mensajeChat"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1842,80 +1841,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    DashboardWidget: {
-      payload: Prisma.$DashboardWidgetPayload<ExtArgs>
-      fields: Prisma.DashboardWidgetFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.DashboardWidgetFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardWidgetPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.DashboardWidgetFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardWidgetPayload>
-        }
-        findFirst: {
-          args: Prisma.DashboardWidgetFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardWidgetPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.DashboardWidgetFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardWidgetPayload>
-        }
-        findMany: {
-          args: Prisma.DashboardWidgetFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardWidgetPayload>[]
-        }
-        create: {
-          args: Prisma.DashboardWidgetCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardWidgetPayload>
-        }
-        createMany: {
-          args: Prisma.DashboardWidgetCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.DashboardWidgetCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardWidgetPayload>[]
-        }
-        delete: {
-          args: Prisma.DashboardWidgetDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardWidgetPayload>
-        }
-        update: {
-          args: Prisma.DashboardWidgetUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardWidgetPayload>
-        }
-        deleteMany: {
-          args: Prisma.DashboardWidgetDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.DashboardWidgetUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.DashboardWidgetUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardWidgetPayload>[]
-        }
-        upsert: {
-          args: Prisma.DashboardWidgetUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardWidgetPayload>
-        }
-        aggregate: {
-          args: Prisma.DashboardWidgetAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateDashboardWidget>
-        }
-        groupBy: {
-          args: Prisma.DashboardWidgetGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.DashboardWidgetGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.DashboardWidgetCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.DashboardWidgetCountAggregateOutputType> | number
-        }
-      }
-    }
   }
 } & {
   other: {
@@ -2295,23 +2220,6 @@ export const MensajeChatScalarFieldEnum = {
 export type MensajeChatScalarFieldEnum = (typeof MensajeChatScalarFieldEnum)[keyof typeof MensajeChatScalarFieldEnum]
 
 
-export const DashboardWidgetScalarFieldEnum = {
-  idWidget: 'idWidget',
-  idEmpresa: 'idEmpresa',
-  idNotebook: 'idNotebook',
-  creadoPorId: 'creadoPorId',
-  titulo: 'titulo',
-  metrica: 'metrica',
-  filtros: 'filtros',
-  visualizacion: 'visualizacion',
-  orden: 'orden',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type DashboardWidgetScalarFieldEnum = (typeof DashboardWidgetScalarFieldEnum)[keyof typeof DashboardWidgetScalarFieldEnum]
-
-
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2326,13 +2234,6 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
-
-
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -2822,7 +2723,6 @@ export type GlobalOmitConfig = {
   ajusteGlobalRevision?: Prisma.AjusteGlobalRevisionOmit
   conversacionChat?: Prisma.ConversacionChatOmit
   mensajeChat?: Prisma.MensajeChatOmit
-  dashboardWidget?: Prisma.DashboardWidgetOmit
 }
 
 /* Types for Logging */

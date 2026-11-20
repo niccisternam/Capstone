@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagrama de clases — Base de datos Prisma</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --panel: #ffffff; --text: #1d2330; --muted: #5b6474;
+    --border: #d9dde5; --accent: #2f6fdb; --pk: #b45309; --fk: #0f766e; --uk: #7c3aed;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1218; --panel: #171c25; --text: #e6e9ef; --muted: #98a2b3;
+      --border: #2a3140; --accent: #6ea8ff; --pk: #fbbf24; --fk: #5eead4; --uk: #c4b5fd;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1218; --panel: #171c25; --text: #e6e9ef; --muted: #98a2b3;
+    --border: #2a3140; --accent: #6ea8ff; --pk: #fbbf24; --fk: #5eead4; --uk: #c4b5fd;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { padding: 20px 24px 8px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  header p { margin: 0; color: var(--muted); }
+  .toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 8px 24px 12px; }
+  .toolbar button { background: var(--panel); color: var(--text); border: 1px solid var(--border);
+                    border-radius: 6px; padding: 6px 12px; cursor: pointer; font: inherit; }
+  .toolbar button:hover { border-color: var(--accent); }
+  .legend { display: flex; gap: 14px; color: var(--muted); font-size: 13px; margin-left: auto; flex-wrap: wrap; }
+  .legend b { font-weight: 600; }
+  .pk { color: var(--pk); } .fk { color: var(--fk); } .uk { color: var(--uk); }
+  main { padding: 0; }
+    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; }
+  #stage { overflow: auto; height: 100vh; border: 0; border-radius: 0; padding: 12px; background: var(--panel); }
+  #zoomable { transform-origin: 0 0; display: inline-block; }
+  #zoomable svg { display: block; max-width: none !important; }
+  pre.mermaid { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: none; margin: 0; padding: 0; white-space: normal; }
+  aside h2 { font-size: 14px; margin: 14px 14px 6px; }
+  aside table { width: calc(100% - 28px); margin: 0 14px 14px; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+  aside td { overflow-wrap: anywhere; }
+  aside td { padding: 4px 2px; border-bottom: 1px solid var(--border); }
+  aside code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+  aside p { margin: 0 14px 14px; color: var(--muted); font-size: 12px; }
+  @media print {
+    @page { margin: 0; }
+    html, body { background: #fff; }
+    #stage { height: auto !important; overflow: visible !important; padding: 0; background: #fff; border: 0; }
+    #zoomable { transform: none !important; display: block; }
+    #zoomable svg { width: auto; height: auto; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <section class="panel" id="stage">
+    <div id="zoomable"><pre class="mermaid" id="diagram">classDiagram
+    direction TB
+    class Empresa {
+        -String idEmpresa PK
+        -String rutEmpresa UK
+        -String razonSocial
+        -Boolean estado
+        -DateTime createdAt
+        -DateTime updatedAt
+    }
+    class Usuario {
+        -String idUsuario PK
+        -String idEmpresa FK
+        -String rutUsuario UK
+        -String nombre
+        -String apellido
+        -String correo
+        -String passwordHash
+        -RolUsuario rol
+        -EstadoUsuario estado
+        -Boolean debeCambiarPassword
+        -Int intentosFallidos
+        -DateTime? bloqueadoHasta
+        -DateTime? passwordChangedAt
+        -DateTime? correoVerificadoAt
+        -DateTime createdAt
+        -DateTime updatedAt
+    }
+    class SolicitudCuenta {
+        -String idSolicitud PK
+        -String rutEmpresa
+        -String? razonSocial
+        -String rutUsuario
+        -String nombre
+        -String apellido
+        -String correo
+        -String? descripcion
+        -EstadoSolicitud estado
+        -String? revisadaPorId FK
+        -DateTime? fechaRevision
+        -String? motivoRechazo
+        -DateTime createdAt
+        -DateTime updatedAt
+    }
+    class SesionUsuario {
+        -String idSesion PK
+        -String idUsuario FK
+        -String tokenHash UK
+        -Boolean recordarSesion
+        -DateTime createdAt
+        -DateTime ultimaActividadAt
+        -DateTime expiresAt
+        -DateTime? revokedAt
+    }
+    class TokenSeguridad {
+        -String idToken PK
+        -String idUsuario FK
+        -TipoTokenSeguridad tipo
+        -String tokenHash UK
+        -Int cantidadIntentos
+        -DateTime createdAt
+        -DateTime expiresAt
+        -DateTime? usedAt
+        -DateTime? revokedAt
+    }
+    class EventoSeguridad {
+        -String idEvento PK
+        -String? idUsuario FK
+        -TipoEventoSeguridad tipoEvento
+        -String? identificador
+        -Boolean exitoso
+        -String? motivoFallo
+        -String? direccionIpHash
+        -String? userAgent
+        -DateTime createdAt
+    }
+    class Notebook {
+        -String idNotebook PK
+        -String idEmpresa FK
+        -String creadoPorId FK
+        -String nombre
+        -String? descripcion
+        -String? icono
+        -Json? paletaColores
+        -DateTime createdAt
+        -DateTime updatedAt
+    }
+    class LoteProcesamiento {
+        -String idLote PK
+        -String idEmpresa FK
+        -String idNotebook FK
+        -String creadoPorId FK
+        -Int cantidadDocumentos
+        -Int cantidadProcesados
+        -Int cantidadErrores
+        -DateTime createdAt
+        -DateTime? procesamientoInicio
+        -DateTime? procesamientoFin
+    }
+    class Documento {
+        -String idDocumento PK
+        -String idEmpresa FK
+        -String idNotebook FK
+        -String idLote FK
+        -String cargadoPorId FK
+        -Int posicionLote
+        -EstadoDocumento estado
+        -DireccionDocumento direccion
+        -DateTime createdAt
+        -DateTime? confirmadoAt
+    }
+    class ArchivoPDF {
+        -String idArchivo PK
+        -String idDocumento FK
+        -String nombreOriginal
+        -String tipoMime
+        -BigInt tamanoBytes
+        -String? hashArchivo
+        -String storageKey
+        -DateTime createdAt
+    }
+    class IntentoProcesamiento {
+        -String idIntento PK
+        -String idDocumento FK
+        -Int numeroIntento
+        -DateTime inicioAt
+        -DateTime? finAt
+        -Json? validacionPdf
+        -String? errorCodigo
+        -String? errorMensaje
+        -String? correlacion
+    }
+    class ResultadoExtraccion {
+        -String idResultado PK
+        -String idDocumento FK
+        -String idIntento FK
+        -String? tipoDocumento
+        -EstadoExtraccion tipoDocumentoEstado
+        -String? folio
+        -EstadoExtraccion folioEstado
+        -DateTime? fechaEmision
+        -EstadoExtraccion fechaEmisionEstado
+        -String? emisorRut
+        -EstadoExtraccion emisorRutEstado
+        -String? emisorRazonSocial
+        -EstadoExtraccion emisorRazonSocialEstado
+        -String? receptorRut
+        -EstadoExtraccion receptorRutEstado
+        -String? receptorNombre
+        -EstadoExtraccion receptorNombreEstado
+        -CondicionTributaria? condicionTributaria
+        -EstadoExtraccion condicionEstado
+        -Decimal? neto
+        -EstadoExtraccion netoEstado
+        -Decimal? iva
+        -EstadoExtraccion ivaEstado
+        -Decimal? exento
+        -EstadoExtraccion exentoEstado
+        -Decimal? total
+        -EstadoExtraccion totalEstado
+        -String? medioPago
+        -EstadoExtraccion medioPagoEstado
+        -Json? metadata
+        -Json? errores
+        -Json? advertencias
+    }
+    class DetalleExtraccion {
+        -String idDetalle PK
+        -String idResultado FK
+        -Int numeroLinea
+        -String? descripcion
+        -EstadoExtraccion descripcionEstado
+        -Decimal? cantidad
+        -EstadoExtraccion cantidadEstado
+        -String? unidad
+        -EstadoExtraccion unidadEstado
+        -Decimal? precioUnitario
+        -EstadoExtraccion precioUnitarioEstado
+        -Decimal? descuentoPorcentaje
+        -EstadoExtraccion descuentoPorcentajeEstado
+        -Decimal? descuentoMonto
+        -EstadoExtraccion descuentoMontoEstado
+        -Decimal? recargoPorcentaje
+        -EstadoExtraccion recargoPorcentajeEstado
+        -Decimal? recargoMonto
+        -EstadoExtraccion recargoMontoEstado
+        -Decimal? totalLinea
+        -EstadoExtraccion totalLineaEstado
+        -Json? metadata
+    }
+    class AjusteGlobalExtraccion {
+        -String idAjuste PK
+        -String idResultado FK
+        -Int numeroAjuste
+        -TipoAjuste tipo
+        -ModalidadAjuste modalidad
+        -Decimal? valor
+        -EstadoExtraccion valorEstado
+        -String? descripcion
+        -EstadoExtraccion descripcionEstado
+    }
+    class RevisionDocumento {
+        -String idRevision PK
+        -String idDocumento FK
+        -String idResultado FK
+        -String revisadoPorId FK
+        -EstadoRevision estado
+        -String? estadoPago
+        -String? observacion
+        -String? tipoDocumento
+        -String? folio
+        -DateTime? fechaEmision
+        -String? emisorRut
+        -String? emisorRazonSocial
+        -String? receptorRut
+        -String? receptorNombre
+        -CondicionTributaria? condicionTributaria
+        -Decimal? neto
+        -Decimal? iva
+        -Decimal? exento
+        -Decimal? total
+        -String? medioPago
+        -DateTime createdAt
+        -DateTime? confirmedAt
+    }
+    class DetalleRevision {
+        -String idDetalle PK
+        -String idRevision FK
+        -String? idDetalleExtraccion FK
+        -Int numeroLinea
+        -String? descripcion
+        -Decimal? cantidad
+        -String? unidad
+        -Decimal? precioUnitario
+        -Decimal? descuentoPorcentaje
+        -Decimal? descuentoMonto
+        -Decimal? recargoPorcentaje
+        -Decimal? recargoMonto
+        -Decimal? totalLinea
+    }
+    class AjusteGlobalRevision {
+        -String idAjuste PK
+        -String idRevision FK
+        -Int numeroAjuste
+        -TipoAjuste tipo
+        -ModalidadAjuste modalidad
+        -Decimal? valor
+        -String? descripcion
+    }
+    class ConversacionChat {
+        -String idConversacion PK
+        -String idEmpresa FK
+        -String idNotebook FK
+        -String idUsuario FK
+        -String titulo
+        -DateTime createdAt
+        -DateTime updatedAt
+    }
+    class MensajeChat {
+        -String idMensaje PK
+        -String idConversacion FK
+        -RolMensajeChat rol
+        -String contenido
+        -String? sqlGenerado
+        -DateTime createdAt
+    }
+    class DashboardWidget {
+        -String idWidget PK
+        -String idEmpresa FK
+        -String idNotebook FK
+        -String creadoPorId FK
+        -String titulo
+        -String metrica
+        -Json filtros
+        -String visualizacion
+        -Int orden
+        -DateTime createdAt
+        -DateTime updatedAt
+    }
+    Usuario "1" --&gt; "0..1" Empresa : idEmpresa
+    SolicitudCuenta "*" --&gt; "0..1" Usuario : revisadaPorId
+    SesionUsuario "*" --&gt; "1" Usuario : idUsuario
+    TokenSeguridad "*" --&gt; "1" Usuario : idUsuario
+    EventoSeguridad "*" --&gt; "0..1" Usuario : idUsuario
+    Notebook "*" --&gt; "1" Empresa : idEmpresa
+    Notebook "*" --&gt; "1" Usuario : creadoPorId
+    LoteProcesamiento "*" --&gt; "1" Empresa : idEmpresa
+    LoteProcesamiento "*" --&gt; "1" Notebook : idEmpresa, idNotebook
+    LoteProcesamiento "*" --&gt; "1" Usuario : creadoPorId
+    Documento "*" --&gt; "1" Empresa : idEmpresa
+    Documento "*" --&gt; "1" Notebook : idEmpresa, idNotebook
+    Documento "*" --&gt; "1" LoteProcesamiento : idEmpresa, idLote
+    Documento "*" --&gt; "1" Usuario : cargadoPorId
+    ArchivoPDF "1" --&gt; "0..1" Documento : idDocumento
+    IntentoProcesamiento "*" --&gt; "1" Documento : idDocumento
+    ResultadoExtraccion "*" --&gt; "1" Documento : idDocumento
+    ResultadoExtraccion "1" --&gt; "0..1" IntentoProcesamiento : idIntento
+    DetalleExtraccion "*" --&gt; "1" ResultadoExtraccion : idResultado
+    AjusteGlobalExtraccion "*" --&gt; "1" ResultadoExtraccion : idResultado
+    RevisionDocumento "*" --&gt; "1" Documento : idDocumento
+    RevisionDocumento "*" --&gt; "1" ResultadoExtraccion : idResultado
+    RevisionDocumento "*" --&gt; "1" Usuario : revisadoPorId
+    DetalleRevision "*" --&gt; "1" RevisionDocumento : idRevision
+    DetalleRevision "*" --&gt; "0..1" DetalleExtraccion : idDetalleExtraccion
+    AjusteGlobalRevision "*" --&gt; "1" RevisionDocumento : idRevision
+    ConversacionChat "*" --&gt; "1" Notebook : idEmpresa, idNotebook
+    ConversacionChat "*" --&gt; "1" Usuario : idUsuario
+    MensajeChat "*" --&gt; "1" ConversacionChat : idConversacion
+    DashboardWidget "*" --&gt; "1" Empresa : idEmpresa
+    DashboardWidget "*" --&gt; "1" Notebook : idEmpresa, idNotebook
+    DashboardWidget "*" --&gt; "1" Usuario : creadoPorId
+</pre></div>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+  (function () {
+    var dark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    try {
+      mermaid.initialize({ startOnLoad: false, securityLevel: "loose", theme: dark ? "dark" : "default",
+                           htmlLabels: false, fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif", fontSize: 13,
+                           class: { useMaxWidth: false } });
+    } catch (e) { console.error(e); }
+    var z = 1, zoomable = document.getElementById("zoomable");
+    function applyZoom() { zoomable.style.transform = "scale(" + z + ")"; }
+    mermaid.run({ querySelector: "#diagram" }).then(function () {
+      var svg = document.querySelector("#diagram svg");
+      if (svg) {
+        var bb = svg.getBBox();
+        svg.removeAttribute("style");
+        svg.setAttribute("width", Math.ceil(bb.x + bb.width + 20));
+        svg.setAttribute("height", Math.ceil(bb.y + bb.height + 20));
+      }
+      if (svg) {
+        var st = document.createElement("style");
+        st.textContent = "@media print { @page { size: " + Math.ceil(svg.getAttribute("width")) + "px " + Math.ceil(svg.getAttribute("height")) + "px; margin: 0; } }";
+        document.head.appendChild(st);
+      }
+      applyZoom();
+    }).catch(function (e) {
+      document.getElementById("stage").insertAdjacentHTML("afterbegin",
+        "<p style='color:#c00;padding:8px'>No se pudo renderizar el diagrama: " + String(e) + "</p>");
+    });
+  })();
+</script>
+</body>
+</html>

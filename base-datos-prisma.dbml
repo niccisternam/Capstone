@@ -1,0 +1,503 @@
+// Esquema generado desde Backend Javascript/prisma/schema.prisma para dbdiagram.io
+
+Enum rol_usuario {
+  USUARIO
+  ADMINISTRADOR
+}
+
+Enum estado_usuario {
+  PENDIENTE
+  ACTIVO
+  BLOQUEADO
+  INACTIVO
+}
+
+Enum estado_solicitud {
+  PENDIENTE
+  APROBADA
+  RECHAZADA
+}
+
+Enum tipo_token_seguridad {
+  CODIGO_INICIO_SESION
+  RECUPERACION_PASSWORD
+  VERIFICACION_CORREO
+}
+
+Enum tipo_evento_seguridad {
+  LOGIN_EXITOSO
+  LOGIN_FALLIDO
+  CODIGO_INVALIDO
+  CUENTA_BLOQUEADA
+  CAMBIO_PASSWORD
+  RECUPERACION_SOLICITADA
+  SESION_CERRADA
+}
+
+Enum estado_documento {
+  PENDIENTE
+  PROCESANDO
+  PENDIENTE_REVISION
+  ERROR
+  CONFIRMADO
+}
+
+Enum estado_extraccion {
+  ENCONTRADO
+  AUSENTE
+  NO_APLICA
+  ILEGIBLE
+  INCIERTO
+}
+
+Enum tipo_ajuste {
+  DESCUENTO
+  RECARGO
+}
+
+Enum modalidad_ajuste {
+  PORCENTAJE
+  MONTO
+}
+
+Enum estado_revision {
+  PENDIENTE
+  EDITANDO
+  CONFIRMADA
+}
+
+Enum direccion_documento {
+  COMPRA
+  VENTA
+}
+
+Enum rol_mensaje_chat {
+  USUARIO
+  ASISTENTE
+}
+
+Enum condicion_tributaria {
+  AFECTA
+  EXENTA
+  NO_AFECTA
+  MIXTA
+}
+
+Table empresa {
+  id_empresa uuid [pk, not null, default: `gen_random_uuid()`]
+  rut_empresa varchar(12) [unique, not null]
+  razon_social varchar(200) [not null]
+  estado boolean [not null, default: true]
+  created_at timestamptz(6) [not null, default: `now()`]
+  updated_at timestamptz(6) [not null, default: `now()`]
+  Note: 'Modelo Prisma: Empresa'
+}
+
+Table usuario {
+  id_usuario uuid [pk, not null, default: `gen_random_uuid()`]
+  id_empresa uuid [unique, not null]
+  rut_usuario varchar(12) [unique, not null]
+  nombre varchar(100) [not null]
+  apellido varchar(100) [not null]
+  correo varchar(320) [not null]
+  password_hash text [not null]
+  rol rol_usuario [not null, default: 'USUARIO']
+  estado estado_usuario [not null, default: 'PENDIENTE']
+  debe_cambiar_password boolean [not null, default: true]
+  intentos_fallidos integer [not null, default: 0]
+  bloqueado_hasta timestamptz(6)
+  password_changed_at timestamptz(6)
+  correo_verificado_at timestamptz(6)
+  created_at timestamptz(6) [not null, default: `now()`]
+  updated_at timestamptz(6) [not null, default: `now()`]
+  Note: 'Modelo Prisma: Usuario'
+
+  indexes {
+    estado [name: 'idx_usuario_estado']
+  }
+}
+
+Table solicitud_cuenta {
+  id_solicitud uuid [pk, not null, default: `gen_random_uuid()`]
+  rut_empresa varchar(12) [not null]
+  razon_social varchar(200)
+  rut_usuario varchar(12) [not null]
+  nombre varchar(100) [not null]
+  apellido varchar(100) [not null]
+  correo varchar(320) [not null]
+  descripcion text
+  estado estado_solicitud [not null, default: 'PENDIENTE']
+  revisada_por uuid
+  fecha_revision timestamptz(6)
+  motivo_rechazo text
+  created_at timestamptz(6) [not null, default: `now()`]
+  updated_at timestamptz(6) [not null, default: `now()`]
+  Note: 'Modelo Prisma: SolicitudCuenta'
+
+  indexes {
+    (estado, created_at) [name: 'idx_solicitud_estado_fecha']
+  }
+}
+
+Table sesion_usuario {
+  id_sesion uuid [pk, not null, default: `gen_random_uuid()`]
+  id_usuario uuid [not null]
+  token_hash text [unique, not null]
+  recordar_sesion boolean [not null, default: false]
+  created_at timestamptz(6) [not null, default: `now()`]
+  ultima_actividad_at timestamptz(6) [not null, default: `now()`]
+  expires_at timestamptz(6) [not null]
+  revoked_at timestamptz(6)
+  Note: 'Modelo Prisma: SesionUsuario'
+
+  indexes {
+    id_usuario [name: 'idx_sesion_usuario']
+  }
+}
+
+Table token_seguridad {
+  id_token uuid [pk, not null, default: `gen_random_uuid()`]
+  id_usuario uuid [not null]
+  tipo tipo_token_seguridad [not null]
+  token_hash text [unique, not null]
+  cantidad_intentos integer [not null, default: 0]
+  created_at timestamptz(6) [not null, default: `now()`]
+  expires_at timestamptz(6) [not null]
+  used_at timestamptz(6)
+  revoked_at timestamptz(6)
+  Note: 'Modelo Prisma: TokenSeguridad'
+
+  indexes {
+    (id_usuario, tipo) [name: 'idx_token_usuario_tipo']
+  }
+}
+
+Table evento_seguridad {
+  id_evento uuid [pk, not null, default: `gen_random_uuid()`]
+  id_usuario uuid
+  tipo_evento tipo_evento_seguridad [not null]
+  identificador varchar(320)
+  exitoso boolean [not null, default: false]
+  motivo_fallo text
+  direccion_ip_hash text
+  user_agent text
+  created_at timestamptz(6) [not null, default: `now()`]
+  Note: 'Modelo Prisma: EventoSeguridad'
+
+  indexes {
+    (id_usuario, created_at) [name: 'idx_evento_usuario_fecha']
+    (identificador, created_at) [name: 'idx_evento_identificador_fecha']
+  }
+}
+
+Table notebook {
+  id_notebook uuid [pk, not null, default: `gen_random_uuid()`]
+  id_empresa uuid [not null]
+  creado_por uuid [not null]
+  nombre varchar(150) [not null]
+  descripcion text
+  icono varchar(80)
+  paleta_colores jsonb
+  created_at timestamptz(6) [not null, default: `now()`]
+  updated_at timestamptz(6) [not null, default: `now()`]
+  Note: 'Modelo Prisma: Notebook'
+
+  indexes {
+    (id_empresa, id_notebook) [unique, name: 'uq_notebook_empresa_id']
+    id_empresa [name: 'idx_notebook_empresa']
+    creado_por [name: 'idx_notebook_creador']
+  }
+}
+
+Table lote_procesamiento {
+  id_lote uuid [pk, not null, default: `gen_random_uuid()`]
+  id_empresa uuid [not null]
+  id_notebook uuid [not null]
+  creado_por uuid [not null]
+  cantidad_documentos integer [not null, default: 0]
+  cantidad_procesados integer [not null, default: 0]
+  cantidad_errores integer [not null, default: 0]
+  created_at timestamptz(6) [not null, default: `now()`]
+  procesamiento_inicio timestamptz(6)
+  procesamiento_fin timestamptz(6)
+  Note: 'Modelo Prisma: LoteProcesamiento'
+
+  indexes {
+    (id_empresa, id_lote) [unique, name: 'uq_lote_empresa_id']
+    (id_empresa, created_at) [name: 'idx_lote_empresa_fecha']
+    (id_notebook, created_at) [name: 'idx_lote_notebook_fecha']
+  }
+}
+
+Table documento {
+  id_documento uuid [pk, not null, default: `gen_random_uuid()`]
+  id_empresa uuid [not null]
+  id_notebook uuid [not null]
+  id_lote uuid [not null]
+  cargado_por uuid [not null]
+  posicion_lote integer [not null]
+  estado estado_documento [not null, default: 'PENDIENTE']
+  direccion direccion_documento [not null, default: 'COMPRA']
+  created_at timestamptz(6) [not null, default: `now()`]
+  confirmado_at timestamptz(6)
+  Note: 'Modelo Prisma: Documento'
+
+  indexes {
+    (id_lote, posicion_lote) [unique, name: 'uq_documento_lote_posicion']
+    (id_empresa, estado) [name: 'idx_documento_empresa_estado']
+    (id_notebook, estado) [name: 'idx_documento_notebook_estado']
+    (id_lote, estado) [name: 'idx_documento_lote_estado']
+  }
+}
+
+Table archivo_pdf {
+  id_archivo uuid [pk, not null, default: `gen_random_uuid()`]
+  id_documento uuid [unique, not null]
+  nombre_original text [not null]
+  tipo_mime varchar(100) [not null]
+  tamano_bytes bigint [not null]
+  hash_archivo varchar(128)
+  storage_key text [not null]
+  created_at timestamptz(6) [not null, default: `now()`]
+  Note: 'Modelo Prisma: ArchivoPDF'
+
+  indexes {
+    storage_key [unique, name: 'uq_archivo_storage_key']
+    hash_archivo [name: 'idx_archivo_hash']
+  }
+}
+
+Table intento_procesamiento {
+  id_intento uuid [pk, not null, default: `gen_random_uuid()`]
+  id_documento uuid [not null]
+  numero_intento integer [not null]
+  inicio_at timestamptz(6) [not null, default: `now()`]
+  fin_at timestamptz(6)
+  validacion_pdf jsonb
+  error_codigo varchar(100)
+  error_mensaje text
+  correlacion varchar(150)
+  Note: 'Modelo Prisma: IntentoProcesamiento'
+
+  indexes {
+    (id_documento, numero_intento) [unique, name: 'uq_intento_documento_numero']
+    (id_documento, inicio_at) [name: 'idx_intento_documento_fecha']
+  }
+}
+
+Table resultado_extraccion {
+  id_resultado uuid [pk, not null, default: `gen_random_uuid()`]
+  id_documento uuid [not null]
+  id_intento uuid [unique, not null]
+  tipo_documento varchar(100)
+  tipo_documento_estado estado_extraccion [not null]
+  folio varchar(30)
+  folio_estado estado_extraccion [not null]
+  fecha_emision date
+  fecha_emision_estado estado_extraccion [not null]
+  emisor_rut varchar(12)
+  emisor_rut_estado estado_extraccion [not null]
+  emisor_razon_social varchar(200)
+  emisor_razon_social_estado estado_extraccion [not null]
+  receptor_rut varchar(12)
+  receptor_rut_estado estado_extraccion [not null]
+  receptor_nombre varchar(200)
+  receptor_nombre_estado estado_extraccion [not null]
+  condicion_tributaria condicion_tributaria
+  condicion_estado estado_extraccion [not null]
+  neto numeric(18,6)
+  neto_estado estado_extraccion [not null]
+  iva numeric(18,6)
+  iva_estado estado_extraccion [not null]
+  exento numeric(18,6)
+  exento_estado estado_extraccion [not null]
+  total numeric(18,6)
+  total_estado estado_extraccion [not null]
+  medio_pago varchar(40)
+  medio_pago_estado estado_extraccion [not null]
+  metadata jsonb
+  errores jsonb
+  advertencias jsonb
+  Note: 'Modelo Prisma: ResultadoExtraccion'
+
+  indexes {
+    id_documento [name: 'idx_resultado_documento']
+  }
+}
+
+Table detalle_extraccion {
+  id_detalle uuid [pk, not null, default: `gen_random_uuid()`]
+  id_resultado uuid [not null]
+  numero_linea integer [not null]
+  descripcion text
+  descripcion_estado estado_extraccion [not null]
+  cantidad numeric(18,6)
+  cantidad_estado estado_extraccion [not null]
+  unidad varchar(40)
+  unidad_estado estado_extraccion [not null]
+  precio_unitario numeric(18,6)
+  precio_unitario_estado estado_extraccion [not null]
+  descuento_porcentaje numeric(7,4)
+  descuento_porcentaje_estado estado_extraccion [not null]
+  descuento_monto numeric(18,6)
+  descuento_monto_estado estado_extraccion [not null]
+  recargo_porcentaje numeric(7,4)
+  recargo_porcentaje_estado estado_extraccion [not null]
+  recargo_monto numeric(18,6)
+  recargo_monto_estado estado_extraccion [not null]
+  total_linea numeric(18,6)
+  total_linea_estado estado_extraccion [not null]
+  metadata jsonb
+  Note: 'Modelo Prisma: DetalleExtraccion'
+
+  indexes {
+    (id_resultado, numero_linea) [unique, name: 'uq_detalle_resultado_linea']
+    id_resultado [name: 'idx_detalle_resultado']
+  }
+}
+
+Table ajuste_global_extraccion {
+  id_ajuste uuid [pk, not null, default: `gen_random_uuid()`]
+  id_resultado uuid [not null]
+  numero_ajuste integer [not null]
+  tipo tipo_ajuste [not null]
+  modalidad modalidad_ajuste [not null]
+  valor numeric(18,6)
+  valor_estado estado_extraccion [not null]
+  descripcion text
+  descripcion_estado estado_extraccion [not null]
+  Note: 'Modelo Prisma: AjusteGlobalExtraccion'
+
+  indexes {
+    (id_resultado, numero_ajuste) [unique, name: 'uq_ajuste_resultado_numero']
+    id_resultado [name: 'idx_ajuste_resultado']
+  }
+}
+
+Table revision_documento {
+  id_revision uuid [pk, not null, default: `gen_random_uuid()`]
+  id_documento uuid [not null]
+  id_resultado uuid [not null]
+  revisado_por uuid [not null]
+  estado estado_revision [not null, default: 'PENDIENTE']
+  estado_pago varchar(40)
+  observacion text
+  tipo_documento varchar(100)
+  folio varchar(30)
+  fecha_emision date
+  emisor_rut varchar(12)
+  emisor_razon_social varchar(200)
+  receptor_rut varchar(12)
+  receptor_nombre varchar(200)
+  condicion_tributaria condicion_tributaria
+  neto numeric(18,6)
+  iva numeric(18,6)
+  exento numeric(18,6)
+  total numeric(18,6)
+  medio_pago varchar(40)
+  created_at timestamptz(6) [not null, default: `now()`]
+  confirmed_at timestamptz(6)
+  Note: 'Modelo Prisma: RevisionDocumento'
+
+  indexes {
+    (id_documento, created_at) [name: 'idx_revision_documento_fecha']
+    revisado_por [name: 'idx_revision_revisor']
+  }
+}
+
+Table detalle_revision {
+  id_detalle_revision uuid [pk, not null, default: `gen_random_uuid()`]
+  id_revision uuid [not null]
+  id_detalle_extraccion uuid
+  numero_linea integer [not null]
+  descripcion text
+  cantidad numeric(18,6)
+  unidad varchar(40)
+  precio_unitario numeric(18,6)
+  descuento_porcentaje numeric(7,4)
+  descuento_monto numeric(18,6)
+  recargo_porcentaje numeric(7,4)
+  recargo_monto numeric(18,6)
+  total_linea numeric(18,6)
+  Note: 'Modelo Prisma: DetalleRevision'
+
+  indexes {
+    (id_revision, numero_linea) [unique, name: 'uq_detalle_revision_linea']
+    id_revision [name: 'idx_detalle_revision']
+  }
+}
+
+Table ajuste_global_revision {
+  id_ajuste_revision uuid [pk, not null, default: `gen_random_uuid()`]
+  id_revision uuid [not null]
+  numero_ajuste integer [not null]
+  tipo tipo_ajuste [not null]
+  modalidad modalidad_ajuste [not null]
+  valor numeric(18,6)
+  descripcion text
+  Note: 'Modelo Prisma: AjusteGlobalRevision'
+
+  indexes {
+    (id_revision, numero_ajuste) [unique, name: 'uq_ajuste_revision_numero']
+    id_revision [name: 'idx_ajuste_revision']
+  }
+}
+
+Table conversacion_chat {
+  id_conversacion uuid [pk, not null, default: `gen_random_uuid()`]
+  id_empresa uuid [not null]
+  id_notebook uuid [not null]
+  id_usuario uuid [not null]
+  titulo varchar(120) [not null, default: 'Nueva conversación']
+  created_at timestamptz(6) [not null, default: `now()`]
+  updated_at timestamptz(6) [not null, default: `now()`]
+  Note: 'Modelo Prisma: ConversacionChat'
+
+  indexes {
+    (id_empresa, id_notebook, id_usuario, updated_at) [name: 'idx_conversacion_chat_usuario_fecha']
+  }
+}
+
+Table mensaje_chat {
+  id_mensaje uuid [pk, not null, default: `gen_random_uuid()`]
+  id_conversacion uuid [not null]
+  rol rol_mensaje_chat [not null]
+  contenido text [not null]
+  sql_generado text
+  created_at timestamptz(6) [not null, default: `now()`]
+  Note: 'Modelo Prisma: MensajeChat'
+
+  indexes {
+    (id_conversacion, created_at) [name: 'idx_mensaje_chat_conversacion_fecha']
+  }
+}
+
+Ref fk_usuario_empresa: usuario.id_empresa - empresa.id_empresa [delete: restrict]
+Ref fk_solicitud_revisor: solicitud_cuenta.revisada_por > usuario.id_usuario [delete: set null]
+Ref fk_sesion_usuario: sesion_usuario.id_usuario > usuario.id_usuario [delete: cascade]
+Ref fk_token_usuario: token_seguridad.id_usuario > usuario.id_usuario [delete: cascade]
+Ref fk_evento_usuario: evento_seguridad.id_usuario > usuario.id_usuario [delete: set null]
+Ref fk_notebook_empresa: notebook.id_empresa > empresa.id_empresa [delete: restrict]
+Ref fk_notebook_creador: notebook.creado_por > usuario.id_usuario [delete: restrict]
+Ref fk_lote_empresa: lote_procesamiento.id_empresa > empresa.id_empresa [delete: restrict]
+Ref fk_lote_empresa_notebook: lote_procesamiento.(id_empresa, id_notebook) > notebook.(id_empresa, id_notebook) [delete: restrict]
+Ref fk_lote_creador: lote_procesamiento.creado_por > usuario.id_usuario [delete: restrict]
+Ref fk_documento_empresa: documento.id_empresa > empresa.id_empresa [delete: restrict]
+Ref fk_documento_empresa_notebook: documento.(id_empresa, id_notebook) > notebook.(id_empresa, id_notebook) [delete: restrict]
+Ref fk_documento_empresa_lote: documento.(id_empresa, id_lote) > lote_procesamiento.(id_empresa, id_lote) [delete: restrict]
+Ref fk_documento_cargador: documento.cargado_por > usuario.id_usuario [delete: restrict]
+Ref fk_archivo_documento: archivo_pdf.id_documento - documento.id_documento [delete: cascade]
+Ref fk_intento_documento: intento_procesamiento.id_documento > documento.id_documento [delete: cascade]
+Ref fk_resultado_documento: resultado_extraccion.id_documento > documento.id_documento [delete: cascade]
+Ref fk_resultado_intento: resultado_extraccion.id_intento - intento_procesamiento.id_intento [delete: cascade]
+Ref fk_detalle_resultado: detalle_extraccion.id_resultado > resultado_extraccion.id_resultado [delete: cascade]
+Ref fk_ajuste_resultado: ajuste_global_extraccion.id_resultado > resultado_extraccion.id_resultado [delete: cascade]
+Ref fk_revision_documento: revision_documento.id_documento > documento.id_documento [delete: cascade]
+Ref fk_revision_resultado: revision_documento.id_resultado > resultado_extraccion.id_resultado [delete: restrict]
+Ref fk_revision_revisor: revision_documento.revisado_por > usuario.id_usuario [delete: restrict]
+Ref fk_detalle_revision: detalle_revision.id_revision > revision_documento.id_revision [delete: cascade]
+Ref fk_detalle_revision_extraccion: detalle_revision.id_detalle_extraccion > detalle_extraccion.id_detalle [delete: set null]
+Ref fk_ajuste_revision: ajuste_global_revision.id_revision > revision_documento.id_revision [delete: cascade]
+Ref fk_conversacion_chat_empresa_notebook: conversacion_chat.(id_empresa, id_notebook) > notebook.(id_empresa, id_notebook) [delete: cascade]
+Ref fk_conversacion_chat_usuario: conversacion_chat.id_usuario > usuario.id_usuario [delete: cascade]
+Ref fk_mensaje_chat_conversacion: mensaje_chat.id_conversacion > conversacion_chat.id_conversacion [delete: cascade]

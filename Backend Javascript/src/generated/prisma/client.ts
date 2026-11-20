@@ -134,8 +134,3 @@ export type ConversacionChat = Prisma.ConversacionChatModel
  * 
  */
 export type MensajeChat = Prisma.MensajeChatModel
-/**
- * Model DashboardWidget
- * 
- */
-export type DashboardWidget = Prisma.DashboardWidgetModel
