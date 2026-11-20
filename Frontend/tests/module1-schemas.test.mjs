@@ -19,13 +19,14 @@ test("notebookInputSchema recorta el nombre y limita longitudes", () => {
   assert.equal(schemas.notebookInputSchema.safeParse({ nombre: "a", descripcion: "d".repeat(5001) }).success, false);
 });
 
-test("revisionInputSchema exige estadoPago de hasta 40 caracteres", () => {
+test("revisionInputSchema exige estadoPago del catálogo cerrado (PENDIENTE o PAGADO)", () => {
   const base = { observacion: "", datos: {} };
 
   assert.equal(schemas.revisionInputSchema.safeParse(base).success, false);
   assert.equal(schemas.revisionInputSchema.safeParse({ ...base, estadoPago: "   " }).success, false);
-  assert.equal(schemas.revisionInputSchema.safeParse({ ...base, estadoPago: "x".repeat(41) }).success, false);
-  assert.equal(schemas.revisionInputSchema.safeParse({ ...base, estadoPago: "x".repeat(40) }).success, true);
+  assert.equal(schemas.revisionInputSchema.safeParse({ ...base, estadoPago: "x".repeat(40) }).success, false);
+  assert.equal(schemas.revisionInputSchema.safeParse({ ...base, estadoPago: "PENDIENTE" }).success, true);
+  assert.equal(schemas.revisionInputSchema.safeParse({ ...base, estadoPago: "PAGADO" }).success, true);
 });
 
 test("revisionInputSchema acepta observacion vacía y rechaza fechaEmision con hora", () => {

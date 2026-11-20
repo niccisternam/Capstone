@@ -1,12 +1,15 @@
 import { GoogleGenerativeAI, SchemaType, type Schema } from "@google/generative-ai";
 import { AppError } from "../../shared/errors/app-error.js";
 import { extractionResponseSchema } from "./module1.schemas.js";
+import { camposInvalidos } from "./processing-log.js";
 import type { DocumentExtractor, ExtractionResponse } from "./module1.types.js";
 
 const EXTRACTION_PROMPT = `Eres un extractor de documentos tributarios. Devuelve únicamente JSON válido con la estructura solicitada.
 No inventes valores: usa estado AUSENTE, NO_APLICA, ILEGIBLE o INCIERTO cuando corresponda.
 Los montos y cantidades deben ser cadenas decimales con punto. Las fechas deben usar AAAA-MM-DD.
+Los montos están en pesos chilenos (CLP): escríbelos sin separador de miles ni símbolo, solo dígitos. Ejemplo: "$ 2.511.281" se devuelve como "2511281".
 Cuando un campo numérico no exista, usa valor null y estado AUSENTE o NO_APLICA. No uses "", "N/A" ni "null" como texto.
+Si un RUT no aparece o figura como "S/N", "sin RUT" o "no identificado", usa valor null y estado AUSENTE. Un RUT válido tiene el formato 12.345.678-9.
 Cada campo debe contener valor, estado y opcionalmente confianza y evidencia.
 La respuesta debe tener documento, errores y advertencias.
 
@@ -112,7 +115,7 @@ export function parseJson(text: string): unknown {
   }
 }
 
-function normalizeMissingValues(value: unknown): unknown {
+export function normalizeMissingValues(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(normalizeMissingValues);
   if (!value || typeof value !== "object") return value;
 
@@ -121,9 +124,61 @@ function normalizeMissingValues(value: unknown): unknown {
   const marker = normalized.valor;
   const state = normalized.estado;
   const isMissingState = state === "AUSENTE" || state === "NO_APLICA";
-  const isMissingMarker = marker === "" || marker === "N/A" || marker === "NA" || marker === "null" || marker === "NULL";
+  const isMissingMarker =
+    typeof marker === "string" && ["", "N/A", "NA", "NULL", "S/N"].includes(marker.trim().toUpperCase());
   if (isMissingState && isMissingMarker) normalized.valor = null;
   return normalized;
+}
+
+// Montos CLP con separador de miles ("2.511.281", "$ 477.143") → "2511281", "477143".
+// Solo se aplica a campos de dinero: en una cantidad, "1.500" puede ser legítimamente 1,5.
+// No cambia el valor del documento, solo su formato.
+const MONTO_CON_MILES = /^-?\d{1,3}(\.\d{3})+(,\d+)?$/;
+const MONTO_CON_COMA_DECIMAL = /^-?\d+,\d+$/;
+
+export function normalizarMontoClp(valor: unknown): unknown {
+  if (typeof valor !== "string") return valor;
+  const limpio = valor.replace(/\$/g, "").replace(/\s+/g, "");
+  if (MONTO_CON_MILES.test(limpio)) return limpio.replace(/\./g, "").replace(",", ".");
+  if (MONTO_CON_COMA_DECIMAL.test(limpio)) return limpio.replace(",", ".");
+  return /^-?\d+(\.\d+)?$/.test(limpio) ? limpio : valor;
+}
+
+const CAMPOS_MONTO_DETALLE = ["precioUnitario", "descuentoMonto", "recargoMonto", "totalLinea"] as const;
+const CAMPOS_MONTO_TOTALES = ["neto", "iva", "exento", "total"] as const;
+
+function normalizarCampoMonto(campo: unknown) {
+  if (campo && typeof campo === "object" && "valor" in campo) {
+    const registro = campo as { valor: unknown };
+    registro.valor = normalizarMontoClp(registro.valor);
+  }
+}
+
+/** Normaliza el formato de los montos de una respuesta ya parseada (la modifica en el lugar). */
+export function normalizarMontosRespuesta(respuesta: unknown): unknown {
+  const documento = (respuesta as { documento?: Record<string, unknown> } | null)?.documento;
+  if (!documento || typeof documento !== "object") return respuesta;
+
+  const totales = documento.totales as Record<string, unknown> | undefined;
+  if (totales && typeof totales === "object") {
+    for (const clave of CAMPOS_MONTO_TOTALES) normalizarCampoMonto(totales[clave]);
+  }
+  const detalles = (documento.detalles as { valor?: unknown } | undefined)?.valor;
+  if (Array.isArray(detalles)) {
+    for (const linea of detalles) {
+      if (!linea || typeof linea !== "object") continue;
+      for (const clave of CAMPOS_MONTO_DETALLE) normalizarCampoMonto((linea as Record<string, unknown>)[clave]);
+    }
+  }
+  const ajustes = (documento.ajustesGlobales as { valor?: unknown } | undefined)?.valor;
+  if (Array.isArray(ajustes)) {
+    for (const ajuste of ajustes) {
+      if (ajuste && typeof ajuste === "object" && (ajuste as { modalidad?: unknown }).modalidad === "MONTO") {
+        normalizarCampoMonto((ajuste as { valor?: unknown }).valor);
+      }
+    }
+  }
+  return respuesta;
 }
 
 function friendlyValidationIssue(path: PropertyKey[]): string {
@@ -189,9 +244,11 @@ export class GeminiExtractor implements DocumentExtractor {
         EXTRACTION_PROMPT,
         { inlineData: { mimeType: "application/pdf", data: pdf.toString("base64") } },
       ]);
-      const parsed = extractionResponseSchema.safeParse(normalizeMissingValues(parseJson(response.response.text())));
+      const parsed = extractionResponseSchema.safeParse(
+        normalizarMontosRespuesta(normalizeMissingValues(parseJson(response.response.text()))),
+      );
       if (!parsed.success) {
-        throw new AppError(502, "AI_INVALID_RESPONSE", summarizeValidationIssues(parsed.error.issues), { issueCount: parsed.error.issues.length });
+        throw new AppError(502, "AI_INVALID_RESPONSE", summarizeValidationIssues(parsed.error.issues), camposInvalidos(parsed.error.issues));
       }
       return parsed.data as ExtractionResponse;
     } catch (error) {

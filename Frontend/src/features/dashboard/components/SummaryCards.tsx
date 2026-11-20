@@ -1,7 +1,7 @@
 import type { DatoWidget } from "@/api/dashboard.api";
 import { clp, numero } from "./dashboardFormat";
 
-export function ResumenMontos({ fila }: { fila: DatoWidget }) {
+export function ResumenMontos({ fila, titulo = "Total de compras" }: { fila: DatoWidget; titulo?: string }) {
   return (
     <article className="relative overflow-hidden rounded-2xl bg-[#162a43] p-6 text-white sm:p-7 lg:col-span-8">
       <div aria-hidden="true" className="absolute -right-16 -top-24 h-64 w-64 rounded-full border border-white/10" />
@@ -9,7 +9,7 @@ export function ResumenMontos({ fila }: { fila: DatoWidget }) {
       <div className="relative">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="text-base font-semibold text-white">Total de compras</h3>
+            <h3 className="text-base font-semibold text-white">{titulo}</h3>
             <p className="mt-1 text-sm text-blue-100/75">Suma de documentos confirmados</p>
           </div>
           <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-blue-100">

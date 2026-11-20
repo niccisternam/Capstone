@@ -1,7 +1,6 @@
-import type { DetalleExtraccion } from "@/api/module1.schemas";
-import { text, type SetReviewDetail } from "./documentReviewForm";
+import { text, type DetalleFormulario, type SetReviewDetail } from "./documentReviewForm";
 
-const CAMPOS: (keyof DetalleExtraccion)[] = [
+const CAMPOS: (keyof DetalleFormulario)[] = [
   "descripcion",
   "cantidad",
   "unidad",
@@ -17,7 +16,7 @@ export function DocumentDetailsSection({
   detalles,
   setDetail,
 }: {
-  detalles: DetalleExtraccion[];
+  detalles: DetalleFormulario[];
   setDetail: SetReviewDetail;
 }) {
   return (

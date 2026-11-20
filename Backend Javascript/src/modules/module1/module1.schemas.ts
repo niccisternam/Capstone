@@ -1,5 +1,23 @@
 import { z } from "zod";
 
+// Catálogo cerrado del estado de pago interno. Debe coincidir con la constante
+// homónima del frontend (src/api/module1.schemas.ts) y con el CHECK de la migración.
+export const ESTADOS_PAGO = ["PENDIENTE", "PAGADO"] as const;
+export const estadoPagoSchema = z.enum(ESTADOS_PAGO);
+
+// Largos máximos de las columnas VARCHAR (resultado_extraccion, revision_documento, detalle_*).
+// Validarlos aquí evita que un texto demasiado largo falle recién al insertar en la base.
+export const LARGO_MAXIMO = {
+  tipoDocumento: 100,
+  folio: 30,
+  rut: 12,
+  razonSocial: 200,
+  nombre: 200,
+  medioPago: 40,
+  unidad: 40,
+} as const;
+const texto = (max: number) => z.string().max(max);
+
 const status = z.enum(["ENCONTRADO", "AUSENTE", "NO_APLICA", "ILEGIBLE", "INCIERTO"]);
 const evidence = z.object({
   pagina: z.number().int().positive().optional(),
@@ -24,7 +42,7 @@ const percentage = fieldSchema(decimal).superRefine((field, ctx) => {
 const detailSchema = z.object({
   descripcion: fieldSchema(z.string()),
   cantidad: fieldSchema(decimal),
-  unidad: fieldSchema(z.string()),
+  unidad: fieldSchema(texto(LARGO_MAXIMO.unidad)),
   precioUnitario: fieldSchema(decimal),
   descuentoPorcentaje: percentage,
   descuentoMonto: fieldSchema(decimal),
@@ -42,18 +60,18 @@ const adjustmentSchema = z.object({
 
 export const extractionResponseSchema = z.object({
   documento: z.object({
-    tipoDocumento: fieldSchema(z.string()),
-    folio: fieldSchema(z.string()),
+    tipoDocumento: fieldSchema(texto(LARGO_MAXIMO.tipoDocumento)),
+    folio: fieldSchema(texto(LARGO_MAXIMO.folio)),
     fechaEmision: fieldSchema(z.string().regex(/^\d{4}-\d{2}-\d{2}$/)),
-    emisor: z.object({ rut: fieldSchema(z.string()), razonSocial: fieldSchema(z.string()) }),
-    receptor: z.object({ rut: fieldSchema(z.string()), nombre: fieldSchema(z.string()) }),
+    emisor: z.object({ rut: fieldSchema(texto(LARGO_MAXIMO.rut)), razonSocial: fieldSchema(texto(LARGO_MAXIMO.razonSocial)) }),
+    receptor: z.object({ rut: fieldSchema(texto(LARGO_MAXIMO.rut)), nombre: fieldSchema(texto(LARGO_MAXIMO.nombre)) }),
     condicionTributaria: fieldSchema(z.enum(["AFECTA", "EXENTA", "NO_AFECTA", "MIXTA"])),
     detalles: z.object({ estado: status, valor: z.array(detailSchema).nullable(), confianza: z.number().min(0).max(1).optional(), evidencia: evidence }),
     ajustesGlobales: z.object({ estado: status, valor: z.array(adjustmentSchema).nullable(), confianza: z.number().min(0).max(1).optional(), evidencia: evidence }),
     totales: z.object({
       neto: fieldSchema(decimal), iva: fieldSchema(decimal), exento: fieldSchema(decimal), total: fieldSchema(decimal),
     }),
-    medioPago: fieldSchema(z.string()),
+    medioPago: fieldSchema(texto(LARGO_MAXIMO.medioPago)),
   }),
   errores: z.array(z.object({ codigo: z.string(), mensaje: z.string(), campo: z.string().optional() })),
   advertencias: z.array(z.object({ codigo: z.string(), mensaje: z.string(), campo: z.string().optional() })),
@@ -70,16 +88,17 @@ export const notebookDocumentsQuerySchema = z.object({
   pagina: z.coerce.number().int().min(1).max(100000).default(1),
   buscar: z.string().trim().max(200).optional(),
   estado: z.enum(["PENDIENTE_REVISION", "CONFIRMADO"]).optional(),
-  estadoPago: z.string().trim().max(40).optional(),
+  estadoPago: estadoPagoSchema.optional(),
   proveedor: z.string().trim().max(200).optional(),
 });
 
 const reviewDecimal = z.string().regex(/^-?\d+(\.\d+)?$/).nullable().optional();
 const reviewText = z.string().nullable().optional();
+const reviewTexto = (max: number) => texto(max).nullable().optional();
 const reviewDetailSchema = z.object({
   descripcion: reviewText,
   cantidad: reviewDecimal,
-  unidad: reviewText,
+  unidad: reviewTexto(LARGO_MAXIMO.unidad),
   precioUnitario: reviewDecimal,
   descuentoPorcentaje: reviewDecimal,
   descuentoMonto: reviewDecimal,
@@ -95,20 +114,20 @@ const reviewAdjustmentSchema = z.object({
 });
 
 export const reviewDataSchema = z.object({
-  tipoDocumento: reviewText,
-  folio: reviewText,
+  tipoDocumento: reviewTexto(LARGO_MAXIMO.tipoDocumento),
+  folio: reviewTexto(LARGO_MAXIMO.folio),
   fechaEmision: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
-  emisor: z.object({ rut: reviewText, razonSocial: reviewText }).partial().optional(),
-  receptor: z.object({ rut: reviewText, nombre: reviewText }).partial().optional(),
+  emisor: z.object({ rut: reviewTexto(LARGO_MAXIMO.rut), razonSocial: reviewTexto(LARGO_MAXIMO.razonSocial) }).partial().optional(),
+  receptor: z.object({ rut: reviewTexto(LARGO_MAXIMO.rut), nombre: reviewTexto(LARGO_MAXIMO.nombre) }).partial().optional(),
   condicionTributaria: z.enum(["AFECTA", "EXENTA", "NO_AFECTA", "MIXTA"]).nullable().optional(),
   detalles: z.array(reviewDetailSchema).optional(),
   ajustesGlobales: z.array(reviewAdjustmentSchema).optional(),
   totales: z.object({ neto: reviewDecimal, iva: reviewDecimal, exento: reviewDecimal, total: reviewDecimal }).partial().optional(),
-  medioPago: reviewText,
+  medioPago: reviewTexto(LARGO_MAXIMO.medioPago),
 });
 
 export const reviewSchema = z.object({
-  estadoPago: z.string().trim().min(1).max(40),
+  estadoPago: estadoPagoSchema,
   observacion: z.string().trim().max(5000).optional(),
   datos: reviewDataSchema,
 });

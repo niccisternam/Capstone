@@ -1,10 +1,11 @@
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Express } from "express";
 import type { PrismaClient } from "../../generated/prisma/client.js";
 import { AppError } from "../../shared/errors/app-error.js";
 import { findOwnedDocument } from "./document.lookup.js";
+import { deleteFilesWithRecords } from "./file-deletion.js";
 import type { DocumentProcessor } from "./document-processor.service.js";
 import type { Module1Identity } from "./module1.types.js";
 
@@ -262,10 +263,12 @@ export class DocumentService {
         "El documento se está procesando y no puede eliminarse",
       );
     }
-    await this.prisma.documento.delete({ where: { idDocumento } });
-    await unlink(
-      path.resolve(this.storagePath, document.archivo!.storageKey),
-    ).catch(() => undefined);
+    const filePaths = document.archivo?.storageKey
+      ? [path.resolve(this.storagePath, document.archivo.storageKey)]
+      : [];
+    await deleteFilesWithRecords(filePaths, () =>
+      this.prisma.documento.delete({ where: { idDocumento } }),
+    );
     return { idDocumento, eliminado: true };
   }
 

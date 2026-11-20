@@ -113,7 +113,7 @@ export async function ejecutarMetrica(
         SELECT COALESCE(SUM(r."total"), 0)::text AS pendiente,
                COUNT(*)::int AS documentos
         ${base(idEmpresa, idNotebook, filtros)}
-          AND upper(btrim(r."estado_pago")) = 'PENDIENTE'
+          AND r."estado_pago" = 'PENDIENTE'
       `;
     case "descuentos_recargos":
       // Una línea puede traer el descuento/recargo como monto o como porcentaje.

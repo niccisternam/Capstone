@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { confirmDocument, getNotebook, saveReview } from "@/api/module1.api";
 import { ApiError } from "@/api/api-error";
-import type { AjusteGlobalExtraccion, DetalleExtraccion, DocumentoDetalle } from "@/api/module1.schemas";
-import { initialReviewForm, type ReviewFormState } from "./documentReviewForm";
+import type { DocumentoDetalle } from "@/api/module1.schemas";
+import { initialReviewForm, type AjusteFormulario, type DetalleFormulario, type ReviewFormState } from "./documentReviewForm";
 import { DocumentReviewHeaderSection } from "./DocumentReviewHeaderSection";
 import { DocumentDetailsSection } from "./DocumentDetailsSection";
 import { GlobalAdjustmentsSection } from "./GlobalAdjustmentsSection";
@@ -35,7 +35,7 @@ export function DocumentReviewForm({
     setForm((current) => ({ ...current, [key]: value }));
   };
 
-  const setDetail = (index: number, key: keyof DetalleExtraccion, value: string | null) => {
+  const setDetail = (index: number, key: keyof DetalleFormulario, value: string | null) => {
     setDirty(true);
     setForm((current) => ({
       ...current,
@@ -43,7 +43,7 @@ export function DocumentReviewForm({
     }));
   };
 
-  const setAdjustment = (index: number, key: keyof AjusteGlobalExtraccion, value: string | null) => {
+  const setAdjustment = (index: number, key: keyof AjusteFormulario, value: string | null) => {
     setDirty(true);
     setForm((current) => ({
       ...current,

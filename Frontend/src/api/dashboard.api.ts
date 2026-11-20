@@ -21,8 +21,11 @@ export interface ResultadoMetrica {
   actualizadoEn: string;
 }
 
+/** Compras, ventas o ambas. Mismo catálogo que `direccionSchema` del backend. */
+export type Direccion = "COMPRA" | "VENTA" | "TODAS";
+
 export type FiltrosConsulta = {
-  direccion?: "COMPRA" | "VENTA" | "TODAS";
+  direccion?: Direccion;
   /** Mes inicial inclusivo en formato YYYY-MM. */
   desde?: string;
   /** Mes final inclusivo en formato YYYY-MM. */

@@ -12,6 +12,8 @@ ID_USUARIO = "82bbfd47-ed8c-45f8-96f9-cb887be532c5"
 ID_EMPRESA = "122569bb-eb95-4be0-8988-3b92a994f731"
 CANTIDAD_DOCUMENTOS = 1000  # Cambia este valor para generar más o menos documentos.
 DOCUMENTOS_POR_LOTE = 10
+RUT_EMPRESA = "21732802-0"  # RUT de la empresa dueña del notebook.
+NOMBRE_EMPRESA = "Marcelo Vásquez"
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT = ROOT / "datos_prueba_dashboard.txt"
@@ -124,6 +126,14 @@ def main():
         vat *= scale
         total *= scale
         issued_on = fecha_emision(run_at, index % 12, 1 + (index * 7) % 28)
+        # Alterna documentos de compra (la empresa recibe) y venta (la empresa emite).
+        direccion = "VENTA" if index % 2 else "COMPRA"
+        if direccion == "COMPRA":
+            emisor_rut, emisor_nombre = vendor_rut, vendor
+            receptor_rut, receptor_nombre = RUT_EMPRESA, NOMBRE_EMPRESA
+        else:
+            emisor_rut, emisor_nombre = RUT_EMPRESA, NOMBRE_EMPRESA
+            receptor_rut, receptor_nombre = vendor_rut, vendor
         folio = str(100000 + index)
         document_id = document_ids[index]
         attempt_id = attempt_ids[index]
@@ -141,7 +151,7 @@ def main():
             "cargado_por": ID_USUARIO,
             "posicion_lote": index % DOCUMENTOS_POR_LOTE + 1,
             "estado": "CONFIRMADO",
-            "direccion": "COMPRA",
+            "direccion": direccion,
             "created_at": issued_at,
             "confirmado_at": confirmed_at,
         }))
@@ -165,13 +175,13 @@ def main():
             "folio_estado": "ENCONTRADO",
             "fecha_emision": issued_on,
             "fecha_emision_estado": "ENCONTRADO",
-            "emisor_rut": vendor_rut,
+            "emisor_rut": emisor_rut,
             "emisor_rut_estado": "ENCONTRADO",
-            "emisor_razon_social": vendor,
+            "emisor_razon_social": emisor_nombre,
             "emisor_razon_social_estado": "ENCONTRADO",
-            "receptor_rut": "21732802-0",
+            "receptor_rut": receptor_rut,
             "receptor_rut_estado": "ENCONTRADO",
-            "receptor_nombre": "Marcelo Vásquez",
+            "receptor_nombre": receptor_nombre,
             "receptor_nombre_estado": "ENCONTRADO",
             "condicion_tributaria": "AFECTA",
             "condicion_estado": "ENCONTRADO",
@@ -198,10 +208,10 @@ def main():
             "tipo_documento": "Factura",
             "folio": folio,
             "fecha_emision": issued_on,
-            "emisor_rut": vendor_rut,
-            "emisor_razon_social": vendor,
-            "receptor_rut": "21732802-0",
-            "receptor_nombre": "Marcelo Vásquez",
+            "emisor_rut": emisor_rut,
+            "emisor_razon_social": emisor_nombre,
+            "receptor_rut": receptor_rut,
+            "receptor_nombre": receptor_nombre,
             "condicion_tributaria": "AFECTA",
             "neto": Decimal(net),
             "iva": Decimal(vat),

@@ -5,6 +5,7 @@ import { AppError } from "../../shared/errors/app-error.js";
 import { validatePdfTextLayer } from "./pdf-text.service.js";
 import { findOwnedDocument } from "./document.lookup.js";
 import { extractionResponseSchema } from "./module1.schemas.js";
+import { camposInvalidos, logProcessingFailure } from "./processing-log.js";
 import type {
   DocumentExtractor,
   ExtractionDocument,
@@ -28,7 +29,7 @@ export async function validatePdfAndExtract(
       422,
       "AI_INVALID_RESPONSE",
       "La respuesta del servicio de IA no cumple la estructura documental requerida: faltan campos obligatorios o contiene tipos de datos inválidos",
-      checked.error.flatten(),
+      camposInvalidos(checked.error.issues),
     );
   }
   return { validation, response: checked.data };
@@ -97,6 +98,14 @@ export class DocumentProcessor {
               "DOCUMENT_PROCESSING_FAILED",
               "No fue posible procesar el documento",
             );
+      // El usuario solo ve un mensaje seguro; la causa real queda en el log del servidor.
+      logProcessingFailure({
+        idDocumento,
+        idIntento: attempt.idIntento,
+        numeroIntento: attemptNumber,
+        codigo: appError.code,
+        error,
+      });
       await this.prisma.$transaction([
         this.prisma.intentoProcesamiento.update({
           where: { idIntento: attempt.idIntento },

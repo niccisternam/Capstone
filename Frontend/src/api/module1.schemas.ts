@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+// Catálogo cerrado del estado de pago interno. Debe coincidir con ESTADOS_PAGO del backend
+// (Backend Javascript/src/modules/module1/module1.schemas.ts).
+export const ESTADOS_PAGO = ["PENDIENTE", "PAGADO"] as const;
+export const estadoPagoSchema = z.enum(ESTADOS_PAGO, { error: "Selecciona un estado de pago válido." });
+export type EstadoPago = z.infer<typeof estadoPagoSchema>;
+
 // Fuente: Backend Javascript/src/modules/module1/module1.schemas.ts y module1.service.ts.
 // Los esquemas de respuesta listan solo los campos que el frontend usa.
 // Zod descarta el resto de campos del backend al parsear.
@@ -290,7 +296,7 @@ export const datosRevisionInputSchema = z.object({
 });
 
 export const revisionInputSchema = z.object({
-  estadoPago: z.string().trim().min(1, "Indica el estado de pago.").max(40, "El estado de pago no puede superar los 40 caracteres."),
+  estadoPago: estadoPagoSchema,
   observacion: z.string().trim().max(5000, "La observación no puede superar los 5000 caracteres."),
   datos: datosRevisionInputSchema,
 });

@@ -2,21 +2,33 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ApiError } from "@/api/api-error";
-import { consultarMetrica, metricas, type DatoWidget, type Metrica } from "@/api/dashboard.api";
+import { consultarMetrica, metricas, type DatoWidget, type Direccion, type Metrica } from "@/api/dashboard.api";
 import { resolverPeriodo, validarRango, type FiltrosPeriodo } from "../periodos";
+import { TEXTOS_DIRECCION, type TextosDireccion } from "../direccion";
 import { DashboardFilters } from "./DashboardFilters";
 import { MetricContent } from "./MetricContent";
 import { Panel } from "./Panel";
 import { DashboardSkeleton } from "./DashboardSkeleton";
 
-const INDICADORES: { metrica: Metrica; titulo: string }[] = [
-  { metrica: "resumen_montos", titulo: "Resumen de montos" },
-  { metrica: "pagos_pendientes", titulo: "Pagos pendientes" },
-  { metrica: "compras_por_periodo", titulo: "Compras por mes" },
-  { metrica: "compras_por_proveedor", titulo: "Compras por proveedor" },
-  { metrica: "compras_por_producto", titulo: "Compras por producto" },
-  { metrica: "descuentos_recargos", titulo: "Descuentos y recargos" },
+const INDICADORES: Metrica[] = [
+  "resumen_montos",
+  "pagos_pendientes",
+  "compras_por_periodo",
+  "compras_por_proveedor",
+  "compras_por_producto",
+  "descuentos_recargos",
 ];
+
+const tituloIndicador = (metrica: Metrica, textos: TextosDireccion): string => {
+  switch (metrica) {
+    case "resumen_montos": return textos.total;
+    case "pagos_pendientes": return "Pagos pendientes";
+    case "compras_por_periodo": return textos.mensual;
+    case "compras_por_proveedor": return textos.contrapartes;
+    case "compras_por_producto": return textos.productos;
+    case "descuentos_recargos": return "Descuentos y recargos";
+  }
+};
 
 type PanelMetrica = {
   metrica: Metrica;
@@ -30,6 +42,7 @@ const errorMessage = (error: unknown) =>
 
 export function DashboardPanel({ idNotebook }: { idNotebook: string }) {
   const [periodo, setPeriodo] = useState<FiltrosPeriodo>({ tipo: "todo" });
+  const [direccion, setDireccion] = useState<Direccion>("COMPRA");
   const [mesesDisponibles, setMesesDisponibles] = useState<string[]>([]);
   const [paneles, setPaneles] = useState<PanelMetrica[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,11 +63,12 @@ export function DashboardPanel({ idNotebook }: { idNotebook: string }) {
     setPaneles([]);
 
     const filtros = desde && hasta
-      ? { direccion: "COMPRA" as const, desde, hasta }
-      : { direccion: "COMPRA" as const };
+      ? { direccion, desde, hasta }
+      : { direccion };
 
+    // Los meses disponibles dependen de la dirección: solo se listan meses con documentos de ese tipo.
     const disponibilidadPromise = consultarMetrica(idNotebook, "compras_por_periodo", {
-      direccion: "COMPRA",
+      direccion,
     }).catch(() => null);
 
     const [resultados, disponibilidad] = await Promise.all([
@@ -85,7 +99,7 @@ export function DashboardPanel({ idNotebook }: { idNotebook: string }) {
     setPaneles(resultados);
     setLoading(false);
     setActualizando(false);
-  }, [idNotebook, desde, hasta, errorRango]);
+  }, [idNotebook, direccion, desde, hasta, errorRango]);
 
   useEffect(() => {
     if (errorRango) return;
@@ -104,6 +118,14 @@ export function DashboardPanel({ idNotebook }: { idNotebook: string }) {
     setLoading(true);
     setPeriodo(siguiente);
   }, []);
+
+  const cambiarDireccion = useCallback((siguiente: Direccion) => {
+    if (siguiente === direccion) return;
+    setLoading(true);
+    setDireccion(siguiente);
+  }, [direccion]);
+
+  const textos = TEXTOS_DIRECCION[direccion];
 
   return (
     <section className="mt-6" aria-label="Dashboard del notebook">
@@ -131,13 +153,20 @@ export function DashboardPanel({ idNotebook }: { idNotebook: string }) {
         </div>
       </header>
 
-      <DashboardFilters valor={periodo} onCambio={aplicarFiltros} mesesDisponibles={mesesDisponibles} />
+      <DashboardFilters
+        valor={periodo}
+        onCambio={aplicarFiltros}
+        mesesDisponibles={mesesDisponibles}
+        direccion={direccion}
+        onDireccionCambio={cambiarDireccion}
+      />
 
       {loading && <DashboardSkeleton />}
 
       {!loading && (
         <div className="dashboard-grid grid grid-cols-1 gap-x-5 gap-y-8 lg:grid-cols-12">
-          {INDICADORES.map(({ metrica, titulo }) => {
+          {INDICADORES.map((metrica) => {
+            const titulo = tituloIndicador(metrica, textos);
             const panel = paneles.find((item) => item.metrica === metrica);
             if (panel?.error) {
               return (
@@ -147,7 +176,7 @@ export function DashboardPanel({ idNotebook }: { idNotebook: string }) {
               );
             }
             if (panel) {
-              return <MetricContent key={metrica} metrica={metrica} datos={panel.datos} rango={rango} />;
+              return <MetricContent key={metrica} metrica={metrica} datos={panel.datos} rango={rango} direccion={direccion} />;
             }
             return (
               <Panel key={metrica} titulo={titulo} descripcion="Documentos confirmados">

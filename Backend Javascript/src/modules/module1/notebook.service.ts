@@ -1,7 +1,7 @@
-import { unlink } from "node:fs/promises";
 import path from "node:path";
 import type { Prisma, PrismaClient } from "../../generated/prisma/client.js";
 import { AppError } from "../../shared/errors/app-error.js";
+import { deleteFilesWithRecords } from "./file-deletion.js";
 import { createNotebookSchema, notebookDocumentsQuerySchema } from "./module1.schemas.js";
 import type { Module1Identity } from "./module1.types.js";
 
@@ -54,9 +54,8 @@ function documentosWhere(
   }
 
   if (filtros.estadoPago) {
-    condiciones.push(filtros.estadoPago === "PENDIENTE"
-      ? { NOT: { revisiones: { some: { estado: "CONFIRMADA", estadoPago: { not: null } } } } }
-      : { revisiones: { some: { estado: "CONFIRMADA", estadoPago: filtros.estadoPago } } });
+    // Solo cuentan las revisiones confirmadas; así coincide con la métrica pagos_pendientes del dashboard.
+    condiciones.push({ revisiones: { some: { estado: "CONFIRMADA", estadoPago: filtros.estadoPago } } });
   }
 
   if (filtros.buscar) {
@@ -154,25 +153,21 @@ export class NotebookService {
     if (!notebook) {
       throw new AppError(404, "NOTEBOOK_NOT_FOUND", "Notebook no encontrado");
     }
-    await this.prisma.$transaction(async (tx) => {
-      await tx.documento.deleteMany({
-        where: { idEmpresa: identity.idEmpresa, idNotebook },
-      });
-      await tx.loteProcesamiento.deleteMany({
-        where: { idEmpresa: identity.idEmpresa, idNotebook },
-      });
-      await tx.notebook.delete({ where: { idNotebook } });
-    });
-    await Promise.all(
-      notebook.documentos.flatMap((document) =>
-        document.archivo?.storageKey
-          ? [
-              unlink(
-                path.resolve(this.storagePath, document.archivo.storageKey),
-              ).catch(() => undefined),
-            ]
-          : [],
-      ),
+    const filePaths = notebook.documentos.flatMap((document) =>
+      document.archivo?.storageKey
+        ? [path.resolve(this.storagePath, document.archivo.storageKey)]
+        : [],
+    );
+    await deleteFilesWithRecords(filePaths, () =>
+      this.prisma.$transaction(async (tx) => {
+        await tx.documento.deleteMany({
+          where: { idEmpresa: identity.idEmpresa, idNotebook },
+        });
+        await tx.loteProcesamiento.deleteMany({
+          where: { idEmpresa: identity.idEmpresa, idNotebook },
+        });
+        await tx.notebook.delete({ where: { idNotebook } });
+      }),
     );
     return { idNotebook, eliminado: true };
   }

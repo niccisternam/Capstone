@@ -1,4 +1,5 @@
-import type { DatoWidget, Metrica } from "@/api/dashboard.api";
+import type { DatoWidget, Direccion, Metrica } from "@/api/dashboard.api";
+import { TEXTOS_DIRECCION } from "../direccion";
 import type { RangoMeses } from "../periodos";
 import { Panel } from "./Panel";
 import { TendenciaMensual } from "./MonthlyChart";
@@ -9,37 +10,40 @@ export function MetricContent({
   metrica,
   datos,
   rango,
+  direccion,
 }: {
   metrica: Metrica;
   datos: DatoWidget[];
   rango: RangoMeses | null;
+  direccion: Direccion;
 }) {
   const [fila] = datos;
+  const textos = TEXTOS_DIRECCION[direccion];
 
   switch (metrica) {
     case "resumen_montos":
       return fila ? (
-        <ResumenMontos fila={fila} />
+        <ResumenMontos fila={fila} titulo={textos.total} />
       ) : (
-        <Panel titulo="Total de compras" descripcion="Documentos confirmados">
+        <Panel titulo={textos.total} descripcion="Documentos confirmados">
           <p className="py-6 text-sm text-slate-500">Sin documentos confirmados.</p>
         </Panel>
       );
     case "compras_por_periodo":
       return (
-        <Panel titulo="Compras por mes" descripcion="Evolución según fecha de emisión" className="border-blue-200 bg-[#f7f9fe] lg:col-span-12">
+        <Panel titulo={textos.mensual} descripcion="Evolución según fecha de emisión" className="border-blue-200 bg-[#f7f9fe] lg:col-span-12">
           <TendenciaMensual filas={datos} rango={rango} />
         </Panel>
       );
     case "compras_por_proveedor":
       return (
-        <Panel titulo="Principales proveedores" descripcion="Ordenados por total de compras" className="border-teal-200 bg-[#f5fbf9] lg:col-span-6">
+        <Panel titulo={textos.contrapartes} descripcion="Ordenados por total" className="border-teal-200 bg-[#f5fbf9] lg:col-span-6">
           <Ranking filas={datos} etiqueta="proveedor" valor="total" color="teal" />
         </Panel>
       );
     case "compras_por_producto":
       return (
-        <Panel titulo="Productos y servicios" descripcion="Líneas con mayor total" className="border-indigo-200 bg-[#f7f8ff] lg:col-span-6">
+        <Panel titulo={textos.productos} descripcion="Líneas con mayor total" className="border-indigo-200 bg-[#f7f8ff] lg:col-span-6">
           <Ranking filas={datos} etiqueta="producto" valor="total" color="indigo" />
         </Panel>
       );

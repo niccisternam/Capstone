@@ -19,6 +19,12 @@ function ensureRegistered() {
   registered = true;
   registerHooks({
     resolve(specifier, context, nextResolve) {
+      // Alias "@/..." de tsconfig → src/... (con extensión .ts implícita).
+      if (specifier.startsWith("@/")) {
+        const aliased = path.resolve(PROJECT_ROOT, "src", specifier.slice(2));
+        const candidate = existsSync(aliased) ? aliased : `${aliased}.ts`;
+        return nextResolve(pathToFileURL(candidate).href, context);
+      }
       try {
         return nextResolve(specifier, context);
       } catch (error) {

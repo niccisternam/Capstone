@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import type { Direccion } from "@/api/dashboard.api";
+import { DIRECCIONES } from "../direccion";
 import {
   etiquetaPeriodo,
   periodoInicial,
@@ -45,10 +47,14 @@ export function DashboardFilters({
   valor,
   onCambio,
   mesesDisponibles,
+  direccion,
+  onDireccionCambio,
 }: {
   valor: FiltrosPeriodo;
   onCambio: (filtros: FiltrosPeriodo) => void;
   mesesDisponibles: string[];
+  direccion: Direccion;
+  onDireccionCambio: (direccion: Direccion) => void;
 }) {
   const [pendiente, setPendiente] = useState<FiltrosPeriodo>(valor);
   const anios = [...new Set(mesesDisponibles.map((mes) => Number(mes.slice(0, 4))))].sort((a, b) => b - a);
@@ -84,6 +90,31 @@ export function DashboardFilters({
       className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5"
     >
       <div className="flex flex-wrap items-end gap-4">
+        <div className="min-w-[220px]">
+          <span id="filtro-direccion" className={claseEtiqueta}>Tipo de documento</span>
+          <div
+            role="radiogroup"
+            aria-labelledby="filtro-direccion"
+            className="mt-1 inline-flex w-full rounded-lg border border-slate-300 bg-slate-50 p-1 text-sm font-semibold"
+          >
+            {DIRECCIONES.map((opcion) => {
+              const seleccionada = opcion.valor === direccion;
+              return (
+                <button
+                  key={opcion.valor}
+                  type="button"
+                  role="radio"
+                  aria-checked={seleccionada}
+                  onClick={() => onDireccionCambio(opcion.valor)}
+                  className={`flex-1 rounded-md px-3 py-1.5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${seleccionada ? "bg-white text-blue-800 shadow-sm" : "text-slate-600 hover:text-slate-900"}`}
+                >
+                  {opcion.etiqueta}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <label className="min-w-[190px]">
           <span className={claseEtiqueta}>Periodo</span>
           <select

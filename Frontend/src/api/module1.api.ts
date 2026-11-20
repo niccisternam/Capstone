@@ -16,6 +16,7 @@ import {
   type Documento,
   type DocumentoDetalle,
   type EliminarDocumentoResultado,
+  type EstadoPago,
   type Lote,
   type Notebook,
   type NotebookConConteo,
@@ -150,7 +151,7 @@ export type NotebookDocumentosQuery = {
   pagina?: number;
   buscar?: string;
   estado?: "PENDIENTE_REVISION" | "CONFIRMADO";
-  estadoPago?: string;
+  estadoPago?: EstadoPago;
   proveedor?: string;
 };
 

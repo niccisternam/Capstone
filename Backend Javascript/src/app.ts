@@ -43,6 +43,11 @@ export function createApp(dependencies: AppDependencies = {}) {
   app.use(express.json({ limit: "2mb" }));
   app.use(
     pinoHttp({
+      // Sin una línea por cada petición HTTP: solo quedan los errores que se registran
+      // explícitamente con req.log (error-handler) y los eventos propios de los módulos.
+      autoLogging: false,
+      // req.log solo agrega el id de la petición, no los encabezados completos.
+      quietReqLogger: true,
       redact: [
         "req.headers.authorization",
         "req.headers.cookie",

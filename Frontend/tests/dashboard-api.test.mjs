@@ -81,3 +81,30 @@ test("consultarMetrica rechaza un id de notebook inválido sin llamar a Express"
     globalThis.fetch = originalFetch;
   }
 });
+
+test("consultarMetrica envía la dirección elegida (VENTA y TODAS) en lugar de COMPRA fijo", async () => {
+  const originalFetch = globalThis.fetch;
+  client.setAccessToken("token-dashboard");
+  const cuerpos = [];
+  globalThis.fetch = async (_url, init) => {
+    cuerpos.push(JSON.parse(init.body));
+    return new Response(JSON.stringify({
+      metrica: "compras_por_periodo",
+      filtros: { direccion: "VENTA" },
+      datos: [],
+      actualizadoEn: "2026-11-13T12:00:00.000Z",
+    }), { status: 200, headers: { "content-type": "application/json" } });
+  };
+
+  try {
+    await api.consultarMetrica(idNotebook, "compras_por_periodo", { direccion: "VENTA" });
+    await api.consultarMetrica(idNotebook, "compras_por_periodo", { direccion: "TODAS" });
+    assert.deepEqual(cuerpos, [
+      { metrica: "compras_por_periodo", filtros: { direccion: "VENTA" } },
+      { metrica: "compras_por_periodo", filtros: { direccion: "TODAS" } },
+    ]);
+  } finally {
+    globalThis.fetch = originalFetch;
+    client.setAccessToken(null);
+  }
+});

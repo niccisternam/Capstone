@@ -1,3 +1,4 @@
+import { ESTADOS_PAGO, estadoPagoSchema } from "@/api/module1.schemas";
 import { ReviewField } from "./ReviewField";
 import type { ReviewFormState, SetReviewField } from "./documentReviewForm";
 
@@ -38,11 +39,13 @@ export function ReviewTotalsSection({
           Estado de pago interno
           <select
             value={form.estadoPago}
-            onChange={(event) => setField("estadoPago", event.target.value)}
+            onChange={(event) => {
+              const parsed = estadoPagoSchema.safeParse(event.target.value);
+              if (parsed.success) setField("estadoPago", parsed.data);
+            }}
             className="mt-1 w-full rounded-lg border-2 border-slate-200 bg-white px-3 py-2 font-normal"
           >
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="PAGADO">PAGADO</option>
+            {ESTADOS_PAGO.map((estado) => <option key={estado} value={estado}>{estado}</option>)}
           </select>
         </label>
         <label className="text-sm font-semibold">

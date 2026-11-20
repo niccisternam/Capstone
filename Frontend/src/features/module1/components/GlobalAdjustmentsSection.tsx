@@ -1,11 +1,10 @@
-import type { AjusteGlobalExtraccion } from "@/api/module1.schemas";
-import { text, type SetReviewAdjustment } from "./documentReviewForm";
+import { text, type AjusteFormulario, type SetReviewAdjustment } from "./documentReviewForm";
 
 export function GlobalAdjustmentsSection({
   ajustes,
   setAdjustment,
 }: {
-  ajustes: AjusteGlobalExtraccion[];
+  ajustes: AjusteFormulario[];
   setAdjustment: SetReviewAdjustment;
 }) {
   return (
